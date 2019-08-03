@@ -10,21 +10,21 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Parser {
     private List<ComponentInstance> COMPONENT_INSTANCES = new ArrayList<>();
-    private HashMap<String,String> uniqueComponent = new HashMap<>();
-    File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
-    File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPnml-Output.xml");
+    private Set<String> uniqueComponents = new HashSet<>();
+    private File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
+    private File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPnml-Output.xml");
 
 
-    public void parseFile() throws ParserConfigurationException, IOException, SAXException, TransformerException {
+    public void parseFile() throws ParserConfigurationException, IOException, SAXException{
         DocumentBuilderFactory factory =
                 DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -52,10 +52,10 @@ public class Parser {
         searchElements(componentInstances, null);
         System.out.println("//////////////////////---------------//////////////////////");
 
-        for (ComponentInstance cmpI:COMPONENT_INSTANCES) {
-            System.out.println("Nazwa elementu "+cmpI.getName());
+        for (ComponentInstance cmpI : COMPONENT_INSTANCES) {
+            System.out.println("Nazwa elementu " + cmpI.getName());
         }
-        System.out.println("Liczba elementow "+COMPONENT_INSTANCES.size());
+        System.out.println("Liczba elementow " + COMPONENT_INSTANCES.size());
     }
 
     private void searchElements(NodeList componenentInstances, ComponentInstance processingElement) {
@@ -79,31 +79,28 @@ public class Parser {
                     Node featureInstance = featureInstances.item(j);
                     Element featureElement = (Element) featureInstance;
                     System.out.println("Name of feature : " + featureElement.getAttribute("name"));
-                    if(componentInstanceNested != null ){
+                    if (componentInstanceNested != null) {
                         componentInstanceNested.getFeatureInstance().add(featureElement.getAttribute("name"));
-                    }else {
+                    } else {
                         componentInstance.getFeatureInstance().add(featureElement.getAttribute("name"));
                     }
                 }
-                if (componentInstanceNested != null ){
+                if (componentInstanceNested != null) {
                     processingElement.getComponentInstancesNested().add(componentInstanceNested);
-                    uniqueComponent.put(componentInstanceNested.getName(),"");
+                    uniqueComponents.add(componentInstanceNested.getName());
                 }
 
                 // zagniezdzone komponenenty
                 NodeList nestedComponents = actualComponent.getElementsByTagName("componentInstance");
                 if (nestedComponents.getLength() != 0) {
-                    //wywlaj siebie
                     searchElements(nestedComponents, componentInstance);
 
                 } else {
-                    System.out.println("Brak elementów do przetworzenia  ");
-                    if (!uniqueComponent.containsKey(componentInstance.getName())) {
+                    if (!uniqueComponents.contains(componentInstance.getName())) {
                         COMPONENT_INSTANCES.add(componentInstance);
-                        uniqueComponent.put(componentInstance.getName(), "");
+                        uniqueComponents.add(componentInstance.getName());
                     }
                 }
-
 
             }
         }
