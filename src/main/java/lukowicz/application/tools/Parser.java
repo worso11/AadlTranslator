@@ -67,19 +67,16 @@ public class Parser {
 
             if (component.getNodeType() == Node.ELEMENT_NODE) {
 
-                Element componentElement = (Element) component;
-                System.out.println("Name of componenet : " + componentElement.getAttribute("name"));
+                Element actualComponent = (Element) component;
+                System.out.println("Name of componenet : " + actualComponent.getAttribute("name"));
+                System.out.println("Categroy of componenet : " + actualComponent.getAttribute("category"));
+                ComponentInstance componentInstance = processingElement != null ? processingElement : new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category"));
+                ComponentInstance componentInstanceNested = processingElement != null ? new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category")) : null;
 
-
-                System.out.println("Categroy of componenet : " + componentElement.getAttribute("category"));
-                ComponentInstance componentInstance = processingElement != null ? processingElement : new ComponentInstance(componentElement.getAttribute("name"), componentElement.getAttribute("category"));
-                NodeList featureInstances = componentElement.getElementsByTagName("featureInstance");
-
-                ComponentInstance componentInstanceNested = processingElement != null ? new ComponentInstance(componentElement.getAttribute("name"), componentElement.getAttribute("category")) : null;
+                NodeList featureInstances = actualComponent.getElementsByTagName("featureInstance");
 
                 for (int j = 0; j < featureInstances.getLength(); j++) {
                     Node featureInstance = featureInstances.item(j);
-
                     Element featureElement = (Element) featureInstance;
                     System.out.println("Name of feature : " + featureElement.getAttribute("name"));
                     if(componentInstanceNested != null ){
@@ -94,7 +91,7 @@ public class Parser {
                 }
 
                 // zagniezdzone komponenenty
-                NodeList nestedComponents = componentElement.getElementsByTagName("componentInstance");
+                NodeList nestedComponents = actualComponent.getElementsByTagName("componentInstance");
                 if (nestedComponents.getLength() != 0) {
                     //wywlaj siebie
                     searchElements(nestedComponents, componentInstance);
