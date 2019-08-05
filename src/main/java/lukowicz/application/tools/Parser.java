@@ -20,6 +20,8 @@ import java.util.Set;
 public class Parser {
     private List<ComponentInstance> COMPONENT_INSTANCES = new ArrayList<>();
     private Set<String> uniqueComponents = new HashSet<>();
+   // private ArrayList<String> uniqueFeature = new ArrayList<>();  // nie Set bo dopuszczamy nie unikalne
+
     private File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
     private File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPnml-Output.xml");
 
@@ -62,15 +64,25 @@ public class Parser {
         for (int i = 0; i < componenentInstances.getLength(); i++) {
 
             Node component = componenentInstances.item(i);
-
             System.out.println("\nCurrent Element :" + component.getNodeName());
 
             if (component.getNodeType() == Node.ELEMENT_NODE) {
-
+                ComponentInstance componentInstance;
                 Element actualComponent = (Element) component;
                 System.out.println("Name of componenet : " + actualComponent.getAttribute("name"));
                 System.out.println("Categroy of componenet : " + actualComponent.getAttribute("category"));
-                ComponentInstance componentInstance = processingElement != null ? processingElement : new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category"));
+                if (processingElement != null){
+                    componentInstance = processingElement;
+
+                }else {
+                    componentInstance = new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category"));
+                   // uniqueFeature.clear();
+                }
+
+                if (uniqueComponents.contains(actualComponent.getAttribute("name"))){
+                    continue;
+                }
+
                 ComponentInstance componentInstanceNested = processingElement != null ? new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category")) : null;
 
                 NodeList featureInstances = actualComponent.getElementsByTagName("featureInstance");
@@ -81,11 +93,14 @@ public class Parser {
                     System.out.println("Name of feature : " + featureElement.getAttribute("name"));
                     if (componentInstanceNested != null) {
                         componentInstanceNested.getFeatureInstance().add(featureElement.getAttribute("name"));
+                        //uniqueFeature.remove(featureElement.getAttribute("name"));
                     } else {
+                       // uniqueFeature.add(featureElement.getAttribute("name"));
                         componentInstance.getFeatureInstance().add(featureElement.getAttribute("name"));
                     }
                 }
                 if (componentInstanceNested != null) {
+                    //czy nie mozna lepiej??
                     processingElement.getComponentInstancesNested().add(componentInstanceNested);
                     uniqueComponents.add(componentInstanceNested.getName());
                 }
@@ -97,8 +112,10 @@ public class Parser {
 
                 } else {
                     if (!uniqueComponents.contains(componentInstance.getName())) {
+                        //componentInstance.getFeatureInstance().addAll(uniqueFeature);
                         COMPONENT_INSTANCES.add(componentInstance);
                         uniqueComponents.add(componentInstance.getName());
+
                     }
                 }
 
