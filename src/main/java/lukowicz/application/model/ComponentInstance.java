@@ -6,6 +6,7 @@ import java.util.List;
 public class ComponentInstance {
     private String name;
     private String category;
+    private String id;
     private List<String> featureInstance = new ArrayList<>();
     private List<ComponentInstance> componentInstancesNested = new ArrayList<>();
 
