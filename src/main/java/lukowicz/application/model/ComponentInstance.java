@@ -1,18 +1,22 @@
 package lukowicz.application.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class ComponentInstance {
     private String name;
     private String category;
     private String id;
-    private List<String> featureInstance = new ArrayList<>();
+    private List<FeatureInstance> featureInstance = new ArrayList<>();
     private List<ComponentInstance> componentInstancesNested = new ArrayList<>();
 
     public ComponentInstance(String name, String category) {
         this.name = name;
         this.category = category;
+        this.id = UUID.randomUUID().toString();
+        System.out.println("name feature "+ name + " id "+id + "category "+category) ;
     }
 
     public String getName() {
@@ -31,11 +35,20 @@ public class ComponentInstance {
         this.category = category;
     }
 
-    public List<String> getFeatureInstance() {
+    public String getId() {
+        return id;
+    }
+
+    public List<FeatureInstance> getFeatureInstance() {
         return featureInstance;
     }
 
-    public void setFeatureInstance(List<String> featureInstance) {
+    public List<FeatureInstance> getReverseFeatureInstances() {
+        Collections.reverse(featureInstance);
+        return  featureInstance;
+    }
+
+    public void setFeatureInstance(List<FeatureInstance> featureInstance) {
         this.featureInstance = featureInstance;
     }
 
@@ -45,6 +58,14 @@ public class ComponentInstance {
 
     public void setComponentInstancesNested(List<ComponentInstance> componentInstancesNested) {
         this.componentInstancesNested = componentInstancesNested;
+    }
+
+    public void removeFeatureByName(String featureName){
+        for(int i=0; i<featureInstance.size(); ++i){
+            if(featureInstance.get(i).getName().equals(featureName)){
+                featureInstance.remove(i);
+            }
+        }
     }
 
 

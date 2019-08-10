@@ -3,6 +3,7 @@ package lukowicz.application.tools;
 import lukowicz.application.model.Category;
 import lukowicz.application.model.ComponentInstance;
 import lukowicz.application.model.Connection;
+import lukowicz.application.model.FeatureInstance;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -62,6 +63,7 @@ public class Parser {
 
         for (ComponentInstance cmpI : COMPONENT_INSTANCES) {
             System.out.println("Nazwa elementu " + cmpI.getName());
+            System.out.println("Id" + cmpI.getId());
         }
         NodeList connections = loadedDocument.getElementsByTagName("connectionReference");
         searchConnections(connections);
@@ -82,6 +84,8 @@ public class Parser {
     private void generatePetriNet() throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
+        int numberPage = 1;
+        String actualContext = "";
 
         Document pnmlDocument = builder.newDocument();
         Element root = pnmlDocument.createElement("cpnet");
@@ -90,41 +94,72 @@ public class Parser {
 
         Element page = pnmlDocument.createElement("page");
         Attr pageId = pnmlDocument.createAttribute("id");
-        pageId.setValue("1");
+        pageId.setValue(String.valueOf(numberPage));
         page.setAttributeNode(pageId);
         Element pageAttr = pnmlDocument.createElement("pageattr");
         Attr pageAttrName = pnmlDocument.createAttribute("name");
         pageAttrName.setValue("pageName");
+        pageAttr.setAttributeNode(pageAttrName);
+        page.appendChild(pageAttr);
         root.appendChild(page);
 
         for(ComponentInstance componentInstance: COMPONENT_INSTANCES){
            String componentInstanceName = componentInstance.getName();
            String componentInstanceCategory = componentInstance.getCategory();
-           if(componentInstanceCategory.equals(Category.DEVICE.getValue())){
-               Element transition = pnmlDocument.createElement("trans");
-               Element transitionText = pnmlDocument.createElement("text");
-               transitionText.appendChild(pnmlDocument.createTextNode(componentInstance.getName()));
-               transition.appendChild(transitionText);
-
-               Attr transitionId = pnmlDocument.createAttribute("id");
-               transitionId.setValue("1");
-               transition.setAttributeNode(transitionId);
+           if(componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue())){
+               Element transition = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
                page.appendChild(transition);
            }
-           List<String> featureInstances = componentInstance.getFeatureInstance();
-           for(String feature:featureInstances){
-               Element place = pnmlDocument.createElement("place");
-               Element placeText = pnmlDocument.createElement("text");
-               placeText.appendChild(pnmlDocument.createTextNode(feature));
-               place.appendChild(placeText);
-
-               Attr placeId = pnmlDocument.createAttribute("id");
-               placeId.setValue("1");
-               place.setAttributeNode(placeId);
+           if (componentInstanceCategory.equals(Category.BUS.getValue()) ){
+               Element place = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
+               page.appendChild(place);
+           }
+           List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
+           for(FeatureInstance feature:featureInstances){
+               Element place = generatePlace(pnmlDocument, "place", feature.getName(), feature.getId());
                page.appendChild(place);
            }
 
+        }
+        //contexts.add(CONNECTIONS.get(0).getContext());
+        for(Connection connection : CONNECTIONS){
+            if(actualContext.equals(connection.getContext())){
+                Element arc = pnmlDocument.createElement("arc");
+                Attr arcId = pnmlDocument.createAttribute("id");
+                arcId.setValue(connection.getId());
+                arc.setAttributeNode(arcId);
 
+                Element transend = pnmlDocument.createElement("transend");
+                Attr transendIdRef = pnmlDocument.createAttribute("idref");
+
+                Element placeend = pnmlDocument.createElement("placeend");
+                Attr placeendIdRef = pnmlDocument.createAttribute("idref");
+
+                ArrayList<Integer> source = preparePorts(connection.getSource());
+                ArrayList<Integer> dst = preparePorts(connection.getDestination());
+
+                ConnectionNode sourceNode = getConnectionNode(source,null);
+                ConnectionNode dstNode = getConnectionNode(dst,null);
+
+                Attr arcOrientation = pnmlDocument.createAttribute("orientation");
+                arcOrientation.setValue(setArcOrientation(sourceNode,dstNode));
+                arc.setAttributeNode(arcOrientation);
+
+                transendIdRef.setValue(sourceNode.getId());
+                placeendIdRef.setValue(dstNode.getId());
+
+
+
+
+                transend.setAttributeNode(transendIdRef);
+                placeend.setAttributeNode(placeendIdRef);
+
+                arc.appendChild(transend);
+                arc.appendChild(placeend);
+
+                page.appendChild(arc);
+
+            }
 
         }
 
@@ -146,6 +181,70 @@ public class Parser {
 
     }
 
+    private Element generatePlace(Document pnmlDocument, String place2, String name, String id) {
+        Element place = pnmlDocument.createElement(place2);
+        Element placeText = pnmlDocument.createElement("text");
+        placeText.appendChild(pnmlDocument.createTextNode(name));
+        place.appendChild(placeText);
+
+        Attr placeId = pnmlDocument.createAttribute("id");
+        placeId.setValue(id);
+        place.setAttributeNode(placeId);
+        return place;
+    }
+
+    private Element generateTransition(Document pnmlDocument, String trans, String name, String id) {
+        Element transition = pnmlDocument.createElement(trans);
+        Element transitionText = pnmlDocument.createElement("text");
+        transitionText.appendChild(pnmlDocument.createTextNode(name));
+        transition.appendChild(transitionText);
+
+        Attr transitionId = pnmlDocument.createAttribute("id");
+        transitionId.setValue(id);
+        transition.setAttributeNode(transitionId);
+        return transition;
+    }
+
+    private String setArcOrientation(ConnectionNode sourceNode, ConnectionNode dstNode) {
+        if(sourceNode.getCategory().equals(Category.FEATURE.getValue())){
+            return "PtoT";
+        }
+        else {
+            return "TtoP";
+        }
+
+    }
+
+    private ConnectionNode getConnectionNode(ArrayList<Integer> path, ComponentInstance actualComponentInstance) {
+
+
+        for (int j=0; j<path.size(); ++j){
+            ComponentInstance processingComponent = actualComponentInstance != null ? actualComponentInstance : COMPONENT_INSTANCES.get(path.get(j));
+            if(j == path.size() - 1){
+
+                return new ConnectionNode(processingComponent.getId(),processingComponent.getCategory());
+            }
+
+            else if(j == path.size()- 2){
+                return new ConnectionNode(processingComponent.getFeatureInstance().get(path.get(j+1)).getId(),Category.FEATURE.getValue());
+            }
+            else {
+                return getConnectionNode(path,processingComponent.getComponentInstancesNested().get(path.get(j)));
+            }
+        }
+        return null;
+    }
+
+    private ArrayList<Integer> preparePorts(String source) {
+        String[] sourceSplitted =  source.split(" ");
+        ArrayList<Integer> sourceList = new ArrayList<>();
+        for (String element: sourceSplitted) {
+            sourceList.add(Integer.valueOf(element));
+        }
+        return sourceList;
+
+    }
+
     private void searchConnections(NodeList connections) {
         for (int i = 0; i < connections.getLength(); i++) {
             Node connection = connections.item(i);
@@ -155,10 +254,14 @@ public class Parser {
             System.out.println("context of  connection : " + actualConnection.getAttribute("context"));
             System.out.println("source of  connection : " + actualConnection.getAttribute("source"));
             System.out.println("destination of  connection : " + actualConnection.getAttribute("destination"));
-            Connection newConnection = new Connection();
-            newConnection.setContext(actualConnection.getAttribute("context").replaceAll("\\D+"," ").trim());
-            newConnection.setSource(actualConnection.getAttribute("source").replaceAll("\\D+"," ").trim());
-            newConnection.setDestination(actualConnection.getAttribute("destination").replaceAll("\\D+"," ").trim());
+            System.out.println("destination of  connection : " + actualConnection.getAttribute("destination"));
+
+            String context = actualConnection.getAttribute("context").replaceAll("\\D+"," ").trim();
+            String source = actualConnection.getAttribute("source").replaceAll("\\D+"," ").trim();
+            String destination = actualConnection.getAttribute("destination").replaceAll("\\D+"," ").trim();
+            Connection newConnection = new Connection(context,source,destination);
+
+
             CONNECTIONS.add(newConnection);
 
         }
@@ -175,8 +278,8 @@ public class Parser {
             if (component.getNodeType() == Node.ELEMENT_NODE) {
                 ComponentInstance componentInstance;
                 Element actualComponent = (Element) component;
-                System.out.println("Name of componenet : " + actualComponent.getAttribute("name"));
-                System.out.println("Categroy of componenet : " + actualComponent.getAttribute("category"));
+               //System.out.println("Name of componenet : " + actualComponent.getAttribute("name"));
+               // System.out.println("Categroy of componenet : " + actualComponent.getAttribute("category"));
                 if (processingElement != null){
                     componentInstance = processingElement;
 
@@ -198,12 +301,13 @@ public class Parser {
                     Element featureElement = (Element) featureInstance;
                     System.out.println("Name of feature : " + featureElement.getAttribute("name"));
                     if (componentInstanceNested != null) {
-                        componentInstance.getFeatureInstance().remove(featureElement.getAttribute("name"));
-                        componentInstanceNested.getFeatureInstance().add(featureElement.getAttribute("name"));
+                        componentInstance.getReverseFeatureInstances().remove(new FeatureInstance(featureElement.getAttribute("name")));
+                        componentInstance.getReverseFeatureInstances();//wroc do starego porzadku
+                        componentInstanceNested.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name")));
                         //uniqueFeature.remove(featureElement.getAttribute("name"));
                     } else {
                        // uniqueFeature.add(featureElement.getAttribute("name"));
-                        componentInstance.getFeatureInstance().add(featureElement.getAttribute("name"));
+                        componentInstance.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name")));
                     }
                 }
                 if (componentInstanceNested != null) {
@@ -228,5 +332,31 @@ public class Parser {
 
             }
         }
+    }
+}
+
+class ConnectionNode{
+    private String id;
+    private String category;
+
+    public ConnectionNode(String id, String category) {
+        this.id = id;
+        this.category = category;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

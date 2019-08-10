@@ -20,6 +20,9 @@ public class Client {
 
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException, TransformerException {
           parser.parseFile();
+
+
+
 //        File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
 //        File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPnml-Output2.xml");
 //

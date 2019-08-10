@@ -1,9 +1,21 @@
 package lukowicz.application.model;
 
+import java.util.UUID;
+
 public class Connection {
     private String context;
     private String source;
     private String destination;
+    private String id;
+
+    public Connection(String context, String source, String destination) {
+        this.context = context;
+        this.source = source;
+        this.destination = destination;
+        this.id = UUID.randomUUID().toString();
+
+        System.out.println("Connection " + " id "+id);
+    }
 
     public String getContext() {
         return context;
@@ -27,5 +39,13 @@ public class Connection {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
