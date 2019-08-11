@@ -92,19 +92,9 @@ public class Parser {
         pnmlDocument.appendChild(root);
 
 
-        Element page = pnmlDocument.createElement("page");
-        Attr pageId = pnmlDocument.createAttribute("id");
-        pageId.setValue(String.valueOf(numberPage));
-        page.setAttributeNode(pageId);
-        Element pageAttr = pnmlDocument.createElement("pageattr");
-        Attr pageAttrName = pnmlDocument.createAttribute("name");
-        pageAttrName.setValue("pageName");
-        pageAttr.setAttributeNode(pageAttrName);
-        page.appendChild(pageAttr);
-        root.appendChild(page);
+        Element page = generateNewPage(numberPage, pnmlDocument, root);
 
         for(ComponentInstance componentInstance: COMPONENT_INSTANCES){
-           String componentInstanceName = componentInstance.getName();
            String componentInstanceCategory = componentInstance.getCategory();
            if(componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue())){
                Element transition = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
@@ -124,40 +114,80 @@ public class Parser {
         //contexts.add(CONNECTIONS.get(0).getContext());
         for(Connection connection : CONNECTIONS){
             if(actualContext.equals(connection.getContext())){
-                Element arc = pnmlDocument.createElement("arc");
+
+                ArrayList<Integer> source = preparePorts(connection.getSource());
+                ArrayList<Integer> dst = preparePorts(connection.getDestination());
+
+                ConnectionNode sourceNode = getConnectionNode(source,pnmlDocument,null);
+                ConnectionNode dstNode = getConnectionNode(dst, pnmlDocument, null);
+
+                Element arc1 = pnmlDocument.createElement("arc");
                 Attr arcId = pnmlDocument.createAttribute("id");
                 arcId.setValue(connection.getId());
-                arc.setAttributeNode(arcId);
+                arc1.setAttributeNode(arcId);
 
                 Element transend = pnmlDocument.createElement("transend");
                 Attr transendIdRef = pnmlDocument.createAttribute("idref");
 
                 Element placeend = pnmlDocument.createElement("placeend");
                 Attr placeendIdRef = pnmlDocument.createAttribute("idref");
-
-                ArrayList<Integer> source = preparePorts(connection.getSource());
-                ArrayList<Integer> dst = preparePorts(connection.getDestination());
-
-                ConnectionNode sourceNode = getConnectionNode(source,null);
-                ConnectionNode dstNode = getConnectionNode(dst,null);
-
                 Attr arcOrientation = pnmlDocument.createAttribute("orientation");
-                arcOrientation.setValue(setArcOrientation(sourceNode,dstNode));
-                arc.setAttributeNode(arcOrientation);
 
-                transendIdRef.setValue(sourceNode.getId());
-                placeendIdRef.setValue(dstNode.getId());
+                if(sourceNode.getCategory().equals(Category.BUS.getValue())){
+                    transendIdRef.setValue(sourceNode.getTransId());
+                    placeendIdRef.setValue(dstNode.getPlaceId());
+
+                }
+                else {
+                    transendIdRef.setValue(sourceNode.getTransId());
+                    placeendIdRef.setValue(sourceNode.getPlaceId());
+                }
 
 
+                arcOrientation.setValue("TtoP");
+                arc1.setAttributeNode(arcOrientation);
 
 
                 transend.setAttributeNode(transendIdRef);
                 placeend.setAttributeNode(placeendIdRef);
 
-                arc.appendChild(transend);
-                arc.appendChild(placeend);
+                arc1.appendChild(transend);
+                arc1.appendChild(placeend);
 
-                page.appendChild(arc);
+                page.appendChild(arc1);
+
+
+//drugi arc    zadbac zeby drugi arc nie był tworzony dla this_bus ogarnac orientation
+
+                if(!sourceNode.getCategory().equals(Category.BUS.getValue())) {
+
+                    Element arc2 = pnmlDocument.createElement("arc");
+                    Attr arcId2 = pnmlDocument.createAttribute("id");
+                    arcId2.setValue(connection.getId() + "#");
+                    arc2.setAttributeNode(arcId2);
+
+                    Element transend2 = pnmlDocument.createElement("transend");
+                    Attr transendIdRef2 = pnmlDocument.createAttribute("idref");
+
+                    Element placeend2 = pnmlDocument.createElement("placeend");
+                    Attr placeendIdRef2 = pnmlDocument.createAttribute("idref");
+
+                    transendIdRef2.setValue(sourceNode.getPlaceId());
+                    placeendIdRef2.setValue(dstNode.getTransId());
+
+                    Attr arcOrientation2 = pnmlDocument.createAttribute("orientation");
+                    arcOrientation2.setValue("PtoT");
+                    arc2.setAttributeNode(arcOrientation2);
+
+
+                    transend2.setAttributeNode(transendIdRef2);
+                    placeend2.setAttributeNode(placeendIdRef2);
+
+                    arc2.appendChild(transend2);
+                    arc2.appendChild(placeend2);
+
+                    page.appendChild(arc2);
+                }
 
             }
 
@@ -179,6 +209,20 @@ public class Parser {
         System.out.println("Done creating XML File");
 
 
+    }
+
+    private Element generateNewPage(int numberPage, Document pnmlDocument, Element root) {
+        Element page = pnmlDocument.createElement("page");
+        Attr pageId = pnmlDocument.createAttribute("id");
+        pageId.setValue(String.valueOf(numberPage));
+        page.setAttributeNode(pageId);
+        Element pageAttr = pnmlDocument.createElement("pageattr");
+        Attr pageAttrName = pnmlDocument.createAttribute("name");
+        pageAttrName.setValue("pageName");
+        pageAttr.setAttributeNode(pageAttrName);
+        page.appendChild(pageAttr);
+        root.appendChild(page);
+        return page;
     }
 
     private Element generatePlace(Document pnmlDocument, String place2, String name, String id) {
@@ -215,21 +259,18 @@ public class Parser {
 
     }
 
-    private ConnectionNode getConnectionNode(ArrayList<Integer> path, ComponentInstance actualComponentInstance) {
-
+    private ConnectionNode getConnectionNode(ArrayList<Integer> path, Document pnmlDocument, ComponentInstance actualComponentInstance) {
 
         for (int j=0; j<path.size(); ++j){
             ComponentInstance processingComponent = actualComponentInstance != null ? actualComponentInstance : COMPONENT_INSTANCES.get(path.get(j));
             if(j == path.size() - 1){
-
-                return new ConnectionNode(processingComponent.getId(),processingComponent.getCategory());
+                return new ConnectionNode(processingComponent.getId(),null,processingComponent.getCategory());
             }
-
             else if(j == path.size()- 2){
-                return new ConnectionNode(processingComponent.getFeatureInstance().get(path.get(j+1)).getId(),Category.FEATURE.getValue());
+                return new ConnectionNode(processingComponent.getId(),processingComponent.getFeatureInstance().get(path.get(j+1)).getId(),processingComponent.getCategory());
             }
             else {
-                return getConnectionNode(path,processingComponent.getComponentInstancesNested().get(path.get(j)));
+                return getConnectionNode(path, pnmlDocument, processingComponent.getComponentInstancesNested().get(path.get(j)));
             }
         }
         return null;
@@ -336,20 +377,31 @@ public class Parser {
 }
 
 class ConnectionNode{
-    private String id;
+
+    private String transId;
+    private String placeId;
     private String category;
 
-    public ConnectionNode(String id, String category) {
-        this.id = id;
+    public ConnectionNode(String transId, String placeId, String category) {
+        this.transId = transId;
+        this.placeId = placeId;
         this.category = category;
     }
 
-    public String getId() {
-        return id;
+    public String getTransId() {
+        return transId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTransId(String transId) {
+        this.transId = transId;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public String getCategory() {
