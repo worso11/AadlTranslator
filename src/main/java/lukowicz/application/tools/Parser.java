@@ -20,11 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+
+//pewne miejsca ktore sa generowane  nie beda uzywane trzeba jakos je usunac
+
 public class Parser {
     private List<ComponentInstance> COMPONENT_INSTANCES = new ArrayList<>();
     private List<ComponentInstance> PROCESSES = new ArrayList<>();
     private List<Connection> CONNECTIONS = new ArrayList<>();
     private Set<String> uniqueComponents = new HashSet<>();
+    private Set<String> usedFeature = new HashSet<>();
     private Set<String> contexts = new HashSet<>();
    // private ArrayList<String> uniqueFeature = new ArrayList<>();  // nie Set bo dopuszczamy nie unikalne
 
@@ -93,25 +97,38 @@ public class Parser {
 
 
         Element page = generateNewPage(numberPage, pnmlDocument, root);
+        translateElements(pnmlDocument, page,COMPONENT_INSTANCES);
+        generateConnections(actualContext, pnmlDocument, page);
 
-        for(ComponentInstance componentInstance: COMPONENT_INSTANCES){
-           String componentInstanceCategory = componentInstance.getCategory();
-           if(componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue())){
-               Element transition = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
-               page.appendChild(transition);
-           }
-           if (componentInstanceCategory.equals(Category.BUS.getValue()) ){
-               Element place = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
-               page.appendChild(place);
-           }
-           List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
-           for(FeatureInstance feature:featureInstances){
-               Element place = generatePlace(pnmlDocument, "place", feature.getName(), feature.getId());
-               page.appendChild(place);
-           }
-
-        }
         //contexts.add(CONNECTIONS.get(0).getContext());
+        //generateConnections(actualContext, pnmlDocument, page);  // tutaj było
+
+        //zrobic petle po kontekstach
+        Element page2 = generateNewPage(++numberPage, pnmlDocument, root);
+        for(ComponentInstance pageProcess: PROCESSES){
+            generateConnections("6",pnmlDocument,page2);
+            translateElements(pnmlDocument, page2,pageProcess.getComponentInstancesNested());
+        }
+        //translateElements(pnmlDocument, page2,PROCESSES);
+
+
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        DOMSource domSource = new DOMSource(pnmlDocument);
+        StreamResult streamResult = new StreamResult(new File(String.valueOf(pnmlFile)));
+
+
+        transformer.transform(domSource, streamResult);
+
+        System.out.println("Done creating XML File");
+
+
+    }
+
+    private void generateConnections(String actualContext, Document pnmlDocument, Element page) {
         for(Connection connection : CONNECTIONS){
             if(actualContext.equals(connection.getContext())){
 
@@ -136,11 +153,13 @@ public class Parser {
                 if(sourceNode.getCategory().equals(Category.BUS.getValue())){
                     transendIdRef.setValue(sourceNode.getTransId());
                     placeendIdRef.setValue(dstNode.getPlaceId());
+                    usedFeature.add(dstNode.getPlaceId()); // dodane
 
                 }
                 else {
                     transendIdRef.setValue(sourceNode.getTransId());
                     placeendIdRef.setValue(sourceNode.getPlaceId());
+                    usedFeature.add(sourceNode.getPlaceId());  // dodane
                 }
 
 
@@ -172,8 +191,10 @@ public class Parser {
                     Element placeend2 = pnmlDocument.createElement("placeend");
                     Attr placeendIdRef2 = pnmlDocument.createAttribute("idref");
 
-                    transendIdRef2.setValue(sourceNode.getPlaceId());
-                    placeendIdRef2.setValue(dstNode.getTransId());
+                    transendIdRef2.setValue(dstNode.getTransId());
+                    placeendIdRef2.setValue(sourceNode.getPlaceId());
+
+                   // usedFeature.add(sourceNode.getPlaceId()); // nie musi byc
 
                     Attr arcOrientation2 = pnmlDocument.createAttribute("orientation");
                     arcOrientation2.setValue("PtoT");
@@ -192,23 +213,26 @@ public class Parser {
             }
 
         }
+    }
 
+    private void translateElements(Document pnmlDocument, Element page, List<ComponentInstance> componentInstances  ) {
+        for(ComponentInstance componentInstance: componentInstances){
+           String componentInstanceCategory = componentInstance.getCategory();
+           if(componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue()) || componentInstanceCategory.equals(Category.THREAD.getValue()) ){
+               Element transition = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
+               page.appendChild(transition);
+           }
+           if (componentInstanceCategory.equals(Category.BUS.getValue()) ){
+               Element place = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
+               page.appendChild(place);
+           }
+           List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
+           for(FeatureInstance feature:featureInstances){
+               Element place = generatePlace(pnmlDocument, "place", feature.getName(), feature.getId());
+               page.appendChild(place);
+           }
 
-
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-        DOMSource domSource = new DOMSource(pnmlDocument);
-        StreamResult streamResult = new StreamResult(new File(String.valueOf(pnmlFile)));
-
-
-        transformer.transform(domSource, streamResult);
-
-        System.out.println("Done creating XML File");
-
-
+        }
     }
 
     private Element generateNewPage(int numberPage, Document pnmlDocument, Element root) {
@@ -259,7 +283,7 @@ public class Parser {
 
     }
 
-    private ConnectionNode getConnectionNode(ArrayList<Integer> path, Document pnmlDocument, ComponentInstance actualComponentInstance) {
+    private ConnectionNode getConnectionNode(List<Integer> path, Document pnmlDocument, ComponentInstance actualComponentInstance) {
 
         for (int j=0; j<path.size(); ++j){
             ComponentInstance processingComponent = actualComponentInstance != null ? actualComponentInstance : COMPONENT_INSTANCES.get(path.get(j));
@@ -270,7 +294,7 @@ public class Parser {
                 return new ConnectionNode(processingComponent.getId(),processingComponent.getFeatureInstance().get(path.get(j+1)).getId(),processingComponent.getCategory());
             }
             else {
-                return getConnectionNode(path, pnmlDocument, processingComponent.getComponentInstancesNested().get(path.get(j)));
+                return getConnectionNode(path.subList(j+1,path.size()), pnmlDocument, processingComponent.getComponentInstancesNested().get(path.get(j+1)));
             }
         }
         return null;
@@ -392,23 +416,16 @@ class ConnectionNode{
         return transId;
     }
 
-    public void setTransId(String transId) {
-        this.transId = transId;
-    }
 
     public String getPlaceId() {
         return placeId;
     }
 
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
+
 
     public String getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+
 }
