@@ -23,6 +23,11 @@ import java.util.*;
 
 //pewne miejsca ktore sa generowane  nie beda uzywane trzeba jakos je usunac
 
+
+//mapowanie processor, memmory???
+
+//wg dokumentu bus to arc
+
 public class Parser {
     private List<ComponentInstance> COMPONENT_INSTANCES = new ArrayList<>();
     private List<ComponentInstance> PROCESSES = new ArrayList<>();
@@ -95,19 +100,19 @@ public class Parser {
         Element root = pnmlDocument.createElement("cpnet");
         pnmlDocument.appendChild(root);
 
-
+        //page startowy
         Element page = generateNewPage(numberPage, pnmlDocument, root);
+        List<Node> arcs = generateConnections(actualContext, pnmlDocument, page);
         translateElements(pnmlDocument, page,COMPONENT_INSTANCES);
-        generateConnections(actualContext, pnmlDocument, page);
+        insertArcToPNet(page, arcs);
 
-        //contexts.add(CONNECTIONS.get(0).getContext());
-        //generateConnections(actualContext, pnmlDocument, page);  // tutaj było
 
-        //zrobic petle po kontekstach
-        Element page2 = generateNewPage(++numberPage, pnmlDocument, root);
+        //pageForProcess           konteksty!!!!!!!!!!!!!!!!!  zrobic odniesienia do stron!!
         for(ComponentInstance pageProcess: PROCESSES){
-            generateConnections("6",pnmlDocument,page2);
-            translateElements(pnmlDocument, page2,pageProcess.getComponentInstancesNested());
+            Element pageForProcess = generateNewPage(++numberPage, pnmlDocument, root);
+            List<Node> arcs2 = generateConnections("6",pnmlDocument,pageForProcess);
+            translateElements(pnmlDocument, pageForProcess,pageProcess.getComponentInstancesNested());
+            insertArcToPNet(pageForProcess, arcs2);
         }
         //translateElements(pnmlDocument, page2,PROCESSES);
 
@@ -128,7 +133,14 @@ public class Parser {
 
     }
 
-    private void generateConnections(String actualContext, Document pnmlDocument, Element page) {
+    private void insertArcToPNet(Element page, List<Node> arcs) {
+        for (Node arc : arcs) {
+            page.appendChild(arc);
+        }
+    }
+
+    private List<Node> generateConnections(String actualContext, Document pnmlDocument, Element page) {
+        List<Node> arcs = new ArrayList<>();
         for(Connection connection : CONNECTIONS){
             if(actualContext.equals(connection.getContext())){
 
@@ -173,7 +185,9 @@ public class Parser {
                 arc1.appendChild(transend);
                 arc1.appendChild(placeend);
 
-                page.appendChild(arc1);
+                //page.appendChild(arc1);   było
+
+                arcs.add(arc1);
 
 
 //drugi arc    zadbac zeby drugi arc nie był tworzony dla this_bus ogarnac orientation
@@ -207,12 +221,15 @@ public class Parser {
                     arc2.appendChild(transend2);
                     arc2.appendChild(placeend2);
 
-                    page.appendChild(arc2);
+                    //page.appendChild(arc2); // było
+                    arcs.add(arc2);
                 }
 
             }
 
         }
+        return arcs;
+
     }
 
     private void translateElements(Document pnmlDocument, Element page, List<ComponentInstance> componentInstances  ) {
@@ -223,16 +240,20 @@ public class Parser {
                page.appendChild(transition);
            }
            if (componentInstanceCategory.equals(Category.BUS.getValue()) ){
-               Element place = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
-               page.appendChild(place);
+               Element transition = generateTransition(pnmlDocument, "trans", componentInstance.getName(), componentInstance.getId());
+               page.appendChild(transition);
            }
            List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
            for(FeatureInstance feature:featureInstances){
                Element place = generatePlace(pnmlDocument, "place", feature.getName(), feature.getId());
-               page.appendChild(place);
+               if(usedFeature.contains(feature.getId())){
+                   page.appendChild(place);
+               }
+
            }
 
         }
+        usedFeature.clear();
     }
 
     private Element generateNewPage(int numberPage, Document pnmlDocument, Element root) {
