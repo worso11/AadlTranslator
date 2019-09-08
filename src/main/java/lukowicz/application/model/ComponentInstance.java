@@ -15,7 +15,7 @@ public class ComponentInstance {
     public ComponentInstance(String name, String category) {
         this.name = name;
         this.category = category;
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString().replace("-", "");;
         System.out.println("name feature "+ name + " id "+id + "category "+category) ;
     }
 

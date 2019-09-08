@@ -9,7 +9,7 @@ public class FeatureInstance {
 
     public FeatureInstance(String name) {
         this.name = name;
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString().replace("-", "");;
         System.out.println("name feature "+ name + " id "+id);
     }
 

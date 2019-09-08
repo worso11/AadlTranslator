@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.util.*;
 
 
-//pewne miejsca ktore sa generowane  nie beda uzywane trzeba jakos je usunac
-
 
 //mapowanie processor, memmory???
 
@@ -39,6 +37,12 @@ public class Parser {
 
     private File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
     private File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPetriNet-Output.xml");
+
+
+    private Double PLACE_X_START_POSITION = -504.000000;
+    private Double PLACE_Y_START_POSITION = 312.000000;
+    private Double TRANSITION_X_START_POSITION = 444.000000;
+    private Double TRANSITION_Y_START_POSITION = 314.000000;
 
 
     public void parseFile() throws ParserConfigurationException, IOException, SAXException, TransformerException {
@@ -114,8 +118,6 @@ public class Parser {
             translateElements(pnmlDocument, pageForProcess,pageProcess.getComponentInstancesNested());
             insertArcToPNet(pageForProcess, arcs2);
         }
-        //translateElements(pnmlDocument, page2,PROCESSES);
-
 
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -170,8 +172,8 @@ public class Parser {
                 }
                 else {
                     transendIdRef.setValue(sourceNode.getTransId());
-                    placeendIdRef.setValue(sourceNode.getPlaceId());
-                    usedFeature.add(sourceNode.getPlaceId());  // dodane
+                    placeendIdRef.setValue(sourceNode.getPlaceId()); //było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
+                    usedFeature.add(sourceNode.getPlaceId());  // było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
                 }
 
 
@@ -190,7 +192,6 @@ public class Parser {
                 arcs.add(arc1);
 
 
-//drugi arc    zadbac zeby drugi arc nie był tworzony dla this_bus ogarnac orientation
 
                 if(!sourceNode.getCategory().equals(Category.BUS.getValue())) {
 
@@ -206,7 +207,7 @@ public class Parser {
                     Attr placeendIdRef2 = pnmlDocument.createAttribute("idref");
 
                     transendIdRef2.setValue(dstNode.getTransId());
-                    placeendIdRef2.setValue(sourceNode.getPlaceId());
+                    placeendIdRef2.setValue(sourceNode.getPlaceId()); //było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
 
                    // usedFeature.add(sourceNode.getPlaceId()); // nie musi byc
 

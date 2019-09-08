@@ -12,7 +12,7 @@ public class Connection {
         this.context = context;
         this.source = source;
         this.destination = destination;
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString().replace("-", "");;
 
         System.out.println("Connection " + " id "+id);
     }
