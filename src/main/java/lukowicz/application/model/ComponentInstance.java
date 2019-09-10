@@ -9,13 +9,17 @@ public class ComponentInstance {
     private String name;
     private String category;
     private String id;
+    private Double pos_X;
+    private Double pos_Y;
     private List<FeatureInstance> featureInstance = new ArrayList<>();
     private List<ComponentInstance> componentInstancesNested = new ArrayList<>();
 
     public ComponentInstance(String name, String category) {
         this.name = name;
         this.category = category;
-        this.id = UUID.randomUUID().toString().replace("-", "");;
+        this.id = UUID.randomUUID().toString().replace("-", "");
+        this.pos_X = Constants.getTRANSITION_X_POSITION();
+        this.pos_Y = Constants.getTRANSITION_Y_POSITION();
         System.out.println("name feature "+ name + " id "+id + "category "+category) ;
     }
 
@@ -58,6 +62,22 @@ public class ComponentInstance {
 
     public void setComponentInstancesNested(List<ComponentInstance> componentInstancesNested) {
         this.componentInstancesNested = componentInstancesNested;
+    }
+
+    public Double getPos_X() {
+        return pos_X;
+    }
+
+    public void setPos_X(Double pos_X) {
+        this.pos_X = pos_X;
+    }
+
+    public Double getPos_Y() {
+        return pos_Y;
+    }
+
+    public void setPos_Y(Double pos_Y) {
+        this.pos_Y = pos_Y;
     }
 
     public void removeFeatureByName(String featureName){

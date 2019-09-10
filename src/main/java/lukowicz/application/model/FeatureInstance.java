@@ -6,10 +6,15 @@ import java.util.UUID;
 public class FeatureInstance {
      private String name;
      private String id;
+     private Double pos_X;
+     private Double pos_Y;
 
     public FeatureInstance(String name) {
         this.name = name;
-        this.id = UUID.randomUUID().toString().replace("-", "");;
+        this.id = UUID.randomUUID().toString().replace("-", "");
+        this.pos_X = Constants.getPLACE_X_POSITION();
+        this.pos_Y = Constants.getPLACE_Y_POSITION();
+
         System.out.println("name feature "+ name + " id "+id);
     }
 
@@ -27,6 +32,14 @@ public class FeatureInstance {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Double getPos_X() {
+        return pos_X;
+    }
+
+    public Double getPos_Y() {
+        return pos_Y;
     }
 
 
