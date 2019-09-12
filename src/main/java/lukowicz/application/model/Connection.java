@@ -14,7 +14,7 @@ public class Connection {
         this.context = context;
         this.source = source;
         this.destination = destination;
-        this.id = UUID.randomUUID().toString().replace("-", "");;
+        this.id = UUID.randomUUID().toString().replace("-", "");
         this.pos_X = Constants.getArcXPosition();
         this.pos_Y = Constants.getArcYPosition();
         System.out.println("Connection " + " id "+id);

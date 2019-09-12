@@ -33,6 +33,7 @@ public class Parser {
     private Set<String> uniqueComponents = new HashSet<>();
     private Set<String> usedFeature = new HashSet<>();
     private Set<String> contexts = new HashSet<>();
+    private ArrayList<Socket> SOCKETS = new ArrayList<>();
    // private ArrayList<String> uniqueFeature = new ArrayList<>();  // nie Set bo dopuszczamy nie unikalne
 
     private File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
@@ -82,19 +83,7 @@ public class Parser {
         Document pnmlDocument = builder.newDocument();
 
         Element workspaceElements = pnmlDocument.createElement("workspaceElements");
-        Element generator = pnmlDocument.createElement("generator");
-        Attr toolAttr = pnmlDocument.createAttribute("tool");
-        toolAttr.setValue("CPN Tools");
-        generator.setAttributeNode(toolAttr);
-        Attr versionAttr = pnmlDocument.createAttribute("version");
-        versionAttr.setValue("4.0.1");
-        generator.setAttributeNode(versionAttr);
-
-        Attr formatAttr = pnmlDocument.createAttribute("format");
-        formatAttr.setValue("6");
-        generator.setAttributeNode(formatAttr);
-
-        workspaceElements.appendChild(generator);
+        addGeneratorInfo(pnmlDocument, workspaceElements);
 
         Element root = pnmlDocument.createElement("cpnet");
         workspaceElements.appendChild(root);
@@ -131,6 +120,22 @@ public class Parser {
         System.out.println("Done creating XML File");
         workspaceElements.appendChild(root);
 
+    }
+
+    private void addGeneratorInfo(Document pnmlDocument, Element workspaceElements) {
+        Element generator = pnmlDocument.createElement("generator");
+        Attr toolAttr = pnmlDocument.createAttribute("tool");
+        toolAttr.setValue("CPN Tools");
+        generator.setAttributeNode(toolAttr);
+        Attr versionAttr = pnmlDocument.createAttribute("version");
+        versionAttr.setValue("4.0.1");
+        generator.setAttributeNode(versionAttr);
+
+        Attr formatAttr = pnmlDocument.createAttribute("format");
+        formatAttr.setValue("6");
+        generator.setAttributeNode(formatAttr);
+
+        workspaceElements.appendChild(generator);
     }
 
     private void generateGlobBox(Document pnmlDocument, Element root) {
@@ -225,6 +230,16 @@ public class Parser {
 
                 ConnectionNode sourceNode = getConnectionNode(source,pnmlDocument,null);
                 ConnectionNode dstNode = getConnectionNode(dst, pnmlDocument, null);
+
+
+
+                if(Category.PROCESS.getValue().equals(dstNode.getCategory())){
+                    SOCKETS.add(new Socket(dstNode.getTransId(),dstNode.getPlaceId(),sourceNode.getPlaceId()));
+
+                }
+                if(Category.PROCESS.getValue().equals(sourceNode.getCategory())){
+                    SOCKETS.add(new Socket(sourceNode.getTransId(),sourceNode.getPlaceId(),dstNode.getPlaceId()));
+                }
 
                 Element arc1 = pnmlDocument.createElement("arc");
                 Attr arcId = pnmlDocument.createAttribute("id");
@@ -371,9 +386,9 @@ public class Parser {
            List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
            for(FeatureInstance feature:featureInstances){
                Element place = generatePlace(pnmlDocument, feature);
-               if(usedFeature.contains(feature.getId())){
+//               if(usedFeature.contains(feature.getId())){ // unikalnośc miejsc
                    page.appendChild(place);
-               }
+//               }
 
            }
 
@@ -466,6 +481,10 @@ public class Parser {
     private Element generateTransition(Document pnmlDocument, String trans,ComponentInstance componentInstance) {
         Element transition = pnmlDocument.createElement(trans);
 
+        Attr transitionId = pnmlDocument.createAttribute("id");
+        transitionId.setValue(componentInstance.getId());
+        transition.setAttributeNode(transitionId);
+
         Element transitionPosition = pnmlDocument.createElement("posattr");
         Attr positionX = pnmlDocument.createAttribute("x");
         positionX.setValue(componentInstance.getPos_X().toString());
@@ -524,10 +543,79 @@ public class Parser {
         boxProperty.setAttributeNode(height);
         transition.appendChild(boxProperty);
 
+        if(Category.PROCESS.getValue().equals(componentInstance.getCategory())){
+            Element substElement = pnmlDocument.createElement("subst");
+            Attr subpageAttr = pnmlDocument.createAttribute("subpage");
+            subpageAttr.setValue("FILL IN ...");
+            substElement.setAttributeNode(subpageAttr);
+            Attr portSock = pnmlDocument.createAttribute("portsock");
+            StringBuilder portSockValue = new StringBuilder();
+            for (int i = 0; i<SOCKETS.size(); ++i){
+                if(componentInstance.getId().equals(SOCKETS.get(i).getComponentId())){
+                    portSockValue.append("("+ SOCKETS.get(i).getPortId() + "," + SOCKETS.get(i).getSocketId() + ")");
+                }
+            }
+            portSock.setValue(portSockValue.toString());
+            substElement.setAttributeNode(portSock);
 
-        Attr transitionId = pnmlDocument.createAttribute("id");
-        transitionId.setValue(componentInstance.getId());
-        transition.setAttributeNode(transitionId);
+
+            Element subpageElement = pnmlDocument.createElement("subpageinfo");
+            Attr subpageAttrId = pnmlDocument.createAttribute("id");
+            subpageAttrId.setValue(UUID.randomUUID().toString().replace("-", ""));
+            subpageElement.setAttributeNode(subpageAttrId);
+
+
+            Element subPageTransitionPosition = pnmlDocument.createElement("posattr");
+            Attr subPageTransitionPositionX = pnmlDocument.createAttribute("x");
+            subPageTransitionPositionX.setValue("-49.000000");
+            Attr subPageTransitionPositionY = pnmlDocument.createAttribute("y");
+            subPageTransitionPositionY.setValue("23.000000");
+            subPageTransitionPosition.setAttributeNode(subPageTransitionPositionX);
+            subPageTransitionPosition.setAttributeNode(subPageTransitionPositionY);
+            subpageElement.appendChild(subPageTransitionPosition);
+
+
+            Element subPageTransitionFillProperty = pnmlDocument.createElement("fillattr");
+            Attr subPageTransitionColorFill = pnmlDocument.createAttribute("colour");
+            subPageTransitionColorFill.setValue("White");
+            subPageTransitionFillProperty.setAttributeNode(subPageTransitionColorFill);
+            Attr subPageTransitionPattern = pnmlDocument.createAttribute("pattern");
+            subPageTransitionPattern.setValue("Solid");
+            subPageTransitionFillProperty.setAttributeNode(subPageTransitionPattern);
+            Attr subPageTransitionFilled = pnmlDocument.createAttribute("filled");
+            subPageTransitionFilled.setValue("false");
+            subPageTransitionFillProperty.setAttributeNode(subPageTransitionFilled);
+            subpageElement.appendChild(subPageTransitionFillProperty);
+
+
+            Element subPageTransitionLineProperty = pnmlDocument.createElement("lineattr");
+            Attr subPageTransitionColorLine = pnmlDocument.createAttribute("colour");
+            subPageTransitionColorLine.setValue("Black");
+            subPageTransitionLineProperty.setAttributeNode(subPageTransitionColorLine);
+            Attr subPageTransitionThick = pnmlDocument.createAttribute("thick");
+            subPageTransitionThick.setValue("0");
+            subPageTransitionLineProperty.setAttributeNode(subPageTransitionThick);
+            Attr subPageTransitionLineAttrType = pnmlDocument.createAttribute("type");
+            subPageTransitionLineAttrType.setValue("Solid");
+            subPageTransitionLineProperty.setAttributeNode(subPageTransitionLineAttrType);
+            subpageElement.appendChild(subPageTransitionLineProperty);
+
+            Element subPageTransitionTextProperty = pnmlDocument.createElement("textattr");
+            Attr subPageTransitionColorText = pnmlDocument.createAttribute("colour");
+            subPageTransitionColorText.setValue("Black");
+            subPageTransitionTextProperty.setAttributeNode(subPageTransitionColorText);
+            Attr subPageTransitionTextAttrBold = pnmlDocument.createAttribute("bold");
+            subPageTransitionTextAttrBold.setValue("false");
+            subPageTransitionTextProperty.setAttributeNode(subPageTransitionTextAttrBold);
+            subpageElement.appendChild(subPageTransitionTextProperty);
+
+            substElement.appendChild(subpageElement);
+
+            transition.appendChild(substElement);
+        }
+
+
+
         return transition;
     }
 
@@ -673,17 +761,34 @@ class ConnectionNode{
     public String getTransId() {
         return transId;
     }
-
-
     public String getPlaceId() {
         return placeId;
     }
-
-
-
     public String getCategory() {
         return category;
     }
 
+}
+class Socket {
+    private final String componentId;
+    private final String portId;
+    private final String socketId;
 
+    public Socket(String componentId, String portId, String socketId) {
+        this.componentId = componentId;
+        this.portId = portId;
+        this.socketId = socketId;
+    }
+
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public String getPortId() {
+        return portId;
+    }
+
+    public String getSocketId() {
+        return socketId;
+    }
 }
