@@ -1,9 +1,10 @@
 package lukowicz.application.model;
 
+import lukowicz.application.tools.ParserTools;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class ComponentInstance {
     private String name;
@@ -17,9 +18,9 @@ public class ComponentInstance {
     public ComponentInstance(String name, String category) {
         this.name = name;
         this.category = category;
-        this.id = UUID.randomUUID().toString().replace("-", "");
-        this.pos_X = Constants.getTRANSITION_X_POSITION();
-        this.pos_Y = Constants.getTRANSITION_Y_POSITION();
+        this.id = ParserTools.generateUUID();
+        this.pos_X = GraphicPosition.getTRANSITION_X_POSITION();
+        this.pos_Y = GraphicPosition.getTRANSITION_Y_POSITION();
         System.out.println("name feature "+ name + " id "+id + "category "+category) ;
     }
 

@@ -1,6 +1,6 @@
 package lukowicz.application.model;
 
-import java.util.UUID;
+import lukowicz.application.tools.ParserTools;
 
 public class Connection {
     private String context;
@@ -14,9 +14,9 @@ public class Connection {
         this.context = context;
         this.source = source;
         this.destination = destination;
-        this.id = UUID.randomUUID().toString().replace("-", "");
-        this.pos_X = Constants.getArcXPosition();
-        this.pos_Y = Constants.getArcYPosition();
+        this.id = ParserTools.generateUUID();
+        this.pos_X = GraphicPosition.getArcXPosition();
+        this.pos_Y = GraphicPosition.getArcYPosition();
         System.out.println("Connection " + " id "+id);
     }
 

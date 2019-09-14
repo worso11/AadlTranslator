@@ -1,19 +1,20 @@
 package lukowicz.application.model;
 
+import lukowicz.application.tools.ParserTools;
+
 import java.util.Objects;
-import java.util.UUID;
 
 public class FeatureInstance {
      private String name;
      private String id;
      private Double pos_X;
      private Double pos_Y;
+     private String direction;
 
-    public FeatureInstance(String name) {
+    public FeatureInstance(String name, String direction) {
         this.name = name;
-        this.id = UUID.randomUUID().toString().replace("-", "");
-        this.pos_X = Constants.getPLACE_X_POSITION();
-        this.pos_Y = Constants.getPLACE_Y_POSITION();
+        this.id = ParserTools.generateUUID();
+        this.direction = direction.equals("") ? "in" : direction;
 
         System.out.println("name feature "+ name + " id "+id);
     }
@@ -42,6 +43,21 @@ public class FeatureInstance {
         return pos_Y;
     }
 
+    public void setPos_X(Double pos_X) {
+        this.pos_X = pos_X;
+    }
+
+    public void setPos_Y(Double pos_Y) {
+        this.pos_Y = pos_Y;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
 
     @Override
     public boolean equals(Object o) {
