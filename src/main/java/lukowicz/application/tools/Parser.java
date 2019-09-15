@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.*;
 
 
-
 //mapowanie processor, memmory???
 
 //wg dokumentu bus to arc
@@ -33,7 +32,7 @@ public class Parser {
     private Set<String> usedFeature = new HashSet<>();
     private Set<String> contexts = new HashSet<>();
     private ArrayList<Socket> SOCKETS = new ArrayList<>();
-   // private ArrayList<String> uniqueFeature = new ArrayList<>();  // nie Set bo dopuszczamy nie unikalne
+    // private ArrayList<String> uniqueFeature = new ArrayList<>();  // nie Set bo dopuszczamy nie unikalne
 
     private File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
     private File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPetriNet-OutputTeeest.xml");
@@ -66,8 +65,8 @@ public class Parser {
     }
 
     private void moveProcesses() {
-        for(int i = 0; i<COMPONENT_INSTANCES.size(); ++i){
-            if(COMPONENT_INSTANCES.get(i).getCategory().equals(Category.PROCESS.getValue())){
+        for (int i = 0; i < COMPONENT_INSTANCES.size(); ++i) {
+            if (COMPONENT_INSTANCES.get(i).getCategory().equals(Category.PROCESS.getValue())) {
                 PROCESSES.add(COMPONENT_INSTANCES.get(i));
             }
         }
@@ -93,16 +92,16 @@ public class Parser {
         //page startowy
         Element page = generateNewPage(numberPage, pnmlDocument, root);
         List<Node> arcs = generateConnections(actualContext, pnmlDocument, page);
-        translateElements(pnmlDocument, page,COMPONENT_INSTANCES);
+        translateElements(pnmlDocument, page, COMPONENT_INSTANCES);
         insertArcToPNet(page, arcs);
         GraphicPosition.resetPositions();
 
 
         //pageForProcess           konteksty!!!!!!!!!!!!!!!!!  zrobic odniesienia do stron!!
-        for(ComponentInstance pageProcess: PROCESSES){
+        for (ComponentInstance pageProcess : PROCESSES) {
             Element pageForProcess = generateNewPage(++numberPage, pnmlDocument, root);
-            List<Node> arcs2 = generateConnections("6",pnmlDocument,pageForProcess);
-            translateElements(pnmlDocument, pageForProcess,pageProcess.getComponentInstancesNested());
+            List<Node> arcs2 = generateConnections("6", pnmlDocument, pageForProcess);
+            translateElements(pnmlDocument, pageForProcess, pageProcess.getComponentInstancesNested());
             insertArcToPNet(pageForProcess, arcs2);
             GraphicPosition.resetPositions();
         }
@@ -172,13 +171,12 @@ public class Parser {
         block.appendChild(idElement);
 
 
-
-        generateSimpleType(pnmlDocument, block,"UNIT","colset UNIT = unit");
-        generateSimpleType(pnmlDocument, block,"BOOL",null);
-        generateSimpleType(pnmlDocument, block,"INTINF","colset INTINF = intinf;");
-        generateSimpleType(pnmlDocument, block,"TIME","colset TIME = time;");
-        generateSimpleType(pnmlDocument, block,"REAL","colset REAL = real;");
-        generateSimpleType(pnmlDocument, block,"String",null);
+        generateSimpleType(pnmlDocument, block, "UNIT", "colset UNIT = unit");
+        generateSimpleType(pnmlDocument, block, "BOOL", null);
+        generateSimpleType(pnmlDocument, block, "INTINF", "colset INTINF = intinf;");
+        generateSimpleType(pnmlDocument, block, "TIME", "colset TIME = time;");
+        generateSimpleType(pnmlDocument, block, "REAL", "colset REAL = real;");
+        generateSimpleType(pnmlDocument, block, "String", null);
 
 
         globbox.appendChild(block);
@@ -194,7 +192,7 @@ public class Parser {
         colorElement.appendChild(idColorElement);
         Element colorUnitElement = pnmlDocument.createElement(colorId.toLowerCase());
         colorElement.appendChild(colorUnitElement);
-        if(layoutText != null ) {
+        if (layoutText != null) {
             Element layoutElement = pnmlDocument.createElement("layout");
             layoutElement.setTextContent(layoutText);
             colorElement.appendChild(layoutElement);
@@ -223,23 +221,29 @@ public class Parser {
 
     private List<Node> generateConnections(String actualContext, Document pnmlDocument, Element page) {
         List<Node> arcs = new ArrayList<>();
-        for(Connection connection : CONNECTIONS){
-            if(actualContext.equals(connection.getContext())){
+        for (Connection connection : CONNECTIONS) {
+            if (actualContext.equals(connection.getContext())) {
 
                 ArrayList<Integer> source = preparePorts(connection.getSource());
                 ArrayList<Integer> dst = preparePorts(connection.getDestination());
 
-                ConnectionNode sourceNode = getConnectionNode(source,pnmlDocument,null, null);
+                ConnectionNode sourceNode = getConnectionNode(source, pnmlDocument, null, null);
                 ConnectionNode dstNode = getConnectionNode(dst, pnmlDocument, null, null);
 
 
+                boolean isSocket = false;
+                String socketType = null;
 
-                if(Category.PROCESS.getValue().equals(dstNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())){
-                    SOCKETS.add(new Socket(dstNode.getHeadId(),dstNode.getPlaceId(),sourceNode.getPlaceId()));
 
+                if (Category.PROCESS.getValue().equals(dstNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())) {
+                    SOCKETS.add(new Socket(dstNode.getHeadId(), dstNode.getPlaceId(), sourceNode.getPlaceId(), "In"));
+                    isSocket = true;
+                    socketType = "In";
                 }
-                if(Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())){
-                    SOCKETS.add(new Socket(sourceNode.getHeadId(),sourceNode.getPlaceId(),dstNode.getPlaceId()));
+                if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())) {
+                    SOCKETS.add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "Out"));
+                    isSocket = true;
+                    socketType = "Out";
                 }
 
                 Element arc1 = pnmlDocument.createElement("arc");
@@ -256,20 +260,26 @@ public class Parser {
                 Attr placeendIdRef = pnmlDocument.createAttribute("idref");
                 Attr arcOrientation = pnmlDocument.createAttribute("orientation");
 
-                if(sourceNode.getCategory().equals(Category.BUS.getValue())){
+                if (sourceNode.getCategory().equals(Category.BUS.getValue())) {
                     transendIdRef.setValue(sourceNode.getTransId());
                     placeendIdRef.setValue(dstNode.getPlaceId());
                     usedFeature.add(dstNode.getPlaceId()); // dodane
 
-                }
-                else {
+                } else {
                     transendIdRef.setValue(sourceNode.getTransId());
                     placeendIdRef.setValue(sourceNode.getPlaceId()); //było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
                     usedFeature.add(sourceNode.getPlaceId());  // było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
                 }
 
 
-                arcOrientation.setValue("TtoP");
+                // tutaj bedzie zle dla wygenerowanego Process -> device
+                if(!connection.getGenerate())
+                {
+                    arcOrientation.setValue("TtoP");
+                }
+                else {
+                    arcOrientation.setValue("PtoT");
+                }
                 arc1.setAttributeNode(arcOrientation);
 
 
@@ -284,8 +294,7 @@ public class Parser {
                 arcs.add(arc1);
 
 
-
-                if(!sourceNode.getCategory().equals(Category.BUS.getValue())) {
+                if (!sourceNode.getCategory().equals(Category.BUS.getValue())) {
 
                     Element arc2 = pnmlDocument.createElement("arc");
                     Attr arcId2 = pnmlDocument.createAttribute("id");
@@ -300,10 +309,16 @@ public class Parser {
                     Element placeend2 = pnmlDocument.createElement("placeend");
                     Attr placeendIdRef2 = pnmlDocument.createAttribute("idref");
 
-                    transendIdRef2.setValue(dstNode.getTransId());
+                    if (isSocket && "In".equals(socketType)) {
+                        transendIdRef2.setValue(dstNode.getHeadId());
+                    } else if (!"Out".equals(socketType)) {
+                        transendIdRef2.setValue(dstNode.getTransId());
+                    }
+
+
                     placeendIdRef2.setValue(sourceNode.getPlaceId()); //było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
 
-                   // usedFeature.add(sourceNode.getPlaceId()); // nie musi byc
+                    // usedFeature.add(sourceNode.getPlaceId()); // nie musi byc
 
                     Attr arcOrientation2 = pnmlDocument.createAttribute("orientation");
                     arcOrientation2.setValue("PtoT");
@@ -317,7 +332,9 @@ public class Parser {
                     arc2.appendChild(placeend2);
 
                     //page.appendChild(arc2); // było
-                    arcs.add(arc2);
+                    if (!"Out".equals(socketType)) {
+                        arcs.add(arc2);
+                    }
                 }
 
             }
@@ -373,25 +390,25 @@ public class Parser {
         arc1.appendChild(textProperty);
     }
 
-    private void translateElements(Document pnmlDocument, Element page, List<ComponentInstance> componentInstances  ) {
-        for(ComponentInstance componentInstance: componentInstances){
-           String componentInstanceCategory = componentInstance.getCategory();
-           if(componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue()) || componentInstanceCategory.equals(Category.THREAD.getValue()) ){
-               Element transition = generateTransition(pnmlDocument, "trans", componentInstance);
-               page.appendChild(transition);
-           }
-           if (componentInstanceCategory.equals(Category.BUS.getValue()) ){
-               Element transition = generateTransition(pnmlDocument, "trans", componentInstance);
-               page.appendChild(transition);
-           }
-           List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
-           for(FeatureInstance feature:featureInstances){
-               Element place = generatePlace(pnmlDocument, feature);
-//               if(usedFeature.contains(feature.getId())){ // unikalnośc miejsc
-                   page.appendChild(place);
-//               }
+    private void translateElements(Document pnmlDocument, Element page, List<ComponentInstance> componentInstances) {
+        for (ComponentInstance componentInstance : componentInstances) {
+            String componentInstanceCategory = componentInstance.getCategory();
+            if (componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue()) || componentInstanceCategory.equals(Category.THREAD.getValue())) {
+                Element transition = generateTransition(pnmlDocument, "trans", componentInstance);
+                page.appendChild(transition);
+            }
+            if (componentInstanceCategory.equals(Category.BUS.getValue())) {
+                Element transition = generateTransition(pnmlDocument, "trans", componentInstance);
+                page.appendChild(transition);
+            }
+            List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
+            for (FeatureInstance feature : featureInstances) {
+                Element place = generatePlace(pnmlDocument, feature);
+               if(usedFeature.contains(feature.getId())){ // unikalnośc miejsc
+                page.appendChild(place);
+               }
 
-           }
+            }
 
         }
         usedFeature.clear();
@@ -478,16 +495,16 @@ public class Parser {
         place.appendChild(ellipseProperty);
 
 
-        boolean isConnectingPort = isConnectingPort(featureInstance);
+        Socket socket = isConnectingPort(featureInstance);
 
-        if(isConnectingPort) {
+        if (socket != null) {
 
             Element port = pnmlDocument.createElement("port");
             Attr attrId = pnmlDocument.createAttribute("id");
             attrId.setValue(ParserTools.generateUUID());
             port.setAttributeNode(attrId);
             Attr attrType = pnmlDocument.createAttribute("type");
-            attrType.setValue(featureInstance.getDirection());
+            attrType.setValue(socket.getDirection());
             port.setAttributeNode(attrType);
 
             Element portPosition = pnmlDocument.createElement("posattr");
@@ -516,8 +533,6 @@ public class Parser {
             port.appendChild(portFillProperty);
 
 
-
-
             Element portLineProperty = pnmlDocument.createElement("lineattr");
             Attr portColorLine = pnmlDocument.createAttribute("colour");
             portColorLine.setValue("Black");
@@ -541,24 +556,23 @@ public class Parser {
             port.appendChild(portTextProperty);
 
 
-
             place.appendChild(port);
         }
 
         return place;
     }
 
-    private boolean isConnectingPort(FeatureInstance featureInstance) {
-        for(int i = 0; i<SOCKETS.size(); ++i){
+    private Socket isConnectingPort(FeatureInstance featureInstance) {
+        for (int i = 0; i < SOCKETS.size(); ++i) {
             Socket socket = SOCKETS.get(i);
-            if(featureInstance.getId().equals(socket.getPortId()) || featureInstance.getId().equals(socket.getSocketId())){
-                 return true;
+            if (featureInstance.getId().equals(socket.getPortId()) || featureInstance.getId().equals(socket.getSocketId())) {
+                return socket;
             }
         }
-        return false;
+        return null;
     }
 
-    private Element generateTransition(Document pnmlDocument, String trans,ComponentInstance componentInstance) {
+    private Element generateTransition(Document pnmlDocument, String trans, ComponentInstance componentInstance) {
         Element transition = pnmlDocument.createElement(trans);
 
         Attr transitionId = pnmlDocument.createAttribute("id");
@@ -623,7 +637,7 @@ public class Parser {
         boxProperty.setAttributeNode(height);
         transition.appendChild(boxProperty);
 
-        if(Category.PROCESS.getValue().equals(componentInstance.getCategory())){
+        if (Category.PROCESS.getValue().equals(componentInstance.getCategory())) {
             Element substElement = pnmlDocument.createElement("subst");
             Attr subpageAttr = pnmlDocument.createAttribute("subpage");
             //ZALATWIC to
@@ -631,9 +645,9 @@ public class Parser {
             substElement.setAttributeNode(subpageAttr);
             Attr portSock = pnmlDocument.createAttribute("portsock");
             StringBuilder portSockValue = new StringBuilder();
-            for (int i = 0; i<SOCKETS.size(); ++i){
-                if(componentInstance.getId().equals(SOCKETS.get(i).getComponentId())){
-                    portSockValue.append("("+ SOCKETS.get(i).getPortId() + "," + SOCKETS.get(i).getSocketId() + ")");
+            for (int i = 0; i < SOCKETS.size(); ++i) {
+                if (componentInstance.getId().equals(SOCKETS.get(i).getComponentId())) {
+                    portSockValue.append("(" + SOCKETS.get(i).getPortId() + "," + SOCKETS.get(i).getSocketId() + ")");
                 }
             }
             portSock.setValue(portSockValue.toString());
@@ -698,15 +712,13 @@ public class Parser {
         }
 
 
-
         return transition;
     }
 
     private String setArcOrientation(ConnectionNode sourceNode, ConnectionNode dstNode) {
-        if(sourceNode.getCategory().equals(Category.FEATURE.getValue())){
+        if (sourceNode.getCategory().equals(Category.FEATURE.getValue())) {
             return "PtoT";
-        }
-        else {
+        } else {
             return "TtoP";
         }
 
@@ -714,28 +726,26 @@ public class Parser {
 
     private ConnectionNode getConnectionNode(List<Integer> path, Document pnmlDocument, ComponentInstance actualComponentInstance, ComponentInstance headComponent) {
 
-        for (int j=0; j<path.size(); ++j){
+        for (int j = 0; j < path.size(); ++j) {
             ComponentInstance processingComponent = actualComponentInstance != null ? actualComponentInstance : COMPONENT_INSTANCES.get(path.get(j));
-            if(j == path.size() - 1){
-                return new ConnectionNode(processingComponent.getId(),null,processingComponent.getCategory(),null,null);
-            }
-            else if(j == path.size()- 2){
+            if (j == path.size() - 1) {
+                return new ConnectionNode(processingComponent.getId(), null, processingComponent.getCategory(), null, null);
+            } else if (j == path.size() - 2) {
                 String headComponentId = headComponent != null ? headComponent.getId() : null;
                 String headCategory = headComponent != null ? headComponent.getCategory() : null;
 
-                return new ConnectionNode(processingComponent.getId(),processingComponent.getFeatureInstance().get(path.get(j+1)).getId(),processingComponent.getCategory(), headComponentId, headCategory);
-            }
-            else {
-                return getConnectionNode(path.subList(j+1,path.size()), pnmlDocument, processingComponent.getComponentInstancesNested().get(path.get(j+1)), processingComponent);
+                return new ConnectionNode(processingComponent.getId(), processingComponent.getFeatureInstance().get(path.get(j + 1)).getId(), processingComponent.getCategory(), headComponentId, headCategory);
+            } else {
+                return getConnectionNode(path.subList(j + 1, path.size()), pnmlDocument, processingComponent.getComponentInstancesNested().get(path.get(j + 1)), processingComponent);
             }
         }
         return null;
     }
 
     private ArrayList<Integer> preparePorts(String source) {
-        String[] sourceSplitted =  source.split(" ");
+        String[] sourceSplitted = source.split(" ");
         ArrayList<Integer> sourceList = new ArrayList<>();
-        for (String element: sourceSplitted) {
+        for (String element : sourceSplitted) {
             sourceList.add(Integer.valueOf(element));
         }
         return sourceList;
@@ -756,10 +766,35 @@ public class Parser {
             System.out.println("destination of  connection : " + actualConnection.getAttribute("destination"));
             System.out.println("destination of  connection : " + actualConnection.getAttribute("destination"));
 
-            String context = contextRaw.replaceAll("\\D+"," ").trim();
-            String source = actualConnection.getAttribute("source").replaceAll("\\D+"," ").trim();
-            String destination = actualConnection.getAttribute("destination").replaceAll("\\D+"," ").trim();
-            Connection newConnection = new Connection(context,source,destination);
+            String context = contextRaw.replaceAll("\\D+", " ").trim();
+            String source = actualConnection.getAttribute("source").replaceAll("\\D+", " ").trim();
+            String destination = actualConnection.getAttribute("destination").replaceAll("\\D+", " ").trim();
+
+            Connection newConnection = new Connection(context, source, destination);
+
+            ArrayList<Integer> destinationPath = preparePorts(destination);
+            ArrayList<Integer> sourcePath = preparePorts(source);
+            //ewentualnie inne hierarchiczne kategorie
+            if(destinationPath.get(0) != null && Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(destinationPath.get(0)).getCategory()) && !Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(sourcePath.get(0)).getCategory())) {
+                String additionalConnContext = destinationPath.get(0).toString();
+                String additionalConnSource = destination;
+                String additionalConnDestination = destination.substring(0,destination.length()-1);
+                Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
+                additionalConnConnection.setGenerate(Boolean.TRUE);
+                CONNECTIONS.add(additionalConnConnection);
+            }
+//            else if (sourcePath.get(0) != null && Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(sourcePath.get(0)).getCategory()) && !Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(destinationPath.get(0)).getCategory())) {
+//
+//                //kolejna zaślepka az sie zrobie page i context!!!!!1
+//                String additionalConnContext = "";
+//                String additionalConnSource = source.substring(0,1);
+//                String additionalConnDestination = destination;
+//                Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
+//                additionalConnConnection.setGenerate(Boolean.TRUE);
+//                CONNECTIONS.add(additionalConnConnection);
+//            }
+
+
 
 
             CONNECTIONS.add(newConnection);
@@ -778,17 +813,17 @@ public class Parser {
             if (component.getNodeType() == Node.ELEMENT_NODE) {
                 ComponentInstance componentInstance;
                 Element actualComponent = (Element) component;
-               //System.out.println("Name of componenet : " + actualComponent.getAttribute("name"));
-               // System.out.println("Categroy of componenet : " + actualComponent.getAttribute("category"));
-                if (processingElement != null){
+                //System.out.println("Name of componenet : " + actualComponent.getAttribute("name"));
+                // System.out.println("Categroy of componenet : " + actualComponent.getAttribute("category"));
+                if (processingElement != null) {
                     componentInstance = processingElement;
 
-                }else {
+                } else {
                     componentInstance = new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category"));
-                   // uniqueFeature.clear();
+                    // uniqueFeature.clear();
                 }
 
-                if (uniqueComponents.contains(actualComponent.getAttribute("name"))){
+                if (uniqueComponents.contains(actualComponent.getAttribute("name"))) {
                     continue;
                 }
 
@@ -801,13 +836,13 @@ public class Parser {
                     Element featureElement = (Element) featureInstance;
                     System.out.println("Name of feature : " + featureElement.getAttribute("name"));
                     if (componentInstanceNested != null) {
-                        componentInstance.getReverseFeatureInstances().remove(new FeatureInstance(featureElement.getAttribute("name"),featureElement.getAttribute("direction")));
+                        componentInstance.getReverseFeatureInstances().remove(new FeatureInstance(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
                         componentInstance.getReverseFeatureInstances();//wroc do starego porzadku
-                        componentInstanceNested.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name"),featureElement.getAttribute("direction")));
+                        componentInstanceNested.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
                         //uniqueFeature.remove(featureElement.getAttribute("name"));
                     } else {
-                       // uniqueFeature.add(featureElement.getAttribute("name"));
-                        componentInstance.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name"),featureElement.getAttribute("direction")));
+                        // uniqueFeature.add(featureElement.getAttribute("name"));
+                        componentInstance.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
                     }
                 }
                 if (componentInstanceNested != null) {
@@ -835,7 +870,7 @@ public class Parser {
     }
 }
 
-class ConnectionNode{
+class ConnectionNode {
 
     private String transId;
     private String placeId;
@@ -854,9 +889,11 @@ class ConnectionNode{
     public String getTransId() {
         return transId;
     }
+
     public String getPlaceId() {
         return placeId;
     }
+
     public String getCategory() {
         return category;
     }
@@ -869,15 +906,18 @@ class ConnectionNode{
         return headCategory;
     }
 }
+
 class Socket {
     private final String componentId;
     private final String portId;
     private final String socketId;
+    private final String direction;
 
-    public Socket(String componentId, String portId, String socketId) {
+    public Socket(String componentId, String portId, String socketId, String direction) {
         this.componentId = componentId;
         this.portId = portId;
         this.socketId = socketId;
+        this.direction = direction;
     }
 
     public String getComponentId() {
@@ -890,5 +930,9 @@ class Socket {
 
     public String getSocketId() {
         return socketId;
+    }
+
+    public String getDirection() {
+        return direction;
     }
 }

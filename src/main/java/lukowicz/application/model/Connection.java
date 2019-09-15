@@ -9,6 +9,7 @@ public class Connection {
     private String id;
     private String pos_X;
     private String pos_Y;
+    private Boolean isGenerate = false;
 
     public Connection(String context, String source, String destination) {
         this.context = context;
@@ -66,5 +67,13 @@ public class Connection {
 
     public void setPos_Y(String pos_Y) {
         this.pos_Y = pos_Y;
+    }
+
+    public void setGenerate(Boolean generate) {
+        isGenerate = generate;
+    }
+
+    public Boolean getGenerate() {
+        return isGenerate;
     }
 }
