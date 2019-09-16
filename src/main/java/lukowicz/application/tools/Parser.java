@@ -231,18 +231,18 @@ public class Parser {
                 ConnectionNode dstNode = getConnectionNode(dst, pnmlDocument, null, null);
 
 
-                boolean isSocket = false;
+
                 String socketType = null;
 
 
                 if (Category.PROCESS.getValue().equals(dstNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())) {
                     SOCKETS.add(new Socket(dstNode.getHeadId(), dstNode.getPlaceId(), sourceNode.getPlaceId(), "In"));
-                    isSocket = true;
                     socketType = "In";
                 }
-                if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())) {
+
+                //dla wygenerowanego
+                if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory()) ) {
                     SOCKETS.add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "Out"));
-                    isSocket = true;
                     socketType = "Out";
                 }
 
@@ -309,7 +309,7 @@ public class Parser {
                     Element placeend2 = pnmlDocument.createElement("placeend");
                     Attr placeendIdRef2 = pnmlDocument.createAttribute("idref");
 
-                    if (isSocket && "In".equals(socketType)) {
+                    if ("In".equals(socketType)) {
                         transendIdRef2.setValue(dstNode.getHeadId());
                     } else if (!"Out".equals(socketType)) {
                         transendIdRef2.setValue(dstNode.getTransId());
@@ -404,9 +404,9 @@ public class Parser {
             List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
             for (FeatureInstance feature : featureInstances) {
                 Element place = generatePlace(pnmlDocument, feature);
-               if(usedFeature.contains(feature.getId())){ // unikalnośc miejsc
+          //     if(usedFeature.contains(feature.getId())){ // unikalnośc miejsc
                 page.appendChild(place);
-               }
+           //    }
 
             }
 
@@ -775,27 +775,29 @@ public class Parser {
             ArrayList<Integer> destinationPath = preparePorts(destination);
             ArrayList<Integer> sourcePath = preparePorts(source);
             //ewentualnie inne hierarchiczne kategorie
+
+            //dodanie połaczenia jesli to jest socket In wrzucenie na podstrone
             if(destinationPath.get(0) != null && Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(destinationPath.get(0)).getCategory()) && !Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(sourcePath.get(0)).getCategory())) {
                 String additionalConnContext = destinationPath.get(0).toString();
                 String additionalConnSource = destination;
                 String additionalConnDestination = destination.substring(0,destination.length()-1);
                 Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
                 additionalConnConnection.setGenerate(Boolean.TRUE);
+                additionalConnConnection.setSocketType("In");
                 CONNECTIONS.add(additionalConnConnection);
             }
-//            else if (sourcePath.get(0) != null && Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(sourcePath.get(0)).getCategory()) && !Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(destinationPath.get(0)).getCategory())) {
-//
-//                //kolejna zaślepka az sie zrobie page i context!!!!!1
-//                String additionalConnContext = "";
-//                String additionalConnSource = source.substring(0,1);
-//                String additionalConnDestination = destination;
-//                Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
-//                additionalConnConnection.setGenerate(Boolean.TRUE);
-//                CONNECTIONS.add(additionalConnConnection);
-//            }
+            //dodanie połaczenia jesli to jest socket Out
+            else if (sourcePath.get(0) != null && Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(sourcePath.get(0)).getCategory()) && !Category.PROCESS.getValue().equals(COMPONENT_INSTANCES.get(destinationPath.get(0)).getCategory())) {
 
-
-
+                //kolejna zaślepka az sie zrobie page i context!!!!!1
+                String additionalConnContext = "";
+                String additionalConnSource = source;
+                String additionalConnDestination = destination;
+                Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
+                additionalConnConnection.setGenerate(Boolean.TRUE);
+                additionalConnConnection.setSocketType("Out");
+                CONNECTIONS.add(additionalConnConnection);
+            }
 
             CONNECTIONS.add(newConnection);
 
