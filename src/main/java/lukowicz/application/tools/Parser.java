@@ -34,7 +34,6 @@ public class Parser {
     private List<Page> pages = new ArrayList<>();
 
 
-
     private File fXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
     private File pnmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPetriNet-OutputTeeest2.xml");
 
@@ -157,7 +156,7 @@ public class Parser {
 
         Element sheets = pnmlDocument.createElement("sheets");
 
-        for (String cpnSheetInstance: INSTANCES_BINDERS) {
+        for (String cpnSheetInstance : INSTANCES_BINDERS) {
             Element cpnSheet = pnmlDocument.createElement("cpnsheet");
             Attr cpnSheetIdAttr = pnmlDocument.createAttribute("id");
             cpnSheetIdAttr.setValue(ParserTools.generateUUID());
@@ -523,11 +522,11 @@ public class Parser {
         for (ComponentInstance componentInstance : componentInstances) {
             String componentInstanceCategory = componentInstance.getCategory();
             if (componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue()) || componentInstanceCategory.equals(Category.THREAD.getValue())) {
-                Element transition = generateTransition(pnmlDocument, "trans", componentInstance);
+                Element transition = generateTransition(pnmlDocument, componentInstance);
                 page.appendChild(transition);
             }
             if (componentInstanceCategory.equals(Category.BUS.getValue())) {
-                Element transition = generateTransition(pnmlDocument, "trans", componentInstance);
+                Element transition = generateTransition(pnmlDocument, componentInstance);
                 page.appendChild(transition);
             }
             List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
@@ -701,8 +700,8 @@ public class Parser {
         return null;
     }
 
-    private Element generateTransition(Document pnmlDocument, String trans, ComponentInstance componentInstance) {
-        Element transition = pnmlDocument.createElement(trans);
+    private Element generateTransition(Document pnmlDocument, ComponentInstance componentInstance) {
+        Element transition = pnmlDocument.createElement("trans");
 
         Attr transitionId = pnmlDocument.createAttribute("id");
         transitionId.setValue(componentInstance.getId());
@@ -979,6 +978,26 @@ public class Parser {
 
                 NodeList featureInstances = actualComponent.getElementsByTagName("featureInstance");
 
+                NodeList ownedPropertyAssociations = actualComponent.getElementsByTagName("ownedPropertyAssociation");
+                String periodValue = "";
+
+                for (int k = 0; k < ownedPropertyAssociations.getLength(); k++) {
+                    Node ownerProperty = ownedPropertyAssociations.item(k);
+                    Element ownedPropertyElement = (Element) ownerProperty;
+                    System.out.println("owned Property" + ownedPropertyElement);
+                    NodeList ownerProperties = ownedPropertyElement.getElementsByTagName("property");
+                    for (int l = 0; l < ownerProperties.getLength(); ++l) {
+                        Node property = ownerProperties.item(l);
+                        Element propertyElement = (Element) property;
+                        Attr hrefProperty = propertyElement.getAttributeNode("href");
+                        if (hrefProperty.getValue().contains("Timing_Properties.Period")) {
+                            periodValue = ownedPropertyElement.getElementsByTagName("ownedValue").item(1).getAttributes().getNamedItem("value").getNodeValue();
+                            System.out.println("period Value "+ periodValue);
+                        }
+
+                    }
+                }
+
                 for (int j = 0; j < featureInstances.getLength(); j++) {
                     Node featureInstance = featureInstances.item(j);
                     Element featureElement = (Element) featureInstance;
@@ -996,6 +1015,7 @@ public class Parser {
                 if (componentInstanceNested != null) {
                     //czy nie mozna lepiej??
                     processingElement.getComponentInstancesNested().add(componentInstanceNested);
+                    componentInstanceNested.setPeriod(periodValue);
                     uniqueComponents.add(componentInstanceNested.getName());
                 }
 

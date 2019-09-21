@@ -14,6 +14,7 @@ public class ComponentInstance {
     private Double pos_Y;
     private List<FeatureInstance> featureInstance = new ArrayList<>();
     private List<ComponentInstance> componentInstancesNested = new ArrayList<>();
+    private String period;
 
     public ComponentInstance(String name, String category) {
         this.name = name;
@@ -79,6 +80,14 @@ public class ComponentInstance {
 
     public void setPos_Y(Double pos_Y) {
         this.pos_Y = pos_Y;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     public void removeFeatureByName(String featureName){
