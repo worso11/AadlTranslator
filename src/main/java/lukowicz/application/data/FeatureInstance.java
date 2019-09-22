@@ -1,6 +1,6 @@
-package lukowicz.application.model;
+package lukowicz.application.data;
 
-import lukowicz.application.tools.ParserTools;
+import lukowicz.application.utils.ParserTools;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package lukowicz.application.model;
+package lukowicz.application.data;
 
-import lukowicz.application.tools.ParserTools;
+import lukowicz.application.utils.ParserTools;
 
 public class Connection {
     private String context;

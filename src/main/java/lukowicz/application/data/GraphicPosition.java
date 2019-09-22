@@ -1,4 +1,4 @@
-package lukowicz.application.model;
+package lukowicz.application.data;
 
 public class GraphicPosition {
 
