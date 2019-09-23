@@ -40,7 +40,6 @@ public class PetriGraphicsGenerator {
         createMlElement(pnmlDocument, block, "val P_LOW = 10000;");
         globbox.appendChild(block);
 
-        //---
         generateStandardUnits(pnmlDocument, globbox);
 
 

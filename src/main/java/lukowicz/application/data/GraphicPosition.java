@@ -12,8 +12,6 @@ public class GraphicPosition {
 
     private static Double INDENT = 64.0000;
 
-
-
     public static Double getPLACE_X_POSITION() {
         return PLACE_X_POSITION;
     }

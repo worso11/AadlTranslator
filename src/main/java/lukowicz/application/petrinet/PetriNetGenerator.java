@@ -20,8 +20,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+
+//is first layer metoda jak to dziala
 public class PetriNetGenerator {
 
     private PetriGraphicsGenerator petriGraphicsGenerator = new PetriGraphicsGenerator();
@@ -95,6 +99,7 @@ public class PetriNetGenerator {
 
     private List<Node> generateConnections(String actualContext, Document pnmlDocument, Element page) {
         List<Node> arcs = new ArrayList<>();
+        Set<String> threadsId = new HashSet<>();
         for (Connection connection : Cache.getCONNECTIONS()) {
             if (actualContext.equals(connection.getContext())) {
 
@@ -103,6 +108,22 @@ public class PetriNetGenerator {
 
                 ConnectionNode sourceNode = elementSearcher.getConnectionNode(source, null, null);
                 ConnectionNode dstNode = elementSearcher.getConnectionNode(dst, null, null);
+
+                if(dstNode.getPeriod() != null && Category.THREAD.getValue().equals(sourceNode.getCategory())){
+                    if(!threadsId.contains(sourceNode.getTransId())) {
+                        DataPort waitingPlace = new DataPort("Wait", "");
+                        Element waitingInPlaceArc = createWaitingPlaceArc(pnmlDocument, sourceNode.getTransId(), waitingPlace.getId(),"PtoT");
+                        Element waitingOutPlaceArc = createWaitingPlaceArc(pnmlDocument,sourceNode.getTransId(), waitingPlace.getId(),"TtoP");
+                        petriGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingInPlaceArc, "0","0");
+                        petriGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingOutPlaceArc, "0.8","0.8");
+                        arcs.add(waitingInPlaceArc);
+                        arcs.add(waitingOutPlaceArc);
+
+                        threadsId.add(sourceNode.getTransId());
+                        Cache.getGeneratedPlaces().add(waitingPlace);
+                    }
+
+                }
 
                 Element arc1 = pnmlDocument.createElement("arc");
                 Attr arcId = pnmlDocument.createAttribute("id");
@@ -216,6 +237,31 @@ public class PetriNetGenerator {
         }
         return arcs;
 
+    }
+
+    private Element createWaitingPlaceArc(Document pnmlDocument, String transId, String placeId, String orientation) {
+        Element arc1 = pnmlDocument.createElement("arc");
+        Attr arcId = pnmlDocument.createAttribute("id");
+        arcId.setValue(ParserTools.generateUUID());
+        arc1.setAttributeNode(arcId);
+
+        Element transend = pnmlDocument.createElement("transend");
+        Attr transendIdRef = pnmlDocument.createAttribute("idref");
+
+        Element placeend = pnmlDocument.createElement("placeend");
+        Attr placeendIdRef = pnmlDocument.createAttribute("idref");
+        Attr arcOrientation = pnmlDocument.createAttribute("orientation");
+
+        transendIdRef.setValue(transId);
+        placeendIdRef.setValue(placeId);
+        arcOrientation.setValue(orientation);
+
+        transend.setAttributeNode(transendIdRef);
+        placeend.setAttributeNode(placeendIdRef);
+        arc1.setAttributeNode(arcOrientation);
+        arc1.appendChild(transend);
+        arc1.appendChild(placeend);
+        return arc1;
     }
 
     private void insertArcToPNet(Element page, List<Node> arcs) {

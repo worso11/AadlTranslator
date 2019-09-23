@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import java.util.*;
 
 public class Cache {
+
     private static Set<String> uniqueComponents = new HashSet<>();
     private static List<ComponentInstance> COMPONENT_INSTANCES = new ArrayList<>();
     private static List<ComponentInstance> PROCESSES = new ArrayList<>();
@@ -17,11 +18,12 @@ public class Cache {
     private static ArrayList<String> INSTANCES_BINDERS = new ArrayList<>();
     private static ArrayList<Socket> SOCKETS = new ArrayList<>();
     private static Set<String> usedFeature = new HashSet<>();
+    private static Set<DataPort> generatedPlaces = new HashSet<>();
 
-    public static Socket isConnectingPort(FeatureInstance featureInstance) {
+    public static Socket isConnectingPort(DataPort dataPort) {
         for (int i = 0; i < SOCKETS.size(); ++i) {
             Socket socket = SOCKETS.get(i);
-            if (featureInstance.getId().equals(socket.getPortId()) || featureInstance.getId().equals(socket.getSocketId())) {
+            if (dataPort.getId().equals(socket.getPortId()) || dataPort.getId().equals(socket.getSocketId())) {
                 return socket;
             }
         }
@@ -66,6 +68,10 @@ public class Cache {
 
     public static Set<String> getUsedFeature() {
         return usedFeature;
+    }
+
+    public static Set<DataPort> getGeneratedPlaces() {
+        return generatedPlaces;
     }
 
     public static Page getPageByIndex(int numberPage) {
@@ -139,4 +145,14 @@ public class Cache {
         }
         return instances;
     }
+    public static void clearUsedFeature(){
+        usedFeature.clear();
+    }
+
+    public static void clearGeneratedPlaces(){
+        generatedPlaces.clear();
+    }
+
+
+
 }

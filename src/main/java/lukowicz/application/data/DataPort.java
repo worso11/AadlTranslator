@@ -4,14 +4,14 @@ import lukowicz.application.utils.ParserTools;
 
 import java.util.Objects;
 
-public class FeatureInstance {
+public class DataPort {
      private String name;
      private String id;
      private Double pos_X;
      private Double pos_Y;
      private String direction;
 
-    public FeatureInstance(String name, String direction) {
+    public DataPort(String name, String direction) {
         this.name = name;
         this.id = ParserTools.generateUUID();
         this.direction = direction.equals("") ? "in" : direction;
@@ -63,8 +63,12 @@ public class FeatureInstance {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FeatureInstance that = (FeatureInstance) o;
-        return name.equals(that.name);
+        DataPort that = (DataPort) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(pos_X, that.pos_X) &&
+                Objects.equals(pos_Y, that.pos_Y) &&
+                Objects.equals(direction, that.direction);
     }
 
     @Override

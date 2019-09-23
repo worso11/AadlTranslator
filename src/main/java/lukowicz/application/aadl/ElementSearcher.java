@@ -16,7 +16,6 @@ public class ElementSearcher {
 
     public void searchElements(NodeList componenentInstances, ComponentInstance processingElement) {
         for (int i = 0; i < componenentInstances.getLength(); i++) {
-
             Node component = componenentInstances.item(i);
             System.out.println("\nCurrent Element :" + component.getNodeName());
 
@@ -25,7 +24,6 @@ public class ElementSearcher {
                 Element actualComponent = (Element) component;
                 if (processingElement != null) {
                     componentInstance = processingElement;
-
                 } else {
                     componentInstance = new ComponentInstance(actualComponent.getAttribute("name"), actualComponent.getAttribute("category"));
                 }
@@ -63,11 +61,11 @@ public class ElementSearcher {
                     Element featureElement = (Element) featureInstance;
                     System.out.println("Name of feature : " + featureElement.getAttribute("name"));
                     if (componentInstanceNested != null) {
-                        componentInstance.getReverseFeatureInstances().remove(new FeatureInstance(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
+                        componentInstance.getReverseFeatureInstances().remove(new DataPort(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
                         componentInstance.getReverseFeatureInstances();//wroc do starego porzadku
-                        componentInstanceNested.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
+                        componentInstanceNested.getDataPort().add(new DataPort(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
                     } else {
-                        componentInstance.getFeatureInstance().add(new FeatureInstance(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
+                        componentInstance.getDataPort().add(new DataPort(featureElement.getAttribute("name"), featureElement.getAttribute("direction")));
                     }
                 }
                 if (componentInstanceNested != null) {
@@ -76,7 +74,6 @@ public class ElementSearcher {
                     componentInstanceNested.setPeriod(periodValue);
                     Cache.getUniqueComponents().add(componentInstanceNested.getName());
                 }
-
                 // zagniezdzone komponenenty
                 NodeList nestedComponents = actualComponent.getElementsByTagName("componentInstance");
                 if (nestedComponents.getLength() != 0) {
@@ -86,7 +83,6 @@ public class ElementSearcher {
                     if (!Cache.getUniqueComponents().contains(componentInstance.getName())) {
                         Cache.getComponentInstances().add(componentInstance);
                         Cache.getUniqueComponents().add(componentInstance.getName());
-
                     }
                 }
 
@@ -159,12 +155,12 @@ public class ElementSearcher {
         for (int j = 0; j < path.size(); ++j) {
             ComponentInstance processingComponent = actualComponentInstance != null ? actualComponentInstance : Cache.getComponentInstances().get(path.get(j));
             if (j == path.size() - 1) {
-                return new ConnectionNode(processingComponent.getId(), null, processingComponent.getCategory(), null, null);
+                return new ConnectionNode(processingComponent.getId(), null, processingComponent.getCategory(), null, null, processingComponent.getPeriod());
             } else if (j == path.size() - 2) {
                 String headComponentId = headComponent != null ? headComponent.getId() : null;
                 String headCategory = headComponent != null ? headComponent.getCategory() : null;
 
-                return new ConnectionNode(processingComponent.getId(), processingComponent.getFeatureInstance().get(path.get(j + 1)).getId(), processingComponent.getCategory(), headComponentId, headCategory);
+                return new ConnectionNode(processingComponent.getId(), processingComponent.getDataPort().get(path.get(j + 1)).getId(), processingComponent.getCategory(), headComponentId, headCategory, processingComponent.getPeriod());
             } else {
                 return getConnectionNode(path.subList(j + 1, path.size()), processingComponent.getComponentInstancesNested().get(path.get(j + 1)), processingComponent);
             }

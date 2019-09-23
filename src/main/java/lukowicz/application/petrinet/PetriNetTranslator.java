@@ -22,8 +22,8 @@ public class PetriNetTranslator {
                 Element transition = generateTransition(pnmlDocument, componentInstance);
                 page.appendChild(transition);
             }
-            List<FeatureInstance> featureInstances = componentInstance.getFeatureInstance();
-            for (FeatureInstance feature : featureInstances) {
+            List<DataPort> dataPorts = componentInstance.getDataPort();
+            for (DataPort feature : dataPorts) {
                 Element place = generatePlace(pnmlDocument, feature);
                 if (Cache.getUsedFeature().contains(feature.getId())) { // unikalnośc miejsc
                     page.appendChild(place);
@@ -32,20 +32,27 @@ public class PetriNetTranslator {
             }
 
         }
-        Cache.getUsedFeature().clear();
+        // Generated places
+        for(DataPort feature : Cache.getGeneratedPlaces()){
+            Element place = generatePlace(pnmlDocument,feature);
+            page.appendChild(place);
+        }
+
+        Cache.clearUsedFeature();
+        Cache.clearGeneratedPlaces();
     }
 
-    public Element generatePlace(Document pnmlDocument, FeatureInstance featureInstance) {
+    public Element generatePlace(Document pnmlDocument, DataPort dataPort) {
         Element place = pnmlDocument.createElement("place");
         Attr placeId = pnmlDocument.createAttribute("id");
-        placeId.setValue(featureInstance.getId());
+        placeId.setValue(dataPort.getId());
         place.setAttributeNode(placeId);
 
-        return generatePlaceGraphics(pnmlDocument, featureInstance, place);
+        return generatePlaceGraphics(pnmlDocument, dataPort, place);
 
     }
 
-    private Element generatePlaceGraphics(Document pnmlDocument, FeatureInstance featureInstance, Element place) {
+    private Element generatePlaceGraphics(Document pnmlDocument, DataPort dataPort, Element place) {
         Element placePosition = pnmlDocument.createElement("posattr");
         Attr positionX = pnmlDocument.createAttribute("x");
         Double placeXPosition = GraphicPosition.getPLACE_X_POSITION();
@@ -93,7 +100,7 @@ public class PetriNetTranslator {
 
 
         Element placeText = pnmlDocument.createElement("text");
-        placeText.appendChild(pnmlDocument.createTextNode(featureInstance.getName()));
+        placeText.appendChild(pnmlDocument.createTextNode(dataPort.getName()));
         place.appendChild(placeText);
 
         Element ellipseProperty = pnmlDocument.createElement("ellipse");
@@ -105,7 +112,7 @@ public class PetriNetTranslator {
         ellipseProperty.setAttributeNode(height);
         place.appendChild(ellipseProperty);
 
-        Socket socket = Cache.isConnectingPort(featureInstance);
+        Socket socket = Cache.isConnectingPort(dataPort);
 
         if (socket != null) {
 

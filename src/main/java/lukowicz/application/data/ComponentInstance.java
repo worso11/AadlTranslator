@@ -12,7 +12,7 @@ public class ComponentInstance {
     private String id;
     private Double pos_X;
     private Double pos_Y;
-    private List<FeatureInstance> featureInstance = new ArrayList<>();
+    private List<DataPort> dataPort = new ArrayList<>();
     private List<ComponentInstance> componentInstancesNested = new ArrayList<>();
     private String period;
 
@@ -39,13 +39,13 @@ public class ComponentInstance {
         return id;
     }
 
-    public List<FeatureInstance> getFeatureInstance() {
-        return featureInstance;
+    public List<DataPort> getDataPort() {
+        return dataPort;
     }
 
-    public List<FeatureInstance> getReverseFeatureInstances() {
-        Collections.reverse(featureInstance);
-        return featureInstance;
+    public List<DataPort> getReverseFeatureInstances() {
+        Collections.reverse(dataPort);
+        return dataPort;
     }
 
 
@@ -68,5 +68,7 @@ public class ComponentInstance {
         this.period = period;
     }
 
-
+    public String getPeriod() {
+        return period;
+    }
 }
