@@ -168,7 +168,7 @@ public class PetriNetGenerator {
                     placeendIdRef.setValue(sourceNode.getPlaceId());
                     arcOrientation.setValue("TtoP");
                     //czy tak może byc?? Device jako odpowiednik komponentu z wyzszej warstwy
-                    if (isFirstLayer(dstNode.getCategory())) {
+                    if (!isFirstLayer(dstNode.getCategory())) {
                         transendIdRef2.setValue(dstNode.getTransId());
                         placeendIdRef2.setValue(sourceNode.getPlaceId());
                         arcOrientation2.setValue("PtoT");
@@ -225,7 +225,7 @@ public class PetriNetGenerator {
     }
 
     private boolean isFirstLayer(String category) {
-        return !Category.PROCESS.equals(category) && !Category.DEVICE.getValue().equals(category);
+        return Category.PROCESS.getValue().equals(category) || Category.DEVICE.getValue().equals(category);
     }
 
 
