@@ -1,6 +1,7 @@
 package lukowicz.application.data;
 
-import lukowicz.application.utils.ParserTools;
+import lukowicz.application.memory.ElementsPosition;
+import lukowicz.application.utils.TranslatorTools;
 
 public class Connection {
     private String context;
@@ -16,9 +17,9 @@ public class Connection {
         this.context = context;
         this.source = source;
         this.destination = destination;
-        this.id = ParserTools.generateUUID();
-        this.pos_X = GraphicPosition.getArcXPosition();
-        this.pos_Y = GraphicPosition.getArcYPosition();
+        this.id = TranslatorTools.generateUUID();
+        this.pos_X = ElementsPosition.getArcXPosition();
+        this.pos_Y = ElementsPosition.getArcYPosition();
         System.out.println("Connection " + " id "+id);
     }
 

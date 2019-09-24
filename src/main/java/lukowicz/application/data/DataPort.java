@@ -1,6 +1,6 @@
 package lukowicz.application.data;
 
-import lukowicz.application.utils.ParserTools;
+import lukowicz.application.utils.TranslatorTools;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ public class DataPort {
 
     public DataPort(String name, String direction) {
         this.name = name;
-        this.id = ParserTools.generateUUID();
+        this.id = TranslatorTools.generateUUID();
         this.direction = direction.equals("") ? "in" : direction;
 
         System.out.println("name feature "+ name + " id "+id);

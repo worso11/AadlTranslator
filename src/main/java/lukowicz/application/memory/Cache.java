@@ -1,7 +1,7 @@
 package lukowicz.application.memory;
 
 import lukowicz.application.data.*;
-import lukowicz.application.utils.ParserTools;
+import lukowicz.application.utils.TranslatorTools;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,7 +121,7 @@ public class Cache {
         Element firstInstance = pnmlDocument.createElement("instance");
         Integer numberPage = 0;
         Attr idAttr = pnmlDocument.createAttribute("id");
-        String idAttrValue = ParserTools.generateUUID();
+        String idAttrValue = TranslatorTools.generateUUID();
         idAttr.setValue(idAttrValue);
         Cache.getInstancesBinders().add(idAttrValue);
         Attr pageAttr = pnmlDocument.createAttribute("page");
@@ -133,7 +133,7 @@ public class Cache {
         for (Page page : Cache.getPages().subList(1, Cache.getPages().size())) {
             Element instance = pnmlDocument.createElement("instance");
             Attr newPageIdAttr = pnmlDocument.createAttribute("id");
-            String newPageIdAttrValue = ParserTools.generateUUID();
+            String newPageIdAttrValue = TranslatorTools.generateUUID();
             newPageIdAttr.setValue(newPageIdAttrValue);
             Cache.getInstancesBinders().add(newPageIdAttrValue);
             Attr newTransAttr = pnmlDocument.createAttribute("trans");

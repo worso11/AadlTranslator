@@ -1,6 +1,7 @@
 package lukowicz.application.data;
 
-import lukowicz.application.utils.ParserTools;
+import lukowicz.application.memory.ElementsPosition;
+import lukowicz.application.utils.TranslatorTools;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +20,9 @@ public class ComponentInstance {
     public ComponentInstance(String name, String category) {
         this.name = name;
         this.category = category;
-        this.id = ParserTools.generateUUID();
-        this.pos_X = GraphicPosition.getTRANSITION_X_POSITION();
-        this.pos_Y = GraphicPosition.getTRANSITION_Y_POSITION();
+        this.id = TranslatorTools.generateUUID();
+        this.pos_X = ElementsPosition.getTRANSITION_X_POSITION();
+        this.pos_Y = ElementsPosition.getTRANSITION_Y_POSITION();
         System.out.println("name feature " + name + " id " + id + "category " + category);
     }
 

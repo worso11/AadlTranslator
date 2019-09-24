@@ -1,6 +1,6 @@
-package lukowicz.application.data;
+package lukowicz.application.memory;
 
-public class GraphicPosition {
+public class ElementsPosition {
 
     private static Double PLACE_X_POSITION = -504.000000;
     private static Double PLACE_Y_POSITION = 376.000000;

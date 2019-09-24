@@ -2,7 +2,7 @@ package lukowicz.application.aadl;
 
 import lukowicz.application.data.*;
 import lukowicz.application.memory.Cache;
-import lukowicz.application.utils.ParserTools;
+import lukowicz.application.utils.TranslatorTools;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -112,8 +112,8 @@ public class ElementSearcher {
             Connection newConnection = new Connection(context, source, destination);
 
 
-            ArrayList<Integer> destinationPath = ParserTools.preparePorts(destination);
-            ArrayList<Integer> sourcePath = ParserTools.preparePorts(source);
+            ArrayList<Integer> destinationPath = TranslatorTools.preparePorts(destination);
+            ArrayList<Integer> sourcePath = TranslatorTools.preparePorts(source);
 
 
             if (destinationPath.get(0) != null && Category.PROCESS.getValue().equals(Cache.getComponentInstances().get(destinationPath.get(0)).getCategory()) && !Category.PROCESS.getValue().equals(Cache.getComponentInstances().get(sourcePath.get(0)).getCategory())) {

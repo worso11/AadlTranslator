@@ -1,6 +1,6 @@
 package lukowicz.application.data;
 
-import lukowicz.application.utils.ParserTools;
+import lukowicz.application.utils.TranslatorTools;
 
 public class Page implements Comparable<Page> {
     private String context;
@@ -9,7 +9,7 @@ public class Page implements Comparable<Page> {
 
     public Page(String context) {
         this.context = context;
-        this.pageId = ParserTools.generateUUID();
+        this.pageId = TranslatorTools.generateUUID();
     }
 
     public String getContext() {
