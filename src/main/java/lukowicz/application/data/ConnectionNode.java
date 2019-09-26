@@ -8,14 +8,19 @@ public class ConnectionNode {
     private String headId;
     private String headCategory;
     private String period;
+    private Double positionX;
+    private Double positionY;
 
-    public ConnectionNode(String transId, String placeId, String category, String headId, String headCategory, String period) {
+    public ConnectionNode(String transId, String placeId, String category, String headId, String headCategory, String period,
+                          Double positionX, Double positionY) {
         this.transId = transId;
         this.placeId = placeId;
         this.category = category;
         this.headId = headId;
         this.headCategory = headCategory;
         this.period = period;
+        this.positionX = positionX;
+        this.positionY = positionY;
     }
 
     public String getTransId() {
@@ -41,5 +46,16 @@ public class ConnectionNode {
     public String getPeriod() {
         return period;
     }
+
+    public Double getPositionX() {
+        return positionX;
+    }
+
+
+    public Double getPositionY() {
+        return positionY;
+    }
+
+
 }
 

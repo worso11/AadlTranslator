@@ -11,8 +11,14 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class PetriGraphicsGenerator {
+public class PetriNetGraphicsGenerator {
 
+    private Cache cache = Cache.getInstance();
+    private PetriNetPager petriNetPager;
+
+    public PetriNetGraphicsGenerator(PetriNetPager petriNetPager) {
+        this.petriNetPager = petriNetPager;
+    }
 
     public void addGeneratorInfo(Document petriNetXmlFile, Element workspaceElements) {
         Element generator = petriNetXmlFile.createElement("generator");
@@ -80,7 +86,7 @@ public class PetriGraphicsGenerator {
 
         Element sheets = pnmlDocument.createElement("sheets");
 
-        for (String cpnSheetInstance : Cache.getInstancesBinders()) {
+        for (String cpnSheetInstance : cache.getInstancesBinders()) {
             Element cpnSheet = pnmlDocument.createElement("cpnsheet");
             Attr cpnSheetIdAttr = pnmlDocument.createAttribute("id");
             cpnSheetIdAttr.setValue(TranslatorTools.generateUUID());
@@ -176,12 +182,12 @@ public class PetriGraphicsGenerator {
         block.appendChild(mlElement);
     }
 
-    public void setArcGraphicsProperties(Document pnmlDocument, Element arc1, String pos_x, String pos_y) {
+    public void setArcGraphicsProperties(Document pnmlDocument, Element arc1) {
         Element arcPosition = pnmlDocument.createElement("posattr");
         Attr positionX = pnmlDocument.createAttribute("x");
-        positionX.setValue(pos_x);
+        positionX.setValue("0.0");
         Attr positionY = pnmlDocument.createAttribute("y");
-        positionY.setValue(pos_y);
+        positionY.setValue("0.0");
         arcPosition.setAttributeNode(positionX);
         arcPosition.setAttributeNode(positionY);
         arc1.appendChild(arcPosition);
@@ -282,7 +288,7 @@ public class PetriGraphicsGenerator {
         ellipseProperty.setAttributeNode(height);
         place.appendChild(ellipseProperty);
 
-        Socket socket = Cache.isConnectingPort(dataPort);
+        Socket socket = cache.isConnectingPort(dataPort);
 
         if (socket != null) {
 
@@ -418,12 +424,12 @@ public class PetriGraphicsGenerator {
         if (Category.PROCESS.getValue().equals(componentInstance.getCategory())) {
             Element substElement = pnmlDocument.createElement("subst");
             Attr subpageAttr = pnmlDocument.createAttribute("subpage");
-            String pageId = Cache.getPageForTransId(componentInstance.getId());
+            String pageId = petriNetPager.getPageForTransId(componentInstance.getId());
             subpageAttr.setValue(pageId);
             substElement.setAttributeNode(subpageAttr);
             Attr portSock = pnmlDocument.createAttribute("portsock");
             StringBuilder portSockValue = new StringBuilder();
-            for (Socket socket : Cache.getSOCKETS()) {
+            for (Socket socket : cache.getSOCKETS()) {
                 if (componentInstance.getId().equals(socket.getComponentId())) {
                     portSockValue.append("(" + socket.getPortId() + "," + socket.getSocketId() + ")");
                 }
@@ -439,6 +445,7 @@ public class PetriGraphicsGenerator {
 
 
             Element subPageTransitionPosition = pnmlDocument.createElement("posattr");
+
             Attr subPageTransitionPositionX = pnmlDocument.createAttribute("x");
             Double subpagePositionX = componentInstance.getPos_X() - 24.0000;
             Double subpagePositionY = componentInstance.getPos_Y() - 16.0000;

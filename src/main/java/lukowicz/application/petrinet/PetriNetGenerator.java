@@ -22,9 +22,20 @@ import java.util.Set;
 //is first layer metoda jak to dziala
 public class PetriNetGenerator {
 
-    private PetriGraphicsGenerator petriGraphicsGenerator = new PetriGraphicsGenerator();
-    private PetriNetTranslator petriNetTranslator = new PetriNetTranslator();
-    private ElementSearcher elementSearcher = new ElementSearcher();
+    private PetriNetGraphicsGenerator petriNetGraphicsGenerator;
+    private PetriNetTranslator petriNetTranslator;
+    private ElementSearcher elementSearcher;
+    private PetriNetPager petriNetPager;
+    private Cache cache = Cache.getInstance();
+
+
+    public PetriNetGenerator(PetriNetGraphicsGenerator petriNetGraphicsGenerator, PetriNetTranslator petriNetTranslator, ElementSearcher elementSearcher, PetriNetPager petriNetPager) {
+        this.petriNetGraphicsGenerator = petriNetGraphicsGenerator;
+        this.petriNetTranslator = petriNetTranslator;
+        this.elementSearcher = elementSearcher;
+        this.petriNetPager = petriNetPager;
+
+    }
 
     private File petriNetXmlFilePath = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPetriNet-OutputTeeest2.xml");
 
@@ -34,49 +45,50 @@ public class PetriNetGenerator {
         Integer numberPage = 0;
 
         Element workspaceElements = petriNetXmlFile.createElement("workspaceElements");
-        petriGraphicsGenerator.addGeneratorInfo(petriNetXmlFile, workspaceElements);
+        petriNetGraphicsGenerator.addGeneratorInfo(petriNetXmlFile, workspaceElements);
 
         Element root = petriNetXmlFile.createElement("cpnet");
         workspaceElements.appendChild(root);
         petriNetXmlFile.appendChild(workspaceElements);
 
-        petriGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
+        petriNetGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
 
-        Page actualPage = Cache.getPageByIndex(numberPage);
+        Page actualPage = petriNetPager.getPageByIndex(numberPage);
         //page startowy   moze te Generate New Page do Pager cos takiego??
-        Element page = Cache.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
+        Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
         List<Node> arcs = generateConnections(actualPage.getContext(), petriNetXmlFile, page);
-        petriNetTranslator.translateElements(petriNetXmlFile, page, Cache.getComponentInstances());
+        petriNetTranslator.translateElements(petriNetXmlFile, page, cache.getComponentInstances());
         insertArcToPNet(page, arcs);
         ElementsPosition.resetPositions();
 
+        cache.moveProcesses();
+
         //pageForProcess   zrobic odniesienia do stron!!
-        for (ComponentInstance pageProcess : Cache.getPROCESSES()) {
-            actualPage = Cache.getPageByIndex(++numberPage);
-            Element pageForProcess = Cache.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
+        for (ComponentInstance pageProcess : cache.getPROCESSES()) {
+            actualPage = petriNetPager.getPageByIndex(++numberPage);
+            Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
             List<Node> arcs2 = generateConnections(actualPage.getContext(), petriNetXmlFile, pageForProcess);
             petriNetTranslator.translateElements(petriNetXmlFile, pageForProcess, pageProcess.getComponentInstancesNested());
             insertArcToPNet(pageForProcess, arcs2);
             ElementsPosition.resetPositions();
         }
 
-        Element instances = Cache.generatePagesInstances(petriNetXmlFile);
-        Element binders = petriGraphicsGenerator.generateBinders(petriNetXmlFile);
+        Element instances = petriNetPager.generatePagesInstances(petriNetXmlFile);
+        Element binders = petriNetGraphicsGenerator.generateBinders(petriNetXmlFile);
 
         root.appendChild(instances);
         root.appendChild(binders);
 
         workspaceElements.appendChild(root);
 
-        TranslatorTools.saveFile(petriNetXmlFile,petriNetXmlFilePath);
+        TranslatorTools.saveFile(petriNetXmlFile, petriNetXmlFilePath);
     }
-
 
 
     private List<Node> generateConnections(String actualContext, Document pnmlDocument, Element page) {
         List<Node> arcs = new ArrayList<>();
         Set<String> threadsId = new HashSet<>();
-        for (Connection connection : Cache.getCONNECTIONS()) {
+        for (Connection connection : cache.getCONNECTIONS()) {
             if (actualContext.equals(connection.getContext())) {
 
                 ArrayList<Integer> source = TranslatorTools.preparePorts(connection.getSource());
@@ -85,18 +97,20 @@ public class PetriNetGenerator {
                 ConnectionNode sourceNode = elementSearcher.getConnectionNode(source, null, null);
                 ConnectionNode dstNode = elementSearcher.getConnectionNode(dst, null, null);
 
-                if(dstNode.getPeriod() != null && Category.THREAD.getValue().equals(sourceNode.getCategory())){
-                    if(!threadsId.contains(sourceNode.getTransId())) {
+                if (dstNode.getPeriod() != null && Category.THREAD.getValue().equals(sourceNode.getCategory())) {
+                    if (!threadsId.contains(sourceNode.getTransId())) {
                         DataPort waitingPlace = new DataPort("Wait", "");
-                        Element waitingInPlaceArc = createWaitingPlaceArc(pnmlDocument, sourceNode.getTransId(), waitingPlace.getId(),"PtoT");
-                        Element waitingOutPlaceArc = createWaitingPlaceArc(pnmlDocument,sourceNode.getTransId(), waitingPlace.getId(),"TtoP");
-                        petriGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingInPlaceArc, "0","0");
-                        petriGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingOutPlaceArc, "0.8","0.8");
+                        Element waitingInPlaceArc = createWaitingPlaceArc(pnmlDocument, sourceNode.getTransId(),
+                                waitingPlace.getId(), null, "PtoT");
+                        Element waitingOutPlaceArc = createWaitingPlaceArc(pnmlDocument, sourceNode.getTransId(),
+                                waitingPlace.getId(), dstNode.getPeriod(), "TtoP");
+                        petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingInPlaceArc);
+                        petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingOutPlaceArc);
                         arcs.add(waitingInPlaceArc);
                         arcs.add(waitingOutPlaceArc);
 
                         threadsId.add(sourceNode.getTransId());
-                        Cache.getGeneratedPlaces().add(waitingPlace);
+                        cache.getGeneratedPlaces().add(waitingPlace);
                     }
 
                 }
@@ -113,7 +127,7 @@ public class PetriNetGenerator {
                 Attr placeendIdRef = pnmlDocument.createAttribute("idref");
                 Attr arcOrientation = pnmlDocument.createAttribute("orientation");
 
-                petriGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1, connection.getPos_X(), connection.getPos_Y());
+                petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
 
                 Element arc2 = pnmlDocument.createElement("arc");
                 Attr arcId2 = pnmlDocument.createAttribute("id");
@@ -129,38 +143,41 @@ public class PetriNetGenerator {
                 Attr arcOrientation2 = pnmlDocument.createAttribute("orientation");
 
 
-                if (Category.PROCESS.getValue().equals(dstNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory())) {
-                    Cache.getSOCKETS().add(new Socket(dstNode.getHeadId(), dstNode.getPlaceId(), sourceNode.getPlaceId(), "In"));
+                if (Category.PROCESS.getValue().equals(dstNode.getHeadCategory()) &&
+                        !dstNode.getCategory().equals(sourceNode.getCategory())) {
+                    cache.getSOCKETS().add(new Socket(dstNode.getHeadId(), dstNode.getPlaceId(), sourceNode.getPlaceId(), "In"));
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "TtoP");
                     setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getHeadId(), sourceNode.getPlaceId(), "PtoT");
-                    Cache.getUsedFeature().add(sourceNode.getPlaceId());
+                    cache.getUsedFeature().add(sourceNode.getPlaceId());
                 }
 
                 //dla wygenerowanego
-                else if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory()) && "Out".equals(connection.getSocketType())) {
-                    Cache.getSOCKETS().add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "Out"));
+                else if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory()) &&
+                        "Out".equals(connection.getSocketType())) {
+                    cache.getSOCKETS().add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "Out"));
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getHeadId(), dstNode.getPlaceId(), "TtoP");
                     setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), dstNode.getPlaceId(), "PtoT");
-                    Cache.getUsedFeature().add(dstNode.getPlaceId());
+                    cache.getUsedFeature().add(dstNode.getPlaceId());
                 } else if (Boolean.TRUE.equals(connection.getGenerate()) && "In".equals(connection.getSocketType())) {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "PtoT");
-                    Cache.getUsedFeature().add(sourceNode.getPlaceId());
+                    cache.getUsedFeature().add(sourceNode.getPlaceId());
 
-                } else if (Boolean.FALSE.equals(connection.getGenerate()) && connection.getSocketType() == null && !sourceNode.getCategory().equals(Category.BUS.getValue())) {
+                } else if (Boolean.FALSE.equals(connection.getGenerate()) && connection.getSocketType() == null &&
+                        !sourceNode.getCategory().equals(Category.BUS.getValue())) {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "TtoP");
                     //czy tak może byc?? Device jako odpowiednik komponentu z wyzszej warstwy
                     if (!isFirstLayer(dstNode.getCategory())) {
                         setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), sourceNode.getPlaceId(), "PtoT");
                     }
-                    Cache.getUsedFeature().add(sourceNode.getPlaceId());
+                    cache.getUsedFeature().add(sourceNode.getPlaceId());
                 } else if (sourceNode.getCategory().equals(Category.BUS.getValue())) {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), dstNode.getPlaceId(), "TtoP");
-                    Cache.getUsedFeature().add(dstNode.getPlaceId());
+                    cache.getUsedFeature().add(dstNode.getPlaceId());
 
                 } else {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "TtoP");
                     setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), sourceNode.getPlaceId(), "PtoT");
-                    Cache.getUsedFeature().add(sourceNode.getPlaceId());  // było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
+                    cache.getUsedFeature().add(sourceNode.getPlaceId());  // było sourceNode.getPlaceId jak chcemy miejsce z wyjsciowego
                 }
                 transend.setAttributeNode(transendIdRef);
                 placeend.setAttributeNode(placeendIdRef);
@@ -173,7 +190,7 @@ public class PetriNetGenerator {
                     transend2.setAttributeNode(transendIdRef2);
                     placeend2.setAttributeNode(placeendIdRef2);
                     arc2.setAttributeNode(arcOrientation2);
-                    petriGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc2, connection.getPos_X(), connection.getPos_Y());
+                    petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc2);
                     arc2.appendChild(transend2);
                     arc2.appendChild(placeend2);
                     arcs.add(arc2);
@@ -191,7 +208,7 @@ public class PetriNetGenerator {
         arcOrientation.setValue(directionArc);
     }
 
-    private Element createWaitingPlaceArc(Document pnmlDocument, String transId, String placeId, String orientation) {
+    private Element createWaitingPlaceArc(Document pnmlDocument, String transId, String placeId, String period, String orientation) {
         Element arc1 = pnmlDocument.createElement("arc");
         Attr arcId = pnmlDocument.createAttribute("id");
         arcId.setValue(TranslatorTools.generateUUID());
@@ -211,6 +228,73 @@ public class PetriNetGenerator {
         arc1.setAttributeNode(arcOrientation);
         arc1.appendChild(transend);
         arc1.appendChild(placeend);
+
+        if ("TtoP".equals(orientation)) {
+            Element annot = pnmlDocument.createElement("annot");
+            Attr annotId = pnmlDocument.createAttribute("id");
+            annotId.setValue(TranslatorTools.generateUUID());
+            annot.setAttributeNode(annotId);
+
+            Element position = pnmlDocument.createElement("posatr");
+            Attr positionX = pnmlDocument.createAttribute("x");
+            positionX.setValue("0.00000");
+            Attr positionY = pnmlDocument.createAttribute("y");
+            positionY.setValue("0.0000");
+            position.setAttributeNode(positionX);
+            position.setAttributeNode(positionY);
+
+            annot.appendChild(position);
+
+            Element fillProperty = pnmlDocument.createElement("fillattr");
+            Attr colorFill = pnmlDocument.createAttribute("colour");
+            colorFill.setValue("White");
+            fillProperty.setAttributeNode(colorFill);
+            Attr pattern = pnmlDocument.createAttribute("pattern");
+            pattern.setValue("Solid");
+            fillProperty.setAttributeNode(pattern);
+            Attr filled = pnmlDocument.createAttribute("filled");
+            pattern.setValue("false");
+            fillProperty.setAttributeNode(filled);
+
+            annot.appendChild(fillProperty);
+
+            Element lineProperty = pnmlDocument.createElement("lineattr");
+            Attr colorLine = pnmlDocument.createAttribute("colour");
+            colorLine.setValue("Black");
+            lineProperty.setAttributeNode(colorLine);
+            Attr thick = pnmlDocument.createAttribute("thick");
+            thick.setValue("0");
+            lineProperty.setAttributeNode(thick);
+            Attr type = pnmlDocument.createAttribute("type");
+            type.setValue("Solid");
+            lineProperty.setAttributeNode(type);
+
+            annot.appendChild(lineProperty);
+
+            Element textProperty = pnmlDocument.createElement("textattr");
+            Attr colorText = pnmlDocument.createAttribute("colour");
+            colorText.setValue("Black");
+            textProperty.setAttributeNode(colorText);
+            Attr isBold = pnmlDocument.createAttribute("bold");
+            isBold.setValue("false");
+            textProperty.setAttributeNode(isBold);
+
+            annot.appendChild(textProperty);
+
+            Element textArc = pnmlDocument.createElement("text");
+            Attr textTool = pnmlDocument.createAttribute("tool");
+            textTool.setValue("CPN Tools");
+            textArc.setAttributeNode(textTool);
+            Attr versionTool = pnmlDocument.createAttribute("version");
+            versionTool.setValue("4.0.1");
+            textArc.setTextContent(period);
+            annot.appendChild(textArc);
+
+
+            arc1.appendChild(annot);
+        }
+
+
         return arc1;
     }
 

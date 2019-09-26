@@ -12,12 +12,18 @@ import java.util.List;
 
 public class PetriNetTranslator {
 
-    private PetriGraphicsGenerator petriGraphicsGenerator = new PetriGraphicsGenerator();
+    private PetriNetGraphicsGenerator petriNetGraphicsGenerator;
+    private Cache cache = Cache.getInstance();
+
+    public PetriNetTranslator(PetriNetGraphicsGenerator petriNetGraphicsGenerator) {
+        this.petriNetGraphicsGenerator = petriNetGraphicsGenerator;
+    }
 
     public void translateElements(Document pnmlDocument, Element page, List<ComponentInstance> componentInstances) {
         for (ComponentInstance componentInstance : componentInstances) {
             String componentInstanceCategory = componentInstance.getCategory();
-            if (componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue()) || componentInstanceCategory.equals(Category.THREAD.getValue())) {
+            if (componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue())
+                    || componentInstanceCategory.equals(Category.THREAD.getValue())) {
                 Element transition = generateTransition(pnmlDocument, componentInstance);
                 page.appendChild(transition);
             }
@@ -28,7 +34,7 @@ public class PetriNetTranslator {
             List<DataPort> dataPorts = componentInstance.getDataPort();
             for (DataPort feature : dataPorts) {
                 Element place = generatePlace(pnmlDocument, feature);
-                if (Cache.getUsedFeature().contains(feature.getId())) { // unikalnośc miejsc
+                if (cache.getUsedFeature().contains(feature.getId())) { // unikalnośc miejsc
                     page.appendChild(place);
                 }
 
@@ -36,13 +42,13 @@ public class PetriNetTranslator {
 
         }
         // Generated places
-        for(DataPort feature : Cache.getGeneratedPlaces()){
+        for(DataPort feature : cache.getGeneratedPlaces()){
             Element place = generatePlace(pnmlDocument,feature);
             page.appendChild(place);
         }
 
-        Cache.clearUsedFeature();
-        Cache.clearGeneratedPlaces();
+        cache.clearUsedFeature();
+        cache.clearGeneratedPlaces();
     }
 
     public Element generatePlace(Document pnmlDocument, DataPort dataPort) {
@@ -51,12 +57,11 @@ public class PetriNetTranslator {
         placeId.setValue(dataPort.getId());
         place.setAttributeNode(placeId);
 
-        return petriGraphicsGenerator.generatePlaceGraphics(pnmlDocument, dataPort, place);
-
+        return petriNetGraphicsGenerator.generatePlaceGraphics(pnmlDocument, dataPort, place);
     }
 
     private Element generateTransition(Document pnmlDocument, ComponentInstance componentInstance) {
-       return petriGraphicsGenerator.generateGraphicsAttributeTransition(pnmlDocument, componentInstance);
+       return petriNetGraphicsGenerator.generateGraphicsAttributeTransition(pnmlDocument, componentInstance);
     }
 
 

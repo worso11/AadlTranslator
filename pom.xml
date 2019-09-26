@@ -90,7 +90,7 @@
             </goals>
             <configuration>
               <targetDirectory>${project.build.directory}/generated/js/teavm</targetDirectory>
-              <mainClass>lukowicz.application.Client</mainClass>
+              <mainClass>lukowicz.application.ApplicationRunner</mainClass>
               <minifying>true</minifying>
               <debugInformationGenerated>true</debugInformationGenerated>
               <sourceMapsGenerated>true</sourceMapsGenerated>

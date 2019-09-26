@@ -1,7 +1,6 @@
 package lukowicz.application;
 
 import lukowicz.application.aadl.ElementSearcher;
-import lukowicz.application.memory.Cache;
 import lukowicz.application.petrinet.PetriNetGenerator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -20,15 +19,18 @@ import java.io.IOException;
 //wg dokumentu bus to arc
 public class Parser {
 
-    private ElementSearcher elementSearcher = new ElementSearcher();
-    private PetriNetGenerator petriNetGenerator = new PetriNetGenerator();
+    private ElementSearcher elementSearcher;
+    private PetriNetGenerator petriNetGenerator;
 
-    private File aadlXmlFile = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatAADL-XML2.xml");
+    public Parser(ElementSearcher elementSearcher, PetriNetGenerator petriNetGenerator) {
+        this.elementSearcher = elementSearcher;
+        this.petriNetGenerator = petriNetGenerator;
+    }
 
-    public void parseFile() throws ParserConfigurationException, IOException, SAXException, TransformerException {
-        DocumentBuilderFactory factory =
-                DocumentBuilderFactory.newInstance();
+    public void parseFile(String filePath) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
+        File aadlXmlFile = new File(filePath);
 
         Document loadedDocument = builder.parse(aadlXmlFile);
 
@@ -36,12 +38,10 @@ public class Parser {
 
         NodeList componentInstances = loadedDocument.getElementsByTagName("componentInstance");
         elementSearcher.searchElements(componentInstances, null);
-        Cache.moveProcesses();
 
         NodeList connections = loadedDocument.getElementsByTagName("connectionInstance");
         elementSearcher.searchConnections(connections);
         petriNetGenerator.generatePetriNet();
-
     }
 }
 
