@@ -46,6 +46,17 @@ public class Cache {
         for (int i = 0; i < COMPONENT_INSTANCES.size(); ++i) {
             if (COMPONENT_INSTANCES.get(i).getCategory().equals(Category.PROCESS.getValue())) {
                 PROCESSES.add(COMPONENT_INSTANCES.get(i));
+                movePeriodThread(COMPONENT_INSTANCES.get(i));
+            }
+        }
+    }
+
+    public void movePeriodThread(ComponentInstance componentInstance) {
+        if(componentInstance.getComponentInstancesNested() != null){
+            for (int i = 0; i < componentInstance.getComponentInstancesNested().size(); ++i) {
+                if ((componentInstance.getComponentInstancesNested().get(i).getCategory().equals(Category.THREAD.getValue()) && !"".equals(componentInstance.getComponentInstancesNested().get(i).getPeriod()))) {
+                    PROCESSES.add(componentInstance.getComponentInstancesNested().get(i));
+                }
             }
         }
     }

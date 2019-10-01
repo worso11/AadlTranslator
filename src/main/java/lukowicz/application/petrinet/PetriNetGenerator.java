@@ -65,9 +65,16 @@ public class PetriNetGenerator {
 
         //pageForProcess   zrobic odniesienia do stron!!
         for (ComponentInstance pageProcess : cache.getPROCESSES()) {
-            actualPage = petriNetPager.getPageByIndex(++numberPage);
+            actualPage = petriNetPager.getPageForTransId(pageProcess.getId());
             Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
-            List<Node> arcs2 = generateConnections(actualPage.getContext(), petriNetXmlFile, pageForProcess);
+            List<Node> arcs2;
+            if(actualPage.getContext().length()<13)
+            {
+                arcs2 = generateConnections(actualPage.getContext(), petriNetXmlFile, pageForProcess);
+            }
+            else {
+                arcs2 = generateConnectionsForGeneratedPage(actualPage.getContext(),petriNetXmlFile,pageForProcess);
+            }
             petriNetTranslator.translateElements(petriNetXmlFile, pageForProcess, pageProcess.getComponentInstancesNested());
             insertArcToPNet(pageForProcess, arcs2);
             ElementsPosition.resetPositions();
@@ -84,6 +91,46 @@ public class PetriNetGenerator {
         TranslatorTools.saveFile(petriNetXmlFile, petriNetXmlFilePath);
     }
 
+    private List<Node> generateConnectionsForGeneratedPage(String context, Document pnmlDocument, Element pageForProcess) {
+        List<Node> arcs = new ArrayList<>();
+
+        for (Connection connection : cache.getCONNECTIONS()) {
+            if (context.equals(connection.getContext())) {
+                Element arc1 = pnmlDocument.createElement("arc");
+                Attr arcId = pnmlDocument.createAttribute("id");
+                arcId.setValue(connection.getId());
+                arc1.setAttributeNode(arcId);
+
+                Element transend = pnmlDocument.createElement("transend");
+                Attr transendIdRef = pnmlDocument.createAttribute("idref");
+
+                Element placeend = pnmlDocument.createElement("placeend");
+                Attr placeendIdRef = pnmlDocument.createAttribute("idref");
+                Attr arcOrientation = pnmlDocument.createAttribute("orientation");
+
+                String directionArc = "in".equals(connection.getSocketType()) ? "PtoT" : "TtoP";
+
+                setArcNodes(transendIdRef,placeendIdRef,arcOrientation,connection.getDestination(),connection.getSource(),directionArc);
+
+                transend.setAttributeNode(transendIdRef);
+                placeend.setAttributeNode(placeendIdRef);
+                arc1.setAttributeNode(arcOrientation);
+
+
+                arc1.appendChild(transend);
+                arc1.appendChild(placeend);
+
+
+                cache.getUsedFeature().add(connection.getSource());
+                cache.getUsedFeature().add(connection.getDestination());
+
+                petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
+                arcs.add(arc1);
+
+            }
+        }
+        return arcs;
+    }
 
     private List<Node> generateConnections(String actualContext, Document pnmlDocument, Element page) {
         List<Node> arcs = new ArrayList<>();

@@ -23,7 +23,7 @@ public class PetriNetTranslator {
         for (ComponentInstance componentInstance : componentInstances) {
             String componentInstanceCategory = componentInstance.getCategory();
             if (componentInstanceCategory.equals(Category.DEVICE.getValue()) || componentInstanceCategory.equals(Category.PROCESS.getValue())
-                    || componentInstanceCategory.equals(Category.THREAD.getValue())) {
+                    || componentInstanceCategory.equals(Category.THREAD.getValue()) || componentInstanceCategory.equals(Category.GENERATED_TRANS.getValue())) {
                 Element transition = generateTransition(pnmlDocument, componentInstance);
                 page.appendChild(transition);
             }

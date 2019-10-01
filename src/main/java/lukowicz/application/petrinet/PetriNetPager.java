@@ -32,8 +32,12 @@ public class PetriNetPager {
         return getPageByIndex(numberPage).getPageId();
     }
 
-    public  String getPageForTransId(String transId) {
+    public  String getPageIdForTransId(String transId) {
         return getPages().stream().filter(e -> transId.equals(e.getTransId())).findFirst().get().getPageId();
+    }
+
+    public Page getPageForTransId(String transId) {
+        return getPages().stream().filter(e -> transId.equals(e.getTransId())).findFirst().orElse(null);
     }
 
     public  String getTransIdByIndex(int numberPage) {

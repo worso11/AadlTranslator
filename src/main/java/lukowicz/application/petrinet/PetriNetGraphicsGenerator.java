@@ -290,66 +290,66 @@ public class PetriNetGraphicsGenerator {
 
         Socket socket = cache.isConnectingPort(dataPort);
 
-        if (socket != null) {
-
-            Element port = pnmlDocument.createElement("port");
-            Attr attrId = pnmlDocument.createAttribute("id");
-            attrId.setValue(TranslatorTools.generateUUID());
-            port.setAttributeNode(attrId);
-            Attr attrType = pnmlDocument.createAttribute("type");
-            attrType.setValue(socket.getDirection());
-            port.setAttributeNode(attrType);
-
-            Element portPosition = pnmlDocument.createElement("posattr");
-            Attr portPositionX = pnmlDocument.createAttribute("x");
-            Double portPositionXValue = placeXPosition - 24.0000;
-            portPositionX.setValue(portPositionXValue.toString());
-            Attr portPositionY = pnmlDocument.createAttribute("y");
-            Double portPositionYValue = placeYPosition - 16.0000;
-            portPositionY.setValue(portPositionYValue.toString());
-            portPosition.setAttributeNode(portPositionX);
-            portPosition.setAttributeNode(portPositionY);
-
-            port.appendChild(portPosition);
-
-
-            Element portFillProperty = pnmlDocument.createElement("fillattr");
-            Attr portColorFill = pnmlDocument.createAttribute("colour");
-            portColorFill.setValue("White");
-            portFillProperty.setAttributeNode(portColorFill);
-            Attr portPattern = pnmlDocument.createAttribute("pattern");
-            portPattern.setValue("Solid");
-            portFillProperty.setAttributeNode(portPattern);
-            Attr portFilled = pnmlDocument.createAttribute("filled");
-            portPattern.setValue("false");
-            portFillProperty.setAttributeNode(portFilled);
-            port.appendChild(portFillProperty);
-
-
-            Element portLineProperty = pnmlDocument.createElement("lineattr");
-            Attr portColorLine = pnmlDocument.createAttribute("colour");
-            portColorLine.setValue("Black");
-            portLineProperty.setAttributeNode(portColorLine);
-            Attr portThick = pnmlDocument.createAttribute("thick");
-            portThick.setValue("0");
-            portLineProperty.setAttributeNode(portThick);
-            Attr portType = pnmlDocument.createAttribute("type");
-            portType.setValue("Solid");
-            portLineProperty.setAttributeNode(portType);
-            port.appendChild(portLineProperty);
-
-
-            Element portTextProperty = pnmlDocument.createElement("textattr");
-            Attr portColorText = pnmlDocument.createAttribute("colour");
-            portColorText.setValue("Black");
-            portTextProperty.setAttributeNode(portColorText);
-            Attr portIsBold = pnmlDocument.createAttribute("bold");
-            portIsBold.setValue("false");
-            portTextProperty.setAttributeNode(portIsBold);
-            port.appendChild(portTextProperty);
-
-            place.appendChild(port);
-        }
+//        if (socket != null) {
+//
+//            Element port = pnmlDocument.createElement("port");
+//            Attr attrId = pnmlDocument.createAttribute("id");
+//            attrId.setValue(TranslatorTools.generateUUID());
+//            port.setAttributeNode(attrId);
+//            Attr attrType = pnmlDocument.createAttribute("type");
+//            attrType.setValue(socket.getDirection());
+//            port.setAttributeNode(attrType);
+//
+//            Element portPosition = pnmlDocument.createElement("posattr");
+//            Attr portPositionX = pnmlDocument.createAttribute("x");
+//            Double portPositionXValue = placeXPosition - 24.0000;
+//            portPositionX.setValue(portPositionXValue.toString());
+//            Attr portPositionY = pnmlDocument.createAttribute("y");
+//            Double portPositionYValue = placeYPosition - 16.0000;
+//            portPositionY.setValue(portPositionYValue.toString());
+//            portPosition.setAttributeNode(portPositionX);
+//            portPosition.setAttributeNode(portPositionY);
+//
+//            port.appendChild(portPosition);
+//
+//
+//            Element portFillProperty = pnmlDocument.createElement("fillattr");
+//            Attr portColorFill = pnmlDocument.createAttribute("colour");
+//            portColorFill.setValue("White");
+//            portFillProperty.setAttributeNode(portColorFill);
+//            Attr portPattern = pnmlDocument.createAttribute("pattern");
+//            portPattern.setValue("Solid");
+//            portFillProperty.setAttributeNode(portPattern);
+//            Attr portFilled = pnmlDocument.createAttribute("filled");
+//            portPattern.setValue("false");
+//            portFillProperty.setAttributeNode(portFilled);
+//            port.appendChild(portFillProperty);
+//
+//
+//            Element portLineProperty = pnmlDocument.createElement("lineattr");
+//            Attr portColorLine = pnmlDocument.createAttribute("colour");
+//            portColorLine.setValue("Black");
+//            portLineProperty.setAttributeNode(portColorLine);
+//            Attr portThick = pnmlDocument.createAttribute("thick");
+//            portThick.setValue("0");
+//            portLineProperty.setAttributeNode(portThick);
+//            Attr portType = pnmlDocument.createAttribute("type");
+//            portType.setValue("Solid");
+//            portLineProperty.setAttributeNode(portType);
+//            port.appendChild(portLineProperty);
+//
+//
+//            Element portTextProperty = pnmlDocument.createElement("textattr");
+//            Attr portColorText = pnmlDocument.createAttribute("colour");
+//            portColorText.setValue("Black");
+//            portTextProperty.setAttributeNode(portColorText);
+//            Attr portIsBold = pnmlDocument.createAttribute("bold");
+//            portIsBold.setValue("false");
+//            portTextProperty.setAttributeNode(portIsBold);
+//            port.appendChild(portTextProperty);
+//
+//            place.appendChild(port);
+//        }
 
         return place;
 
@@ -421,10 +421,10 @@ public class PetriNetGraphicsGenerator {
         boxProperty.setAttributeNode(height);
         transition.appendChild(boxProperty);
 
-        if (Category.PROCESS.getValue().equals(componentInstance.getCategory())) {
+        if (Category.PROCESS.getValue().equals(componentInstance.getCategory()) || (Category.THREAD.getValue().equals(componentInstance.getCategory()) && !"".equals(componentInstance.getPeriod()) )) {
             Element substElement = pnmlDocument.createElement("subst");
             Attr subpageAttr = pnmlDocument.createAttribute("subpage");
-            String pageId = petriNetPager.getPageForTransId(componentInstance.getId());
+            String pageId = petriNetPager.getPageIdForTransId(componentInstance.getId());
             subpageAttr.setValue(pageId);
             substElement.setAttributeNode(subpageAttr);
             Attr portSock = pnmlDocument.createAttribute("portsock");

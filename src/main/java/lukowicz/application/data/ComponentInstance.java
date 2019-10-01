@@ -54,6 +54,10 @@ public class ComponentInstance {
         return componentInstancesNested;
     }
 
+    public void setComponentInstancesNested(List<ComponentInstance> componentInstancesNested) {
+        this.componentInstancesNested = componentInstancesNested;
+    }
+
 
     public Double getPos_X() {
         return pos_X;

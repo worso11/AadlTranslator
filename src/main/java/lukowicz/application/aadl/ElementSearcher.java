@@ -84,6 +84,53 @@ public class ElementSearcher {
                     processingElement.getComponentInstancesNested().add(componentInstanceNested);
                     componentInstanceNested.setPeriod(periodValue);
                     cache.addElementToUniqueComponents(componentInstanceNested.getName());
+                    if (!"".equals(periodValue)) {
+                        componentInstanceNested.setComponentInstancesNested(new ArrayList<>());
+                        ComponentInstance generatedTrans = new ComponentInstance("JavaCode", Category.GENERATED_TRANS.getValue());
+                        componentInstanceNested.getComponentInstancesNested().
+                                add(generatedTrans);
+                        //narazie jak jest jest period to jest tylko jeden nowy trans wiec 0 jako index
+                        DataPort waitingSubpagePlace = new DataPort("Wait", "In");
+                        // DataPort outSubpagePlace = new DataPort("OutPlace", "Out");
+                        componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().
+                                add(waitingSubpagePlace);
+
+                        String additionalConnContext = TranslatorTools.generateUUID();
+                        String additionalConnSource = waitingSubpagePlace.getId();
+                        String additionalConnDestination = generatedTrans.getId();
+
+                        Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
+                        cache.addConnection(additionalConnConnection);
+
+                        petriNetPager.addNewPage(additionalConnContext, componentInstanceNested.getId());
+
+
+                        for (DataPort dataPort :
+                                componentInstanceNested.getDataPort()) {
+                            DataPort copyDataPort = new DataPort(dataPort.getName(), dataPort.getDirection());
+                            componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().
+                                    add(copyDataPort);
+
+                            String connContext = additionalConnContext;
+
+                            String connSource = copyDataPort.getId();
+                            String connDestination = generatedTrans.getId();
+
+
+                            Connection newConnection = new Connection(connContext, connSource, connDestination);
+                            newConnection.setSocketType(copyDataPort.getDirection());
+                            cache.addConnection(newConnection);
+
+                            cache.getSOCKETS().add(new Socket(componentInstanceNested.getId(), copyDataPort.getId(), dataPort.getId(), dataPort.getDirection()));
+
+                        }
+
+                       // componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().addAll(componentInstanceNested.getDataPort());
+
+
+
+
+                    }
                 }
                 // zagniezdzone komponenenty
                 NodeList nestedComponents = actualComponent.getElementsByTagName("componentInstance");
@@ -170,20 +217,38 @@ public class ElementSearcher {
                     actualComponentInstance : cache.getComponentInstanceByIndex(path.get(j));
             if (j == path.size() - 1) {
                 return new ConnectionNode(processingComponent.getId(), null, processingComponent.getCategory(), null, null,
-                        processingComponent.getPeriod(),processingComponent.getPos_X(),processingComponent.getPos_Y());
+                        processingComponent.getPeriod(), processingComponent.getPos_X(), processingComponent.getPos_Y());
             } else if (j == path.size() - 2) {
                 String headComponentId = headComponent != null ? headComponent.getId() : null;
                 String headCategory = headComponent != null ? headComponent.getCategory() : null;
 
                 return new ConnectionNode(processingComponent.getId(), processingComponent.getDataPort().get(path.get(j + 1)).getId(),
                         processingComponent.getCategory(), headComponentId, headCategory, processingComponent.getPeriod(),
-                        processingComponent.getPos_X(),processingComponent.getPos_Y());
+                        processingComponent.getPos_X(), processingComponent.getPos_Y());
             } else {
                 return getConnectionNode(path.subList(j + 1, path.size()), processingComponent.getComponentInstancesNested().get(path.get(j + 1)),
                         processingComponent);
             }
         }
         return null;
+    }
+
+
+
+
+    public void insertPort(List<Integer> path, ComponentInstance actualComponentInstance, DataPort portToInsert) {
+        for (int j = 0; j < path.size(); ++j) {
+            ComponentInstance processingComponent = actualComponentInstance != null ?
+                    actualComponentInstance : cache.getComponentInstanceByIndex(path.get(j));
+            if (j == path.size() - 1) {
+                processingComponent.getDataPort().add(portToInsert);
+            }
+            else {
+                 insertPort(path.subList(j + 1, path.size()), processingComponent.getComponentInstancesNested().get(path.get(j+1)),
+                        portToInsert);
+            }
+        }
+
     }
 
 
