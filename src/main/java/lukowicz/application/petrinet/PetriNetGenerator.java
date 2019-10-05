@@ -171,12 +171,12 @@ public class PetriNetGenerator {
 
                 //dla wygenerowanego
                 else if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory()) &&
-                        "Out".equals(connection.getSocketType())) {
-                    cache.getSOCKETS().add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "Out"));
+                        "out".equals(connection.getSocketType())) {
+                    cache.getSOCKETS().add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "out"));
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getHeadId(), dstNode.getPlaceId(), "TtoP");
                     setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), dstNode.getPlaceId(), "PtoT");
                     cache.getUsedFeature().add(dstNode.getPlaceId());
-                } else if (Boolean.TRUE.equals(connection.getGenerate()) && "In".equals(connection.getSocketType())) {
+                } else if (Boolean.TRUE.equals(connection.getGenerate()) && "in".equals(connection.getSocketType())) {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "PtoT");
                     cache.getUsedFeature().add(sourceNode.getPlaceId());
 

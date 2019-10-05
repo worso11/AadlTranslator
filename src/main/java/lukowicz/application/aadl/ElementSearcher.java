@@ -85,7 +85,7 @@ public class ElementSearcher {
                     componentInstanceNested.setPeriod(periodValue);
                     cache.addElementToUniqueComponents(componentInstanceNested.getName());
                     if (!"".equals(periodValue)) {
-                        DataPort waitingPlace = new DataPort("Wait", "In");
+                        DataPort waitingPlace = new DataPort("Wait", "in");
                         componentInstanceNested.getDataPort().add(waitingPlace);
 
                         String contextPage = "NI:" + componentInstance.getId();
@@ -125,7 +125,7 @@ public class ElementSearcher {
 
                             if("Wait".equals(copyDataPort.getName())){
                                 Connection returnConnection = new Connection(connectionSubpageContext, connectionSubpageSource, connectionSubpageDestination);
-                                String oppositeDirection = "In".equals(copyDataPort.getDirection()) ? "out" : "in";
+                                String oppositeDirection = "in".equals(copyDataPort.getDirection()) ? "out" : "in";
                                 returnConnection.setSocketType(oppositeDirection);
                                 cache.addConnection(returnConnection);
                             }
@@ -186,7 +186,7 @@ public class ElementSearcher {
                 String additionalConnDestination = destination.substring(0, destination.length() - 1);
                 Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
                 additionalConnConnection.setGenerate(Boolean.TRUE);
-                additionalConnConnection.setSocketType("In");
+                additionalConnConnection.setSocketType("in");
                 ConnectionNode connectionNode = getConnectionNode(destinationPath, null, null);
                 petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(destinationPath.get(0)).getId(), Boolean.FALSE);
 
@@ -202,7 +202,7 @@ public class ElementSearcher {
                 String additionalConnDestination = destination;
                 Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
                 additionalConnConnection.setGenerate(Boolean.TRUE);
-                additionalConnConnection.setSocketType("Out");
+                additionalConnConnection.setSocketType("out");
                 ConnectionNode connectionNode = getConnectionNode(sourcePath, null, null);
                 petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(sourcePath.get(0)).getId(), Boolean.FALSE);
                 cache.addConnection(additionalConnConnection);
