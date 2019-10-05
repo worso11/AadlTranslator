@@ -6,6 +6,7 @@ public class Page implements Comparable<Page> {
     private String context;
     private String pageId;
     private String transId;
+    private Boolean generated = Boolean.FALSE;
 
     public Page(String context) {
         this.context = context;
@@ -26,6 +27,14 @@ public class Page implements Comparable<Page> {
 
     public void setTransId(String transId) {
         this.transId = transId;
+    }
+
+    public Boolean getGenerated() {
+        return generated;
+    }
+
+    public void setGenerated(Boolean generated) {
+        this.generated = generated;
     }
 
     @Override

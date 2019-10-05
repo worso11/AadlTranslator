@@ -100,6 +100,10 @@ public class Cache {
         return pages;
     }
 
+    public String getContextByTransId(String transId){
+        return getPages().stream().filter(el->transId.equals(el.getTransId())).map(Page::getContext).findFirst().orElse(null);
+    }
+
     public  ArrayList<String> getInstancesBinders() {
         return INSTANCES_BINDERS;
     }

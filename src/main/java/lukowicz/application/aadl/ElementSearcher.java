@@ -85,22 +85,26 @@ public class ElementSearcher {
                     componentInstanceNested.setPeriod(periodValue);
                     cache.addElementToUniqueComponents(componentInstanceNested.getName());
                     if (!"".equals(periodValue)) {
+                        DataPort waitingPlace = new DataPort("Wait", "In");
+                        componentInstanceNested.getDataPort().add(waitingPlace);
+
+                        String contextPage = "NI:" + componentInstance.getId();
+                        String connectionPageSource = waitingPlace.getId();
+                        String connectionPageDestination = componentInstanceNested.getId();
+
+                        Connection connectionIn = new Connection(contextPage, connectionPageSource, connectionPageDestination);
+                        connectionIn.setSocketType("in");
+                        Connection connectionOut = new Connection(contextPage, connectionPageSource, connectionPageDestination);
+                        connectionOut.setSocketType("out");
+                        cache.addConnection(connectionIn);
+                        cache.addConnection(connectionOut);
+
                         componentInstanceNested.setComponentInstancesNested(new ArrayList<>());
                         ComponentInstance generatedTrans = new ComponentInstance("JavaCode", Category.GENERATED_TRANS.getValue());
                         componentInstanceNested.getComponentInstancesNested().
                                 add(generatedTrans);
-                        //narazie jak jest jest period to jest tylko jeden nowy trans wiec 0 jako index
-                        DataPort waitingSubpagePlace = new DataPort("Wait", "In");
-                        // DataPort outSubpagePlace = new DataPort("OutPlace", "Out");
-                        componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().
-                                add(waitingSubpagePlace);
 
                         String additionalConnContext = TranslatorTools.generateUUID();
-                        String additionalConnSource = waitingSubpagePlace.getId();
-                        String additionalConnDestination = generatedTrans.getId();
-
-                        Connection additionalConnConnection = new Connection(additionalConnContext, additionalConnSource, additionalConnDestination);
-                        cache.addConnection(additionalConnConnection);
 
                         petriNetPager.addNewPage(additionalConnContext, componentInstanceNested.getId());
 
@@ -111,23 +115,24 @@ public class ElementSearcher {
                             componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().
                                     add(copyDataPort);
 
-                            String connContext = additionalConnContext;
+                            String connectionSubpageContext = additionalConnContext;
+                            String connectionSubpageSource = copyDataPort.getId();
+                            String connectionSubpageDestination = generatedTrans.getId();
 
-                            String connSource = copyDataPort.getId();
-                            String connDestination = generatedTrans.getId();
-
-
-                            Connection newConnection = new Connection(connContext, connSource, connDestination);
+                            Connection newConnection = new Connection(connectionSubpageContext, connectionSubpageSource, connectionSubpageDestination);
                             newConnection.setSocketType(copyDataPort.getDirection());
                             cache.addConnection(newConnection);
+
+                            if("Wait".equals(copyDataPort.getName())){
+                                Connection returnConnection = new Connection(connectionSubpageContext, connectionSubpageSource, connectionSubpageDestination);
+                                String oppositeDirection = "In".equals(copyDataPort.getDirection()) ? "out" : "in";
+                                returnConnection.setSocketType(oppositeDirection);
+                                cache.addConnection(returnConnection);
+                            }
 
                             cache.getSOCKETS().add(new Socket(componentInstanceNested.getId(), copyDataPort.getId(), dataPort.getId(), dataPort.getDirection()));
 
                         }
-
-                       // componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().addAll(componentInstanceNested.getDataPort());
-
-
 
 
                     }

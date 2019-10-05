@@ -14,9 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 //is first layer metoda jak to dziala
@@ -96,37 +94,30 @@ public class PetriNetGenerator {
 
         for (Connection connection : cache.getCONNECTIONS()) {
             if (context.equals(connection.getContext())) {
-                Element arc1 = pnmlDocument.createElement("arc");
-                Attr arcId = pnmlDocument.createAttribute("id");
-                arcId.setValue(connection.getId());
-                arc1.setAttributeNode(arcId);
-
                 Element transend = pnmlDocument.createElement("transend");
                 Attr transendIdRef = pnmlDocument.createAttribute("idref");
 
                 Element placeend = pnmlDocument.createElement("placeend");
                 Attr placeendIdRef = pnmlDocument.createAttribute("idref");
                 Attr arcOrientation = pnmlDocument.createAttribute("orientation");
-
-                String directionArc = "in".equals(connection.getSocketType()) ? "PtoT" : "TtoP";
-
+                Element arc1 = pnmlDocument.createElement("arc");
+                Attr arcId = pnmlDocument.createAttribute("id");
+                arcId.setValue(connection.getId());
+                arc1.setAttributeNode(arcId);
+                String directionArc = "in".equalsIgnoreCase(connection.getSocketType()) ? "PtoT" : "TtoP";
                 setArcNodes(transendIdRef,placeendIdRef,arcOrientation,connection.getDestination(),connection.getSource(),directionArc);
-
                 transend.setAttributeNode(transendIdRef);
                 placeend.setAttributeNode(placeendIdRef);
                 arc1.setAttributeNode(arcOrientation);
 
-
                 arc1.appendChild(transend);
                 arc1.appendChild(placeend);
-
 
                 cache.getUsedFeature().add(connection.getSource());
                 cache.getUsedFeature().add(connection.getDestination());
 
                 petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
                 arcs.add(arc1);
-
             }
         }
         return arcs;
@@ -134,7 +125,6 @@ public class PetriNetGenerator {
 
     private List<Node> generateConnections(String actualContext, Document pnmlDocument, Element page) {
         List<Node> arcs = new ArrayList<>();
-        Set<String> threadsId = new HashSet<>();
         for (Connection connection : cache.getCONNECTIONS()) {
             if (actualContext.equals(connection.getContext())) {
 
@@ -143,24 +133,6 @@ public class PetriNetGenerator {
 
                 ConnectionNode sourceNode = elementSearcher.getConnectionNode(source, null, null);
                 ConnectionNode dstNode = elementSearcher.getConnectionNode(dst, null, null);
-
-                if (dstNode.getPeriod() != null && Category.THREAD.getValue().equals(sourceNode.getCategory())) {
-                    if (!threadsId.contains(sourceNode.getTransId())) {
-                        DataPort waitingPlace = new DataPort("Wait", "");
-                        Element waitingInPlaceArc = createWaitingPlaceArc(pnmlDocument, sourceNode.getTransId(),
-                                waitingPlace.getId(), null, "PtoT");
-                        Element waitingOutPlaceArc = createWaitingPlaceArc(pnmlDocument, sourceNode.getTransId(),
-                                waitingPlace.getId(), dstNode.getPeriod(), "TtoP");
-                        petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingInPlaceArc);
-                        petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, waitingOutPlaceArc);
-                        arcs.add(waitingInPlaceArc);
-                        arcs.add(waitingOutPlaceArc);
-
-                        threadsId.add(sourceNode.getTransId());
-                        cache.getGeneratedPlaces().add(waitingPlace);
-                    }
-
-                }
 
                 Element arc1 = pnmlDocument.createElement("arc");
                 Attr arcId = pnmlDocument.createAttribute("id");
@@ -188,7 +160,6 @@ public class PetriNetGenerator {
                 Element placeend2 = pnmlDocument.createElement("placeend");
                 Attr placeendIdRef2 = pnmlDocument.createAttribute("idref");
                 Attr arcOrientation2 = pnmlDocument.createAttribute("orientation");
-
 
                 if (Category.PROCESS.getValue().equals(dstNode.getHeadCategory()) &&
                         !dstNode.getCategory().equals(sourceNode.getCategory())) {
@@ -242,6 +213,44 @@ public class PetriNetGenerator {
                     arc2.appendChild(placeend2);
                     arcs.add(arc2);
                 }
+            }
+            else if(connection.getContext().length()>=4 && "NI:".equals(connection.getContext().substring(0,3))){
+                if(cache.getContextByTransId(connection.getContext().substring(3)).equals(actualContext)){
+                    Element arc1 = pnmlDocument.createElement("arc");
+                    Attr arcId = pnmlDocument.createAttribute("id");
+                    arcId.setValue(connection.getId());
+                    arc1.setAttributeNode(arcId);
+
+                    Element transend = pnmlDocument.createElement("transend");
+                    Attr transendIdRef = pnmlDocument.createAttribute("idref");
+
+                    Element placeend = pnmlDocument.createElement("placeend");
+                    Attr placeendIdRef = pnmlDocument.createAttribute("idref");
+                    Attr arcOrientation = pnmlDocument.createAttribute("orientation");
+                    arcId.setValue(connection.getId());
+                    arc1.setAttributeNode(arcId);
+
+
+                    String directionArc = "in".equals(connection.getSocketType()) ? "PtoT" : "TtoP";
+
+                    setArcNodes(transendIdRef,placeendIdRef,arcOrientation,connection.getDestination(),connection.getSource(),directionArc);
+
+                    transend.setAttributeNode(transendIdRef);
+                    placeend.setAttributeNode(placeendIdRef);
+                    arc1.setAttributeNode(arcOrientation);
+
+
+                    arc1.appendChild(transend);
+                    arc1.appendChild(placeend);
+
+
+                    cache.getUsedFeature().add(connection.getSource());
+                    cache.getUsedFeature().add(connection.getDestination());
+
+                    petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
+                    arcs.add(arc1);
+                }
+
             }
 
         }
