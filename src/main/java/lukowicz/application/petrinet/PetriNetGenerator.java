@@ -66,7 +66,7 @@ public class PetriNetGenerator {
             actualPage = petriNetPager.getPageForTransId(pageProcess.getId());
             Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
             List<Node> arcs2;
-            if(actualPage.getContext().length()<13)
+            if(!actualPage.getGenerated())
             {
                 arcs2 = generateConnections(actualPage.getContext(), petriNetXmlFile, pageForProcess);
             }

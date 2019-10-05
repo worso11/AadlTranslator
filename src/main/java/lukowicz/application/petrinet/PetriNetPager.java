@@ -44,10 +44,10 @@ public class PetriNetPager {
         return getPageByIndex(numberPage).getTransId();
     }
 
-    public  void addNewPage(String context, String transId) {
+    public void addNewPage(String context, String transId, Boolean isGenerated) {
         long count = getPages().stream().filter(e -> e.getContext().equals(context)).count();
         if (count == 0) {
-            Page newPage = new Page(context);
+            Page newPage = new Page(context, isGenerated);
             if (!"".equals(context)) {
                 newPage.setTransId(transId);
             }

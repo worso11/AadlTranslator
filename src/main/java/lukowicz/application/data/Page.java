@@ -6,11 +6,12 @@ public class Page implements Comparable<Page> {
     private String context;
     private String pageId;
     private String transId;
-    private Boolean generated = Boolean.FALSE;
+    private Boolean generated;
 
-    public Page(String context) {
+    public Page(String context, Boolean generated) {
         this.context = context;
         this.pageId = TranslatorTools.generateUUID();
+        this.generated = generated;
     }
 
     public String getContext() {
