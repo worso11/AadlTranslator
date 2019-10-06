@@ -94,8 +94,11 @@ public class ElementSearcher {
 
                         Connection connectionIn = new Connection(contextPage, connectionPageSource, connectionPageDestination);
                         connectionIn.setSocketType("in");
+                        connectionIn.setGenerate(Boolean.TRUE);
                         Connection connectionOut = new Connection(contextPage, connectionPageSource, connectionPageDestination);
+                        connectionOut.setGenerate(Boolean.TRUE);
                         connectionOut.setSocketType("out");
+
                         cache.addConnection(connectionIn);
                         cache.addConnection(connectionOut);
 

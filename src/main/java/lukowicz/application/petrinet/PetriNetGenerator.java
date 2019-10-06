@@ -51,7 +51,7 @@ public class PetriNetGenerator {
 
         petriNetGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
 
-        Page actualPage = petriNetPager.getPageByIndex(numberPage);
+        Page actualPage = petriNetPager.getPageByContext("");
         //page startowy   moze te Generate New Page do Pager cos takiego??
         Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
         List<Node> arcs = generateConnections(actualPage.getContext(), petriNetXmlFile, page);
