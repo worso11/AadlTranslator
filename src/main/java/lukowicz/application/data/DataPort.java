@@ -10,12 +10,12 @@ public class DataPort {
      private Double pos_X;
      private Double pos_Y;
      private String direction;
+     private Boolean isTimed = Boolean.FALSE;
 
     public DataPort(String name, String direction) {
         this.name = name;
         this.id = TranslatorTools.generateUUID();
         this.direction = direction.equals("") ? "in" : direction;
-
         System.out.println("name feature "+ name + " id "+id);
     }
 
@@ -57,6 +57,14 @@ public class DataPort {
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public Boolean getTimed() {
+        return isTimed;
+    }
+
+    public void setTimed(Boolean timed) {
+        isTimed = timed;
     }
 
     @Override

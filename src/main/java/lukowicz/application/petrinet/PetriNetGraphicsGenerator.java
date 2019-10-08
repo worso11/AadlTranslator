@@ -140,18 +140,19 @@ public class PetriNetGraphicsGenerator {
         block.appendChild(idElement);
 
 
-        generateSimpleType(pnmlDocument, block, "UNIT", "colset UNIT = unit");
-        generateSimpleType(pnmlDocument, block, "BOOL", null);
-        generateSimpleType(pnmlDocument, block, "INTINF", "colset INTINF = intinf;");
-        generateSimpleType(pnmlDocument, block, "TIME", "colset TIME = time;");
-        generateSimpleType(pnmlDocument, block, "REAL", "colset REAL = real;");
-        generateSimpleType(pnmlDocument, block, "String", null);
+        generateSimpleType(pnmlDocument, block, "UNIT", "colset UNIT = unit", Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "BOOL", null, Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "INTINF", "colset INTINF = intinf;", Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "TIME", "colset TIME = time;", Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "REAL", "colset REAL = real;",Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "TINT", "colset TINT = int timed;",Boolean.TRUE);
+        generateSimpleType(pnmlDocument, block, "String", null,Boolean.FALSE);
 
 
         globbox.appendChild(block);
     }
 
-    private void generateSimpleType(Document pnmlDocument, Element block, String colorId, String layoutText) {
+    private void generateSimpleType(Document pnmlDocument, Element block, String colorId, String layoutText, Boolean isTimed) {
         Element colorElement = pnmlDocument.createElement("color");
         Attr attrIdColor = pnmlDocument.createAttribute("id");
         attrIdColor.setValue(TranslatorTools.generateUUID());
@@ -161,6 +162,12 @@ public class PetriNetGraphicsGenerator {
         colorElement.appendChild(idColorElement);
         Element colorUnitElement = pnmlDocument.createElement(colorId.toLowerCase());
         colorElement.appendChild(colorUnitElement);
+        if(isTimed){
+            Element timedElement = pnmlDocument.createElement("timed");
+            Element intElement = pnmlDocument.createElement("int");
+            colorElement.appendChild(timedElement);
+            colorElement.appendChild(intElement);
+        }
         if (layoutText != null) {
             Element layoutElement = pnmlDocument.createElement("layout");
             layoutElement.setTextContent(layoutText);
@@ -182,7 +189,7 @@ public class PetriNetGraphicsGenerator {
         block.appendChild(mlElement);
     }
 
-    public void setArcGraphicsProperties(Document pnmlDocument, Element arc1) {
+    public void setArcGraphicsProperties(Document pnmlDocument, Element arc1, String periodArcText) {
         Element arcPosition = pnmlDocument.createElement("posattr");
         Attr positionX = pnmlDocument.createAttribute("x");
         positionX.setValue("0.0");
@@ -285,13 +292,19 @@ public class PetriNetGraphicsGenerator {
         textArc.setAttributeNode(textTool);
         Attr versionTool = pnmlDocument.createAttribute("version");
         versionTool.setValue("4.0.1");
-        textArc.setTextContent("1");
+        if(periodArcText != null){
+            textArc.setTextContent(periodArcText);
+        }
+        else{
+            textArc.setTextContent("1");
+        }
+
         annot.appendChild(textArc);
 
         arc1.appendChild(annot);
     }
 
-    public Element generatePlaceGraphics(Document pnmlDocument, DataPort dataPort, Element place) {
+    public Element generatePlaceGraphics(Document pnmlDocument, DataPort dataPort, Element place, Boolean isTimed) {
         Element placePosition = pnmlDocument.createElement("posattr");
         Attr positionX = pnmlDocument.createAttribute("x");
         Double placeXPosition = ElementsPosition.getPLACE_X_POSITION();
@@ -407,7 +420,13 @@ public class PetriNetGraphicsGenerator {
         Attr textTypeVersion = pnmlDocument.createAttribute("version");
         textTypeVersion.setValue("4.0.1");
         textTypePlaceContent.setAttributeNode(textTypeVersion);
-        textTypePlaceContent.setTextContent("INTINF");
+        if(isTimed){
+            textTypePlaceContent.setTextContent("TINT");
+        }
+        else{
+            textTypePlaceContent.setTextContent("INTINF");
+        }
+
         typeProperty.appendChild(textTypePlaceContent);
 
 

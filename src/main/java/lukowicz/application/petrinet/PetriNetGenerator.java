@@ -116,7 +116,7 @@ public class PetriNetGenerator {
                 cache.getUsedFeature().add(connection.getSource());
                 cache.getUsedFeature().add(connection.getDestination());
 
-                petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
+                petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1, connection.getPeriodArc());
                 arcs.add(arc1);
             }
         }
@@ -146,7 +146,7 @@ public class PetriNetGenerator {
                 Attr placeendIdRef = pnmlDocument.createAttribute("idref");
                 Attr arcOrientation = pnmlDocument.createAttribute("orientation");
 
-                petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
+                petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1, connection.getPeriodArc());
 
                 Element arc2 = pnmlDocument.createElement("arc");
                 Attr arcId2 = pnmlDocument.createAttribute("id");
@@ -208,7 +208,7 @@ public class PetriNetGenerator {
                     transend2.setAttributeNode(transendIdRef2);
                     placeend2.setAttributeNode(placeendIdRef2);
                     arc2.setAttributeNode(arcOrientation2);
-                    petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc2);
+                    petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc2, connection.getPeriodArc());
                     arc2.appendChild(transend2);
                     arc2.appendChild(placeend2);
                     arcs.add(arc2);
@@ -247,7 +247,7 @@ public class PetriNetGenerator {
                     cache.getUsedFeature().add(connection.getSource());
                     cache.getUsedFeature().add(connection.getDestination());
 
-                    petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1);
+                    petriNetGraphicsGenerator.setArcGraphicsProperties(pnmlDocument, arc1, connection.getPeriodArc());
                     arcs.add(arc1);
                 }
 

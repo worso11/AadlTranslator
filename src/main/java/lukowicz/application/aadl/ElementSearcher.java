@@ -86,6 +86,7 @@ public class ElementSearcher {
                     cache.addElementToUniqueComponents(componentInstanceNested.getName());
                     if (!"".equals(periodValue)) {
                         DataPort waitingPlace = new DataPort("Wait", "in");
+                        waitingPlace.setTimed(Boolean.TRUE);
                         componentInstanceNested.getDataPort().add(waitingPlace);
 
                         String contextPage = "NI:" + componentInstance.getId();
@@ -95,15 +96,18 @@ public class ElementSearcher {
                         Connection connectionIn = new Connection(contextPage, connectionPageSource, connectionPageDestination);
                         connectionIn.setSocketType("in");
                         connectionIn.setGenerate(Boolean.TRUE);
+                        connectionIn.setTimed(Boolean.TRUE);
                         Connection connectionOut = new Connection(contextPage, connectionPageSource, connectionPageDestination);
                         connectionOut.setGenerate(Boolean.TRUE);
+                        connectionOut.setTimed(Boolean.TRUE);
                         connectionOut.setSocketType("out");
+                        connectionOut.setPeriodArc("1@+" + periodValue);
 
                         cache.addConnection(connectionIn);
                         cache.addConnection(connectionOut);
 
                         componentInstanceNested.setComponentInstancesNested(new ArrayList<>());
-                        ComponentInstance generatedTrans = new ComponentInstance("JavaCode", Category.GENERATED_TRANS.getValue());
+                        ComponentInstance generatedTrans = new ComponentInstance("Java Code Implementation", Category.GENERATED_TRANS.getValue());
                         componentInstanceNested.getComponentInstancesNested().
                                 add(generatedTrans);
 
@@ -115,6 +119,7 @@ public class ElementSearcher {
                         for (DataPort dataPort :
                                 componentInstanceNested.getDataPort()) {
                             DataPort copyDataPort = new DataPort(dataPort.getName(), dataPort.getDirection());
+                            copyDataPort.setTimed(dataPort.getTimed());
                             componentInstanceNested.getComponentInstancesNested().get(0).getDataPort().
                                     add(copyDataPort);
 
@@ -124,12 +129,17 @@ public class ElementSearcher {
 
                             Connection newConnection = new Connection(connectionSubpageContext, connectionSubpageSource, connectionSubpageDestination);
                             newConnection.setSocketType(copyDataPort.getDirection());
+                            if("Wait".equals(copyDataPort.getName())){
+                                newConnection.setTimed(Boolean.TRUE);
+                            }
                             cache.addConnection(newConnection);
 
                             if("Wait".equals(copyDataPort.getName())){
                                 Connection returnConnection = new Connection(connectionSubpageContext, connectionSubpageSource, connectionSubpageDestination);
                                 String oppositeDirection = "in".equals(copyDataPort.getDirection()) ? "out" : "in";
                                 returnConnection.setSocketType(oppositeDirection);
+                                returnConnection.setTimed(Boolean.TRUE);
+                                returnConnection.setPeriodArc("1@+"+ periodValue);
                                 cache.addConnection(returnConnection);
                             }
 

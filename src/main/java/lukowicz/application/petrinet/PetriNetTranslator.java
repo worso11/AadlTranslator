@@ -57,7 +57,7 @@ public class PetriNetTranslator {
         placeId.setValue(dataPort.getId());
         place.setAttributeNode(placeId);
 
-        return petriNetGraphicsGenerator.generatePlaceGraphics(pnmlDocument, dataPort, place);
+        return petriNetGraphicsGenerator.generatePlaceGraphics(pnmlDocument, dataPort, place, dataPort.getTimed());
     }
 
     private Element generateTransition(Document pnmlDocument, ComponentInstance componentInstance) {

@@ -12,6 +12,8 @@ public class Connection {
     private String pos_Y;
     private Boolean isGenerate = false;
     private String socketType;
+    private Boolean isTimed = Boolean.FALSE;
+    private String periodArc;
 
     public Connection(String context, String source, String destination) {
         this.context = context;
@@ -85,5 +87,21 @@ public class Connection {
 
     public void setSocketType(String socketType) {
         this.socketType = socketType;
+    }
+
+    public Boolean getTimed() {
+        return isTimed;
+    }
+
+    public void setTimed(Boolean timed) {
+        isTimed = timed;
+    }
+
+    public String getPeriodArc() {
+        return periodArc;
+    }
+
+    public void setPeriodArc(String periodArc) {
+        this.periodArc = periodArc;
     }
 }
