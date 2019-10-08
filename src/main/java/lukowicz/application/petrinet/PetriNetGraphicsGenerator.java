@@ -429,8 +429,77 @@ public class PetriNetGraphicsGenerator {
 
         typeProperty.appendChild(textTypePlaceContent);
 
-
         place.appendChild(typeProperty);
+
+        Element initMarkProperty = pnmlDocument.createElement("initmark");
+
+        Element initMarkPosition = pnmlDocument.createElement("posattr");
+        Attr initMarkXProperty = pnmlDocument.createAttribute("x");
+        Double initMarkXPosition = placeXPosition + 15.0000;
+        initMarkXProperty.setValue(initMarkXPosition.toString());
+        Attr initMarkYProperty = pnmlDocument.createAttribute("y");
+        Double initMarkYPosition = placeYPosition + 20.0000;
+        initMarkYProperty.setValue(initMarkYPosition.toString());
+        initMarkPosition.setAttributeNode(initMarkXProperty);
+        initMarkPosition.setAttributeNode(initMarkYProperty);
+
+        initMarkProperty.appendChild(initMarkPosition);
+
+
+        Element fillInitMarkProperty = pnmlDocument.createElement("fillattr");
+        Attr colorInitMarkFill = pnmlDocument.createAttribute("colour");
+        colorInitMarkFill.setValue("White");
+        fillInitMarkProperty.setAttributeNode(colorInitMarkFill);
+        Attr patternInitMark = pnmlDocument.createAttribute("pattern");
+        patternInitMark.setValue("");
+        fillInitMarkProperty.setAttributeNode(patternInitMark);
+        Attr filledInitMark = pnmlDocument.createAttribute("filled");
+        patternInitMark.setValue("false");
+        fillInitMarkProperty.setAttributeNode(filledInitMark);
+
+
+        initMarkProperty.appendChild(fillInitMarkProperty);
+
+
+        Element lineInitMarkProperty = pnmlDocument.createElement("lineattr");
+        Attr colorLineInitMark = pnmlDocument.createAttribute("colour");
+        colorLineInitMark.setValue("Black");
+        lineInitMarkProperty.setAttributeNode(colorLineInitMark);
+        Attr thickLinkInitMark = pnmlDocument.createAttribute("thick");
+        thickLinkInitMark.setValue("1");
+        lineInitMarkProperty.setAttributeNode(thickLinkInitMark);
+        Attr lineTypeinitMark = pnmlDocument.createAttribute("type");
+        lineTypeinitMark.setValue("solid");
+        lineInitMarkProperty.setAttributeNode(lineTypeinitMark);
+
+        initMarkProperty.appendChild(lineInitMarkProperty);
+
+
+        Element textInitMarkProperty = pnmlDocument.createElement("textattr");
+        Attr colorInitMarkText = pnmlDocument.createAttribute("colour");
+        colorInitMarkText.setValue("Black");
+        textInitMarkProperty.setAttributeNode(colorInitMarkText);
+        Attr isInitMarkBold = pnmlDocument.createAttribute("bold");
+        isInitMarkBold.setValue("false");
+        textInitMarkProperty.setAttributeNode(isInitMarkBold);
+
+        initMarkProperty.appendChild(textInitMarkProperty);
+
+        Element textInitMarkPlaceContent = pnmlDocument.createElement("text");
+        Attr toolInitMarkTextAttr = pnmlDocument.createAttribute("tool");
+        toolInitMarkTextAttr.setValue("CPN Tools");
+        textInitMarkPlaceContent.setAttributeNode(toolInitMarkTextAttr);
+        Attr textInitMarkVersion = pnmlDocument.createAttribute("version");
+        textInitMarkVersion.setValue("4.0.1");
+        textInitMarkPlaceContent.setAttributeNode(textInitMarkVersion);
+        textInitMarkPlaceContent.setTextContent("1");
+
+        initMarkProperty.appendChild(textInitMarkPlaceContent);
+
+        place.appendChild(initMarkProperty);
+
+
+
         Socket socket = cache.isConnectingPort(dataPort);
 
 //        if (socket != null) {
