@@ -226,6 +226,69 @@ public class PetriNetGraphicsGenerator {
         isBold.setValue("false");
         textProperty.setAttributeNode(isBold);
         arc1.appendChild(textProperty);
+
+
+        Element annot = pnmlDocument.createElement("annot");
+        Attr annotId = pnmlDocument.createAttribute("id");
+        annotId.setValue(TranslatorTools.generateUUID());
+        annot.setAttributeNode(annotId);
+
+        Element position = pnmlDocument.createElement("posatr");
+        Attr positionXAnnot = pnmlDocument.createAttribute("x");
+        positionXAnnot.setValue("0.00000");
+        Attr positionYAnnot = pnmlDocument.createAttribute("y");
+        positionYAnnot.setValue("0.0000");
+        position.setAttributeNode(positionXAnnot);
+        position.setAttributeNode(positionYAnnot);
+
+        annot.appendChild(position);
+
+        Element fillAnnotProperty = pnmlDocument.createElement("fillattr");
+        Attr colorAnnotFill = pnmlDocument.createAttribute("colour");
+        colorAnnotFill.setValue("White");
+        fillAnnotProperty.setAttributeNode(colorAnnotFill);
+        Attr patternAnnot = pnmlDocument.createAttribute("pattern");
+        patternAnnot.setValue("Solid");
+        fillAnnotProperty.setAttributeNode(patternAnnot);
+        Attr filledAnnot = pnmlDocument.createAttribute("filled");
+        patternAnnot.setValue("false");
+        fillAnnotProperty.setAttributeNode(filledAnnot);
+
+        annot.appendChild(fillAnnotProperty);
+
+        Element lineAnnotProperty = pnmlDocument.createElement("lineattr");
+        Attr colorAnnotLine = pnmlDocument.createAttribute("colour");
+        colorAnnotLine.setValue("Black");
+        lineAnnotProperty.setAttributeNode(colorAnnotLine);
+        Attr thickAnnot = pnmlDocument.createAttribute("thick");
+        thickAnnot.setValue("0");
+        lineAnnotProperty.setAttributeNode(thickAnnot);
+        Attr typeAnnot = pnmlDocument.createAttribute("type");
+        typeAnnot.setValue("Solid");
+        lineAnnotProperty.setAttributeNode(typeAnnot);
+
+        annot.appendChild(lineAnnotProperty);
+
+        Element textAnnotProperty = pnmlDocument.createElement("textattr");
+        Attr colorAnnotText = pnmlDocument.createAttribute("colour");
+        colorAnnotText.setValue("Black");
+        textAnnotProperty.setAttributeNode(colorAnnotText);
+        Attr isBoldAnnot = pnmlDocument.createAttribute("bold");
+        isBoldAnnot.setValue("false");
+        textAnnotProperty.setAttributeNode(isBoldAnnot);
+
+        annot.appendChild(textAnnotProperty);
+
+        Element textArc = pnmlDocument.createElement("text");
+        Attr textTool = pnmlDocument.createAttribute("tool");
+        textTool.setValue("CPN Tools");
+        textArc.setAttributeNode(textTool);
+        Attr versionTool = pnmlDocument.createAttribute("version");
+        versionTool.setValue("4.0.1");
+        textArc.setTextContent("1");
+        annot.appendChild(textArc);
+
+        arc1.appendChild(annot);
     }
 
     public Element generatePlaceGraphics(Document pnmlDocument, DataPort dataPort, Element place) {
@@ -288,6 +351,67 @@ public class PetriNetGraphicsGenerator {
         ellipseProperty.setAttributeNode(height);
         place.appendChild(ellipseProperty);
 
+        Element typeProperty = pnmlDocument.createElement("type");
+
+        Element typePosition = pnmlDocument.createElement("posattr");
+        Attr posattrXProperty = pnmlDocument.createAttribute("x");
+        Double typeXPosition = placeXPosition - 15.0000;
+        posattrXProperty.setValue(typeXPosition.toString());
+        Attr posattrYProperty = pnmlDocument.createAttribute("y");
+        Double typeYPosition = placeYPosition - 20.0000;
+        posattrYProperty.setValue(typeYPosition.toString());
+        typePosition.setAttributeNode(posattrXProperty);
+        typePosition.setAttributeNode(posattrYProperty);
+        typeProperty.appendChild(typePosition);
+
+
+
+        Element fillTypeProperty = pnmlDocument.createElement("fillattr");
+        Attr colorTypeFill = pnmlDocument.createAttribute("colour");
+        colorTypeFill.setValue("White");
+        fillTypeProperty.setAttributeNode(colorTypeFill);
+        Attr patternType = pnmlDocument.createAttribute("pattern");
+        patternType.setValue("");
+        fillTypeProperty.setAttributeNode(patternType);
+        Attr filledType = pnmlDocument.createAttribute("filled");
+        patternType.setValue("false");
+        fillTypeProperty.setAttributeNode(filledType);
+        typeProperty.appendChild(fillTypeProperty);
+
+
+        Element lineTypeProperty = pnmlDocument.createElement("lineattr");
+        Attr colorTypeLine = pnmlDocument.createAttribute("colour");
+        colorTypeLine.setValue("Black");
+        lineTypeProperty.setAttributeNode(colorTypeLine);
+        Attr thickTypeLine = pnmlDocument.createAttribute("thick");
+        thickTypeLine.setValue("1");
+        lineTypeProperty.setAttributeNode(thickTypeLine);
+        Attr typeLine = pnmlDocument.createAttribute("type");
+        typeLine.setValue("solid");
+        lineTypeProperty.setAttributeNode(typeLine);
+        typeProperty.appendChild(lineTypeProperty);
+
+        Element textTypeProperty = pnmlDocument.createElement("textattr");
+        Attr colorTypeText = pnmlDocument.createAttribute("colour");
+        colorTypeText.setValue("Black");
+        textTypeProperty.setAttributeNode(colorTypeText);
+        Attr isTypeBold = pnmlDocument.createAttribute("bold");
+        isTypeBold.setValue("false");
+        textTypeProperty.setAttributeNode(isTypeBold);
+        typeProperty.appendChild(textTypeProperty);
+
+        Element textTypePlaceContent = pnmlDocument.createElement("text");
+        Attr toolAttr = pnmlDocument.createAttribute("tool");
+        toolAttr.setValue("CPN Tools");
+        textTypePlaceContent.setAttributeNode(toolAttr);
+        Attr textTypeVersion = pnmlDocument.createAttribute("version");
+        textTypeVersion.setValue("4.0.1");
+        textTypePlaceContent.setAttributeNode(textTypeVersion);
+        textTypePlaceContent.setTextContent("INTINF");
+        typeProperty.appendChild(textTypePlaceContent);
+
+
+        place.appendChild(typeProperty);
         Socket socket = cache.isConnectingPort(dataPort);
 
 //        if (socket != null) {

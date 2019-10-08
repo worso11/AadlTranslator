@@ -65,13 +65,11 @@ public class PetriNetPager {
         for (int i = 1; i < cache.getPages().size(); i++) {
             if(cache.getPages().get(i).getHeadId() == null){
                 cache.getPages().get(0).getNestedPage().add(cache.getPages().get(i));
-                cache.getPages().remove(i);
             }
             if(cache.getPages().get(i).getHeadId() != null){
                 for(int j = 0 ; j < cache.getPages().get(0).getNestedPage().size(); ++j){
                     if(cache.getPages().get(0).getNestedPage().get(j).getTransId().equals(cache.getPages().get(i).getHeadId())){
                         cache.getPages().get(0).getNestedPage().get(j).getNestedPage().add(cache.getPages().get(i));
-                        cache.getPages().remove(i);
                     }
                 }
             }
