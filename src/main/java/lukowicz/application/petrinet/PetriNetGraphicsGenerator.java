@@ -144,9 +144,9 @@ public class PetriNetGraphicsGenerator {
         generateSimpleType(pnmlDocument, block, "BOOL", null, Boolean.FALSE);
         generateSimpleType(pnmlDocument, block, "INTINF", "colset INTINF = intinf;", Boolean.FALSE);
         generateSimpleType(pnmlDocument, block, "TIME", "colset TIME = time;", Boolean.FALSE);
-        generateSimpleType(pnmlDocument, block, "REAL", "colset REAL = real;",Boolean.FALSE);
-        generateSimpleType(pnmlDocument, block, "TINT", "colset TINT = int timed;",Boolean.TRUE);
-        generateSimpleType(pnmlDocument, block, "String", null,Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "REAL", "colset REAL = real;", Boolean.FALSE);
+        generateSimpleType(pnmlDocument, block, "TINT", "colset TINT = int timed;", Boolean.TRUE);
+        generateSimpleType(pnmlDocument, block, "String", null, Boolean.FALSE);
 
 
         globbox.appendChild(block);
@@ -162,7 +162,7 @@ public class PetriNetGraphicsGenerator {
         colorElement.appendChild(idColorElement);
         Element colorUnitElement = pnmlDocument.createElement(colorId.toLowerCase());
         colorElement.appendChild(colorUnitElement);
-        if(isTimed){
+        if (isTimed) {
             Element timedElement = pnmlDocument.createElement("timed");
             Element intElement = pnmlDocument.createElement("int");
             colorElement.appendChild(timedElement);
@@ -200,38 +200,14 @@ public class PetriNetGraphicsGenerator {
         arc1.appendChild(arcPosition);
 
 
-        Element fillProperty = pnmlDocument.createElement("fillattr");
-        Attr colorFill = pnmlDocument.createAttribute("colour");
-        colorFill.setValue("White");
-        fillProperty.setAttributeNode(colorFill);
-        Attr pattern = pnmlDocument.createAttribute("pattern");
-        pattern.setValue("");
-        fillProperty.setAttributeNode(pattern);
-        Attr filled = pnmlDocument.createAttribute("filled");
-        pattern.setValue("false");
-        fillProperty.setAttributeNode(filled);
+        Element fillProperty = createFillProperty(pnmlDocument);
         arc1.appendChild(fillProperty);
 
 
-        Element lineProperty = pnmlDocument.createElement("lineattr");
-        Attr colorLine = pnmlDocument.createAttribute("colour");
-        colorLine.setValue("Black");
-        lineProperty.setAttributeNode(colorLine);
-        Attr thick = pnmlDocument.createAttribute("thick");
-        thick.setValue("1");
-        lineProperty.setAttributeNode(thick);
-        Attr type = pnmlDocument.createAttribute("type");
-        type.setValue("solid");
-        lineProperty.setAttributeNode(type);
+        Element lineProperty = createLineProperty(pnmlDocument);
         arc1.appendChild(lineProperty);
 
-        Element textProperty = pnmlDocument.createElement("textattr");
-        Attr colorText = pnmlDocument.createAttribute("colour");
-        colorText.setValue("Black");
-        textProperty.setAttributeNode(colorText);
-        Attr isBold = pnmlDocument.createAttribute("bold");
-        isBold.setValue("false");
-        textProperty.setAttributeNode(isBold);
+        Element textProperty = createTextProperty(pnmlDocument);
         arc1.appendChild(textProperty);
 
 
@@ -276,13 +252,7 @@ public class PetriNetGraphicsGenerator {
 
         annot.appendChild(lineAnnotProperty);
 
-        Element textAnnotProperty = pnmlDocument.createElement("textattr");
-        Attr colorAnnotText = pnmlDocument.createAttribute("colour");
-        colorAnnotText.setValue("Black");
-        textAnnotProperty.setAttributeNode(colorAnnotText);
-        Attr isBoldAnnot = pnmlDocument.createAttribute("bold");
-        isBoldAnnot.setValue("false");
-        textAnnotProperty.setAttributeNode(isBoldAnnot);
+        Element textAnnotProperty = createTextProperty(pnmlDocument);
 
         annot.appendChild(textAnnotProperty);
 
@@ -292,10 +262,9 @@ public class PetriNetGraphicsGenerator {
         textArc.setAttributeNode(textTool);
         Attr versionTool = pnmlDocument.createAttribute("version");
         versionTool.setValue("4.0.1");
-        if(periodArcText != null){
+        if (periodArcText != null) {
             textArc.setTextContent(periodArcText);
-        }
-        else{
+        } else {
             textArc.setTextContent("1");
         }
 
@@ -305,199 +274,63 @@ public class PetriNetGraphicsGenerator {
     }
 
     public Element generatePlaceGraphics(Document pnmlDocument, DataPort dataPort, Element place, Boolean isTimed) {
-        Element placePosition = pnmlDocument.createElement("posattr");
-        Attr positionX = pnmlDocument.createAttribute("x");
         Double placeXPosition = ElementsPosition.getPLACE_X_POSITION();
-        positionX.setValue(placeXPosition.toString());
-        Attr positionY = pnmlDocument.createAttribute("y");
         Double placeYPosition = ElementsPosition.getPLACE_Y_POSITION();
-        positionY.setValue(placeYPosition.toString());
-        placePosition.setAttributeNode(positionX);
-        placePosition.setAttributeNode(positionY);
+
+        Element placePosition = createPosattr(pnmlDocument, placeXPosition, placeYPosition);
         place.appendChild(placePosition);
 
-        Element fillProperty = pnmlDocument.createElement("fillattr");
-        Attr colorFill = pnmlDocument.createAttribute("colour");
-        colorFill.setValue("White");
-        fillProperty.setAttributeNode(colorFill);
-        Attr pattern = pnmlDocument.createAttribute("pattern");
-        pattern.setValue("");
-        fillProperty.setAttributeNode(pattern);
-        Attr filled = pnmlDocument.createAttribute("filled");
-        pattern.setValue("false");
-        fillProperty.setAttributeNode(filled);
+        Element fillProperty = createFillProperty(pnmlDocument);
         place.appendChild(fillProperty);
 
-
-        Element lineProperty = pnmlDocument.createElement("lineattr");
-        Attr colorLine = pnmlDocument.createAttribute("colour");
-        colorLine.setValue("Black");
-        lineProperty.setAttributeNode(colorLine);
-        Attr thick = pnmlDocument.createAttribute("thick");
-        thick.setValue("1");
-        lineProperty.setAttributeNode(thick);
-        Attr type = pnmlDocument.createAttribute("type");
-        type.setValue("solid");
-        lineProperty.setAttributeNode(type);
+        Element lineProperty = createLineProperty(pnmlDocument);
         place.appendChild(lineProperty);
 
-        Element textProperty = pnmlDocument.createElement("textattr");
-        Attr colorText = pnmlDocument.createAttribute("colour");
-        colorText.setValue("Black");
-        textProperty.setAttributeNode(colorText);
-        Attr isBold = pnmlDocument.createAttribute("bold");
-        isBold.setValue("false");
-        textProperty.setAttributeNode(isBold);
+        Element textProperty = createTextProperty(pnmlDocument);
         place.appendChild(textProperty);
-
 
         Element placeText = pnmlDocument.createElement("text");
         placeText.appendChild(pnmlDocument.createTextNode(dataPort.getName()));
         place.appendChild(placeText);
 
-        Element ellipseProperty = pnmlDocument.createElement("ellipse");
-        Attr weight = pnmlDocument.createAttribute("w");
-        weight.setValue("60.000000");
-        ellipseProperty.setAttributeNode(weight);
-        Attr height = pnmlDocument.createAttribute("h");
-        height.setValue("40.000000");
-        ellipseProperty.setAttributeNode(height);
+        Element ellipseProperty = createEllipseProperty(pnmlDocument);
         place.appendChild(ellipseProperty);
 
         Element typeProperty = pnmlDocument.createElement("type");
-
-        Element typePosition = pnmlDocument.createElement("posattr");
-        Attr posattrXProperty = pnmlDocument.createAttribute("x");
-        Double typeXPosition = placeXPosition - 15.0000;
-        posattrXProperty.setValue(typeXPosition.toString());
-        Attr posattrYProperty = pnmlDocument.createAttribute("y");
-        Double typeYPosition = placeYPosition - 20.0000;
-        posattrYProperty.setValue(typeYPosition.toString());
-        typePosition.setAttributeNode(posattrXProperty);
-        typePosition.setAttributeNode(posattrYProperty);
+        Element typePosition = createPosattr(pnmlDocument, placeXPosition - 15.0000, placeYPosition - 20.0000);
         typeProperty.appendChild(typePosition);
 
-
-
-        Element fillTypeProperty = pnmlDocument.createElement("fillattr");
-        Attr colorTypeFill = pnmlDocument.createAttribute("colour");
-        colorTypeFill.setValue("White");
-        fillTypeProperty.setAttributeNode(colorTypeFill);
-        Attr patternType = pnmlDocument.createAttribute("pattern");
-        patternType.setValue("");
-        fillTypeProperty.setAttributeNode(patternType);
-        Attr filledType = pnmlDocument.createAttribute("filled");
-        patternType.setValue("false");
-        fillTypeProperty.setAttributeNode(filledType);
+        Element fillTypeProperty = createFillProperty(pnmlDocument);
         typeProperty.appendChild(fillTypeProperty);
 
-
-        Element lineTypeProperty = pnmlDocument.createElement("lineattr");
-        Attr colorTypeLine = pnmlDocument.createAttribute("colour");
-        colorTypeLine.setValue("Black");
-        lineTypeProperty.setAttributeNode(colorTypeLine);
-        Attr thickTypeLine = pnmlDocument.createAttribute("thick");
-        thickTypeLine.setValue("1");
-        lineTypeProperty.setAttributeNode(thickTypeLine);
-        Attr typeLine = pnmlDocument.createAttribute("type");
-        typeLine.setValue("solid");
-        lineTypeProperty.setAttributeNode(typeLine);
+        Element lineTypeProperty = createLineProperty(pnmlDocument);
         typeProperty.appendChild(lineTypeProperty);
 
-        Element textTypeProperty = pnmlDocument.createElement("textattr");
-        Attr colorTypeText = pnmlDocument.createAttribute("colour");
-        colorTypeText.setValue("Black");
-        textTypeProperty.setAttributeNode(colorTypeText);
-        Attr isTypeBold = pnmlDocument.createAttribute("bold");
-        isTypeBold.setValue("false");
-        textTypeProperty.setAttributeNode(isTypeBold);
+        Element textTypeProperty = createTextProperty(pnmlDocument);
         typeProperty.appendChild(textTypeProperty);
 
-        Element textTypePlaceContent = pnmlDocument.createElement("text");
-        Attr toolAttr = pnmlDocument.createAttribute("tool");
-        toolAttr.setValue("CPN Tools");
-        textTypePlaceContent.setAttributeNode(toolAttr);
-        Attr textTypeVersion = pnmlDocument.createAttribute("version");
-        textTypeVersion.setValue("4.0.1");
-        textTypePlaceContent.setAttributeNode(textTypeVersion);
-        if(isTimed){
-            textTypePlaceContent.setTextContent("TINT");
-        }
-        else{
-            textTypePlaceContent.setTextContent("INTINF");
-        }
-
-        typeProperty.appendChild(textTypePlaceContent);
-
+        createTextTypeContent(pnmlDocument, isTimed, typeProperty);
         place.appendChild(typeProperty);
 
         Element initMarkProperty = pnmlDocument.createElement("initmark");
 
-        Element initMarkPosition = pnmlDocument.createElement("posattr");
-        Attr initMarkXProperty = pnmlDocument.createAttribute("x");
-        Double initMarkXPosition = placeXPosition + 15.0000;
-        initMarkXProperty.setValue(initMarkXPosition.toString());
-        Attr initMarkYProperty = pnmlDocument.createAttribute("y");
-        Double initMarkYPosition = placeYPosition + 20.0000;
-        initMarkYProperty.setValue(initMarkYPosition.toString());
-        initMarkPosition.setAttributeNode(initMarkXProperty);
-        initMarkPosition.setAttributeNode(initMarkYProperty);
-
+        Element initMarkPosition = createPosattr(pnmlDocument, placeXPosition + 15.0000, placeYPosition + 20.0000);
         initMarkProperty.appendChild(initMarkPosition);
 
-
-        Element fillInitMarkProperty = pnmlDocument.createElement("fillattr");
-        Attr colorInitMarkFill = pnmlDocument.createAttribute("colour");
-        colorInitMarkFill.setValue("White");
-        fillInitMarkProperty.setAttributeNode(colorInitMarkFill);
-        Attr patternInitMark = pnmlDocument.createAttribute("pattern");
-        patternInitMark.setValue("");
-        fillInitMarkProperty.setAttributeNode(patternInitMark);
-        Attr filledInitMark = pnmlDocument.createAttribute("filled");
-        patternInitMark.setValue("false");
-        fillInitMarkProperty.setAttributeNode(filledInitMark);
-
-
+        Element fillInitMarkProperty = createFillProperty(pnmlDocument);
         initMarkProperty.appendChild(fillInitMarkProperty);
 
 
-        Element lineInitMarkProperty = pnmlDocument.createElement("lineattr");
-        Attr colorLineInitMark = pnmlDocument.createAttribute("colour");
-        colorLineInitMark.setValue("Black");
-        lineInitMarkProperty.setAttributeNode(colorLineInitMark);
-        Attr thickLinkInitMark = pnmlDocument.createAttribute("thick");
-        thickLinkInitMark.setValue("1");
-        lineInitMarkProperty.setAttributeNode(thickLinkInitMark);
-        Attr lineTypeinitMark = pnmlDocument.createAttribute("type");
-        lineTypeinitMark.setValue("solid");
-        lineInitMarkProperty.setAttributeNode(lineTypeinitMark);
-
+        Element lineInitMarkProperty = createLineProperty(pnmlDocument);
         initMarkProperty.appendChild(lineInitMarkProperty);
 
-
-        Element textInitMarkProperty = pnmlDocument.createElement("textattr");
-        Attr colorInitMarkText = pnmlDocument.createAttribute("colour");
-        colorInitMarkText.setValue("Black");
-        textInitMarkProperty.setAttributeNode(colorInitMarkText);
-        Attr isInitMarkBold = pnmlDocument.createAttribute("bold");
-        isInitMarkBold.setValue("false");
-        textInitMarkProperty.setAttributeNode(isInitMarkBold);
-
+        Element textInitMarkProperty = createTextProperty(pnmlDocument);
         initMarkProperty.appendChild(textInitMarkProperty);
 
-        Element textInitMarkPlaceContent = pnmlDocument.createElement("text");
-        Attr toolInitMarkTextAttr = pnmlDocument.createAttribute("tool");
-        toolInitMarkTextAttr.setValue("CPN Tools");
-        textInitMarkPlaceContent.setAttributeNode(toolInitMarkTextAttr);
-        Attr textInitMarkVersion = pnmlDocument.createAttribute("version");
-        textInitMarkVersion.setValue("4.0.1");
-        textInitMarkPlaceContent.setAttributeNode(textInitMarkVersion);
-        textInitMarkPlaceContent.setTextContent("1");
-
+        Element textInitMarkPlaceContent = createTextContentInitMark(pnmlDocument);
         initMarkProperty.appendChild(textInitMarkPlaceContent);
 
         place.appendChild(initMarkProperty);
-
 
 
         Socket socket = cache.isConnectingPort(dataPort);
@@ -567,6 +400,98 @@ public class PetriNetGraphicsGenerator {
 
     }
 
+    private Element createTextContentInitMark(Document pnmlDocument) {
+        Element textInitMarkPlaceContent = pnmlDocument.createElement("text");
+        Attr toolInitMarkTextAttr = pnmlDocument.createAttribute("tool");
+        toolInitMarkTextAttr.setValue("CPN Tools");
+        textInitMarkPlaceContent.setAttributeNode(toolInitMarkTextAttr);
+        Attr textInitMarkVersion = pnmlDocument.createAttribute("version");
+        textInitMarkVersion.setValue("4.0.1");
+        textInitMarkPlaceContent.setAttributeNode(textInitMarkVersion);
+        textInitMarkPlaceContent.setTextContent("1");
+        return textInitMarkPlaceContent;
+    }
+
+    private void createTextTypeContent(Document pnmlDocument, Boolean isTimed, Element typeProperty) {
+        Element textTypePlaceContent = pnmlDocument.createElement("text");
+        Attr toolAttr = pnmlDocument.createAttribute("tool");
+        toolAttr.setValue("CPN Tools");
+        textTypePlaceContent.setAttributeNode(toolAttr);
+        Attr textTypeVersion = pnmlDocument.createAttribute("version");
+        textTypeVersion.setValue("4.0.1");
+        textTypePlaceContent.setAttributeNode(textTypeVersion);
+        if (isTimed) {
+            textTypePlaceContent.setTextContent("TINT");
+        } else {
+            textTypePlaceContent.setTextContent("INTINF");
+        }
+
+        typeProperty.appendChild(textTypePlaceContent);
+    }
+
+    private Element createPosattr(Document pnmlDocument, Double placeXPosition, Double placeYPosition) {
+        Element typePosition = pnmlDocument.createElement("posattr");
+        Attr posattrXProperty = pnmlDocument.createAttribute("x");
+        Double typeXPosition = placeXPosition;
+        posattrXProperty.setValue(typeXPosition.toString());
+        Attr posattrYProperty = pnmlDocument.createAttribute("y");
+        Double typeYPosition = placeYPosition;
+        posattrYProperty.setValue(typeYPosition.toString());
+        typePosition.setAttributeNode(posattrXProperty);
+        typePosition.setAttributeNode(posattrYProperty);
+        return typePosition;
+    }
+
+    private Element createEllipseProperty(Document pnmlDocument) {
+        Element ellipseProperty = pnmlDocument.createElement("ellipse");
+        Attr weight = pnmlDocument.createAttribute("w");
+        weight.setValue("60.000000");
+        ellipseProperty.setAttributeNode(weight);
+        Attr height = pnmlDocument.createAttribute("h");
+        height.setValue("40.000000");
+        ellipseProperty.setAttributeNode(height);
+        return ellipseProperty;
+    }
+
+    private Element createTextProperty(Document pnmlDocument) {
+        Element textProperty = pnmlDocument.createElement("textattr");
+        Attr colorText = pnmlDocument.createAttribute("colour");
+        colorText.setValue("Black");
+        textProperty.setAttributeNode(colorText);
+        Attr isBold = pnmlDocument.createAttribute("bold");
+        isBold.setValue("false");
+        textProperty.setAttributeNode(isBold);
+        return textProperty;
+    }
+
+    private Element createLineProperty(Document pnmlDocument) {
+        Element lineProperty = pnmlDocument.createElement("lineattr");
+        Attr colorLine = pnmlDocument.createAttribute("colour");
+        colorLine.setValue("Black");
+        lineProperty.setAttributeNode(colorLine);
+        Attr thick = pnmlDocument.createAttribute("thick");
+        thick.setValue("1");
+        lineProperty.setAttributeNode(thick);
+        Attr type = pnmlDocument.createAttribute("type");
+        type.setValue("solid");
+        lineProperty.setAttributeNode(type);
+        return lineProperty;
+    }
+
+    private Element createFillProperty(Document pnmlDocument) {
+        Element fillProperty = pnmlDocument.createElement("fillattr");
+        Attr colorFill = pnmlDocument.createAttribute("colour");
+        colorFill.setValue("White");
+        fillProperty.setAttributeNode(colorFill);
+        Attr pattern = pnmlDocument.createAttribute("pattern");
+        pattern.setValue("");
+        fillProperty.setAttributeNode(pattern);
+        Attr filled = pnmlDocument.createAttribute("filled");
+        pattern.setValue("false");
+        fillProperty.setAttributeNode(filled);
+        return fillProperty;
+    }
+
 
     public Element generateGraphicsAttributeTransition(Document pnmlDocument, ComponentInstance componentInstance) {
         Element transition = pnmlDocument.createElement("trans");
@@ -585,38 +510,14 @@ public class PetriNetGraphicsGenerator {
         transition.appendChild(transitionPosition);
 
 
-        Element fillProperty = pnmlDocument.createElement("fillattr");
-        Attr colorFill = pnmlDocument.createAttribute("colour");
-        colorFill.setValue("White");
-        fillProperty.setAttributeNode(colorFill);
-        Attr pattern = pnmlDocument.createAttribute("pattern");
-        pattern.setValue("");
-        fillProperty.setAttributeNode(pattern);
-        Attr filled = pnmlDocument.createAttribute("filled");
-        pattern.setValue("false");
-        fillProperty.setAttributeNode(filled);
+        Element fillProperty = createFillProperty(pnmlDocument);
         transition.appendChild(fillProperty);
 
 
-        Element lineProperty = pnmlDocument.createElement("lineattr");
-        Attr colorLine = pnmlDocument.createAttribute("colour");
-        colorLine.setValue("Black");
-        lineProperty.setAttributeNode(colorLine);
-        Attr thick = pnmlDocument.createAttribute("thick");
-        thick.setValue("1");
-        lineProperty.setAttributeNode(thick);
-        Attr type = pnmlDocument.createAttribute("type");
-        type.setValue("solid");
-        lineProperty.setAttributeNode(type);
+        Element lineProperty = createLineProperty(pnmlDocument);
         transition.appendChild(lineProperty);
 
-        Element textProperty = pnmlDocument.createElement("textattr");
-        Attr colorText = pnmlDocument.createAttribute("colour");
-        colorText.setValue("Black");
-        textProperty.setAttributeNode(colorText);
-        Attr isBold = pnmlDocument.createAttribute("bold");
-        isBold.setValue("false");
-        textProperty.setAttributeNode(isBold);
+        Element textProperty = createTextProperty(pnmlDocument);
         transition.appendChild(textProperty);
 
         Element transitionText = pnmlDocument.createElement("text");
@@ -633,7 +534,7 @@ public class PetriNetGraphicsGenerator {
         boxProperty.setAttributeNode(height);
         transition.appendChild(boxProperty);
 
-        if (Category.PROCESS.getValue().equals(componentInstance.getCategory()) || (Category.THREAD.getValue().equals(componentInstance.getCategory()) && !"".equals(componentInstance.getPeriod()) )) {
+        if (Category.PROCESS.getValue().equals(componentInstance.getCategory()) || (Category.THREAD.getValue().equals(componentInstance.getCategory()) && !"".equals(componentInstance.getPeriod()))) {
             Element substElement = pnmlDocument.createElement("subst");
             Attr subpageAttr = pnmlDocument.createAttribute("subpage");
             String pageId = petriNetPager.getPageIdForTransId(componentInstance.getId());
@@ -694,13 +595,7 @@ public class PetriNetGraphicsGenerator {
             subPageTransitionLineProperty.setAttributeNode(subPageTransitionLineAttrType);
             subpageElement.appendChild(subPageTransitionLineProperty);
 
-            Element subPageTransitionTextProperty = pnmlDocument.createElement("textattr");
-            Attr subPageTransitionColorText = pnmlDocument.createAttribute("colour");
-            subPageTransitionColorText.setValue("Black");
-            subPageTransitionTextProperty.setAttributeNode(subPageTransitionColorText);
-            Attr subPageTransitionTextAttrBold = pnmlDocument.createAttribute("bold");
-            subPageTransitionTextAttrBold.setValue("false");
-            subPageTransitionTextProperty.setAttributeNode(subPageTransitionTextAttrBold);
+            Element subPageTransitionTextProperty = createTextProperty(pnmlDocument);
             subpageElement.appendChild(subPageTransitionTextProperty);
 
             substElement.appendChild(subpageElement);
@@ -708,12 +603,8 @@ public class PetriNetGraphicsGenerator {
             transition.appendChild(substElement);
         }
 
-
         return transition;
     }
-
-
-
 
 
 }
