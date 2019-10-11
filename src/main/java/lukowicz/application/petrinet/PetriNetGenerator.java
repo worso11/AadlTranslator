@@ -53,7 +53,7 @@ public class PetriNetGenerator {
 
         Page actualPage = petriNetPager.getPageByContext("");
         //page startowy   moze te Generate New Page do Pager cos takiego??
-        Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
+        Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root, "System");
         List<Node> arcs = generateConnections(actualPage.getContext(), petriNetXmlFile, page);
         petriNetTranslator.translateElements(petriNetXmlFile, page, cache.getComponentInstances());
         insertArcToPNet(page, arcs);
@@ -64,7 +64,7 @@ public class PetriNetGenerator {
         //pageForProcess   zrobic odniesienia do stron!!
         for (ComponentInstance pageProcess : cache.getPROCESSES()) {
             actualPage = petriNetPager.getPageForTransId(pageProcess.getId());
-            Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root);
+            Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root, actualPage.getPageName());
             List<Node> arcs2;
             if(!actualPage.getGenerated())
             {

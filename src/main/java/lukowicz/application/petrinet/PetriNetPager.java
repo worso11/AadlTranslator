@@ -78,14 +78,14 @@ public class PetriNetPager {
 
     }
 
-    public Element generateNewPage(String pageId, Document pnmlDocument, Element root) {
+    public Element generateNewPage(String pageId, Document pnmlDocument, Element root, String transName) {
         Element page = pnmlDocument.createElement("page");
         Attr pageIdAttr = pnmlDocument.createAttribute("id");
         pageIdAttr.setValue(pageId);
         page.setAttributeNode(pageIdAttr);
         Element pageAttr = pnmlDocument.createElement("pageattr");
         Attr pageAttrName = pnmlDocument.createAttribute("name");
-        pageAttrName.setValue("pageName");
+        pageAttrName.setValue(transName);
         pageAttr.setAttributeNode(pageAttrName);
         page.appendChild(pageAttr);
         root.appendChild(page);

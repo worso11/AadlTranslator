@@ -107,7 +107,7 @@ public class ElementSearcher {
                         cache.addConnection(connectionOut);
 
                         componentInstanceNested.setComponentInstancesNested(new ArrayList<>());
-                        ComponentInstance generatedTrans = new ComponentInstance("Java Code Implementation", Category.GENERATED_TRANS.getValue());
+                        ComponentInstance generatedTrans = new ComponentInstance("Code Implementation", Category.GENERATED_TRANS.getValue());
                         componentInstanceNested.getComponentInstancesNested().
                                 add(generatedTrans);
 
@@ -146,7 +146,6 @@ public class ElementSearcher {
                             cache.getSOCKETS().add(new Socket(componentInstanceNested.getId(), copyDataPort.getId(), dataPort.getId(), dataPort.getDirection()));
 
                         }
-
 
                     }
                 }
@@ -235,14 +234,14 @@ public class ElementSearcher {
                     actualComponentInstance : cache.getComponentInstanceByIndex(path.get(j));
             if (j == path.size() - 1) {
                 return new ConnectionNode(processingComponent.getId(), null, processingComponent.getCategory(), null, null,
-                        processingComponent.getPeriod(), processingComponent.getPos_X(), processingComponent.getPos_Y());
+                        processingComponent.getPeriod(), processingComponent.getPos_X(), processingComponent.getPos_Y(), processingComponent.getName());
             } else if (j == path.size() - 2) {
                 String headComponentId = headComponent != null ? headComponent.getId() : null;
                 String headCategory = headComponent != null ? headComponent.getCategory() : null;
 
                 return new ConnectionNode(processingComponent.getId(), processingComponent.getDataPort().get(path.get(j + 1)).getId(),
                         processingComponent.getCategory(), headComponentId, headCategory, processingComponent.getPeriod(),
-                        processingComponent.getPos_X(), processingComponent.getPos_Y());
+                        processingComponent.getPos_X(), processingComponent.getPos_Y(), processingComponent.getName());
             } else {
                 return getConnectionNode(path.subList(j + 1, path.size()), processingComponent.getComponentInstancesNested().get(path.get(j + 1)),
                         processingComponent);
