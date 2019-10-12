@@ -41,11 +41,6 @@ public class PetriNetTranslator {
             }
 
         }
-        // Generated places
-        for(DataPort feature : cache.getGeneratedPlaces()){
-            Element place = generatePlace(pnmlDocument,feature);
-            page.appendChild(place);
-        }
 
         cache.clearUsedFeature();
         cache.clearGeneratedPlaces();
@@ -65,4 +60,8 @@ public class PetriNetTranslator {
     }
 
 
+    public void generateGeneralPage(Document petriNetXmlFile, Element generalPage) {
+
+
+    }
 }

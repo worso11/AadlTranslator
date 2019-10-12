@@ -216,39 +216,17 @@ public class PetriNetGraphicsGenerator {
         annotId.setValue(TranslatorTools.generateUUID());
         annot.setAttributeNode(annotId);
 
-        Element position = pnmlDocument.createElement("posatr");
-        Attr positionXAnnot = pnmlDocument.createAttribute("x");
-        positionXAnnot.setValue("0.00000");
-        Attr positionYAnnot = pnmlDocument.createAttribute("y");
-        positionYAnnot.setValue("0.0000");
-        position.setAttributeNode(positionXAnnot);
-        position.setAttributeNode(positionYAnnot);
-
+        Element position = createPosattr(pnmlDocument, 0.00000, 0.00000);
         annot.appendChild(position);
 
-        Element fillAnnotProperty = pnmlDocument.createElement("fillattr");
-        Attr colorAnnotFill = pnmlDocument.createAttribute("colour");
-        colorAnnotFill.setValue("White");
-        fillAnnotProperty.setAttributeNode(colorAnnotFill);
-        Attr patternAnnot = pnmlDocument.createAttribute("pattern");
-        patternAnnot.setValue("Solid");
-        fillAnnotProperty.setAttributeNode(patternAnnot);
-        Attr filledAnnot = pnmlDocument.createAttribute("filled");
-        patternAnnot.setValue("false");
-        fillAnnotProperty.setAttributeNode(filledAnnot);
+        Element fillAnnotProperty = createFillProperty(pnmlDocument);
+        createElementGraphicsProperty(pnmlDocument, fillAnnotProperty);
 
         annot.appendChild(fillAnnotProperty);
 
-        Element lineAnnotProperty = pnmlDocument.createElement("lineattr");
-        Attr colorAnnotLine = pnmlDocument.createAttribute("colour");
-        colorAnnotLine.setValue("Black");
-        lineAnnotProperty.setAttributeNode(colorAnnotLine);
-        Attr thickAnnot = pnmlDocument.createAttribute("thick");
-        thickAnnot.setValue("0");
-        lineAnnotProperty.setAttributeNode(thickAnnot);
-        Attr typeAnnot = pnmlDocument.createAttribute("type");
-        typeAnnot.setValue("Solid");
-        lineAnnotProperty.setAttributeNode(typeAnnot);
+        Element lineAnnotProperty = createLineProperty(pnmlDocument);
+
+        createElementGraphicsProperty(pnmlDocument, lineAnnotProperty);
 
         annot.appendChild(lineAnnotProperty);
 
@@ -271,6 +249,18 @@ public class PetriNetGraphicsGenerator {
         annot.appendChild(textArc);
 
         arc1.appendChild(annot);
+    }
+
+    private void createElementGraphicsProperty(Document pnmlDocument, Element fillAnnotProperty) {
+        Attr colorAnnotFill = pnmlDocument.createAttribute("colour");
+        colorAnnotFill.setValue("White");
+        fillAnnotProperty.setAttributeNode(colorAnnotFill);
+        Attr patternAnnot = pnmlDocument.createAttribute("pattern");
+        patternAnnot.setValue("Solid");
+        fillAnnotProperty.setAttributeNode(patternAnnot);
+        Attr filledAnnot = pnmlDocument.createAttribute("filled");
+        patternAnnot.setValue("false");
+        fillAnnotProperty.setAttributeNode(filledAnnot);
     }
 
     public Element generatePlaceGraphics(Document pnmlDocument, DataPort dataPort, Element place, Boolean isTimed) {
@@ -526,12 +516,7 @@ public class PetriNetGraphicsGenerator {
 
 
         Element boxProperty = pnmlDocument.createElement("box");
-        Attr weight = pnmlDocument.createAttribute("w");
-        weight.setValue("152.000000");
-        boxProperty.setAttributeNode(weight);
-        Attr height = pnmlDocument.createAttribute("h");
-        height.setValue("40.000000");
-        boxProperty.setAttributeNode(height);
+        createBoxProperty(pnmlDocument, boxProperty);
         transition.appendChild(boxProperty);
 
         if (Category.PROCESS.getValue().equals(componentInstance.getCategory()) || (Category.THREAD.getValue().equals(componentInstance.getCategory()) && !"".equals(componentInstance.getPeriod()))) {
@@ -604,6 +589,15 @@ public class PetriNetGraphicsGenerator {
         }
 
         return transition;
+    }
+
+    private void createBoxProperty(Document pnmlDocument, Element boxProperty) {
+        Attr weight = pnmlDocument.createAttribute("w");
+        weight.setValue("152.000000");
+        boxProperty.setAttributeNode(weight);
+        Attr height = pnmlDocument.createAttribute("h");
+        height.setValue("40.000000");
+        boxProperty.setAttributeNode(height);
     }
 
 

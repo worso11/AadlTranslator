@@ -9,13 +9,14 @@ public class Cache {
     private static volatile Cache instance;
     private  Set<String> uniqueComponents = new HashSet<>();
     private  List<ComponentInstance> COMPONENT_INSTANCES = new ArrayList<>();
-    private  List<ComponentInstance> PROCESSES = new ArrayList<>();
+    private  List<ComponentInstance> HIERARCHY_TRANSITIONS = new ArrayList<>();
     private  List<Connection> CONNECTIONS = new ArrayList<>();
     private  List<Page> pages = new ArrayList<>();
     private  ArrayList<String> INSTANCES_BINDERS = new ArrayList<>();
     private  ArrayList<Socket> SOCKETS = new ArrayList<>();
     private  Set<String> usedFeature = new HashSet<>();
     private  Set<DataPort> generatedPlaces = new HashSet<>();
+    private  String systemName;
 
     private Cache() {}
 
@@ -45,7 +46,7 @@ public class Cache {
     public  void moveProcesses() {
         for (int i = 0; i < COMPONENT_INSTANCES.size(); ++i) {
             if (COMPONENT_INSTANCES.get(i).getCategory().equals(Category.PROCESS.getValue())) {
-                PROCESSES.add(COMPONENT_INSTANCES.get(i));
+                HIERARCHY_TRANSITIONS.add(COMPONENT_INSTANCES.get(i));
                 movePeriodThread(COMPONENT_INSTANCES.get(i));
             }
         }
@@ -55,7 +56,7 @@ public class Cache {
         if(componentInstance.getComponentInstancesNested() != null){
             for (int i = 0; i < componentInstance.getComponentInstancesNested().size(); ++i) {
                 if ((componentInstance.getComponentInstancesNested().get(i).getCategory().equals(Category.THREAD.getValue()) && !"".equals(componentInstance.getComponentInstancesNested().get(i).getPeriod()))) {
-                    PROCESSES.add(componentInstance.getComponentInstancesNested().get(i));
+                    HIERARCHY_TRANSITIONS.add(componentInstance.getComponentInstancesNested().get(i));
                 }
             }
         }
@@ -81,8 +82,8 @@ public class Cache {
         return COMPONENT_INSTANCES.get(index);
     }
 
-    public  List<ComponentInstance> getPROCESSES() {
-        return PROCESSES;
+    public  List<ComponentInstance> getHIERARCHY_TRANSITIONS() {
+        return HIERARCHY_TRANSITIONS;
     }
 
     public  List<Connection> getCONNECTIONS() {
@@ -133,6 +134,11 @@ public class Cache {
         generatedPlaces.clear();
     }
 
+    public String getSystemName() {
+        return systemName;
+    }
 
-
+    public void setSystemName(String systemName) {
+        this.systemName = systemName;
+    }
 }

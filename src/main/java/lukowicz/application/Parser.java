@@ -3,6 +3,7 @@ package lukowicz.application;
 import lukowicz.application.aadl.ElementSearcher;
 import lukowicz.application.petrinet.PetriNetGenerator;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -37,6 +38,8 @@ public class Parser {
         loadedDocument.getDocumentElement().normalize();
 
         NodeList componentInstances = loadedDocument.getElementsByTagName("componentInstance");
+        Element systemInstance = loadedDocument.getDocumentElement();
+        elementSearcher.searchSystemName(systemInstance);
         elementSearcher.searchElements(componentInstances, null);
 
         NodeList connections = loadedDocument.getElementsByTagName("connectionInstance");

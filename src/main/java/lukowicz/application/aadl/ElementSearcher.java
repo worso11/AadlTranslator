@@ -269,4 +269,7 @@ public class ElementSearcher {
     }
 
 
+    public void searchSystemName(Element systemInstance) {
+        cache.setSystemName(systemInstance.getAttribute("name"));
+    }
 }

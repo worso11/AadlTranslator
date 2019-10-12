@@ -40,8 +40,6 @@ public class PetriNetGenerator {
     public void generatePetriNet() throws ParserConfigurationException, TransformerException {
         Document petriNetXmlFile = TranslatorTools.createDocumentFile();
 
-        Integer numberPage = 0;
-
         Element workspaceElements = petriNetXmlFile.createElement("workspaceElements");
         petriNetGraphicsGenerator.addGeneratorInfo(petriNetXmlFile, workspaceElements);
 
@@ -50,6 +48,10 @@ public class PetriNetGenerator {
         petriNetXmlFile.appendChild(workspaceElements);
 
         petriNetGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
+
+        Element generalPage = petriNetPager.generateNewPage(TranslatorTools.generateUUID(), petriNetXmlFile, root, "General");
+        petriNetTranslator.generateGeneralPage(petriNetXmlFile, generalPage);
+
 
         Page actualPage = petriNetPager.getPageByContext("");
         //page startowy   moze te Generate New Page do Pager cos takiego??
@@ -62,7 +64,7 @@ public class PetriNetGenerator {
         cache.moveProcesses();
 
         //pageForProcess   zrobic odniesienia do stron!!
-        for (ComponentInstance pageProcess : cache.getPROCESSES()) {
+        for (ComponentInstance pageProcess : cache.getHIERARCHY_TRANSITIONS()) {
             actualPage = petriNetPager.getPageForTransId(pageProcess.getId());
             Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root, actualPage.getPageName());
             List<Node> arcs2;
