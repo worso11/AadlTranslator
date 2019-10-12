@@ -50,7 +50,7 @@ public class PetriNetGenerator {
         petriNetGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
 
         Element generalPage = petriNetPager.generateNewPage(TranslatorTools.generateUUID(), petriNetXmlFile, root, "General");
-        petriNetTranslator.generateGeneralPage(petriNetXmlFile, generalPage);
+        petriNetTranslator.insertGeneralTransition(petriNetXmlFile, generalPage);
 
 
         Page actualPage = petriNetPager.getPageByContext("");

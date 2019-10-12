@@ -60,8 +60,7 @@ public class PetriNetTranslator {
     }
 
 
-    public void generateGeneralPage(Document petriNetXmlFile, Element generalPage) {
 
-
+    public void insertGeneralTransition(Document petriNetXmlFile, Element generalPage) {
     }
 }

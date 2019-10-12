@@ -191,13 +191,8 @@ public class PetriNetGraphicsGenerator {
 
     public void setArcGraphicsProperties(Document pnmlDocument, Element arc1, String periodArcText) {
         Element arcPosition = pnmlDocument.createElement("posattr");
-        Attr positionX = pnmlDocument.createAttribute("x");
-        positionX.setValue("0.0");
-        Attr positionY = pnmlDocument.createAttribute("y");
-        positionY.setValue("0.0");
-        arcPosition.setAttributeNode(positionX);
-        arcPosition.setAttributeNode(positionY);
-        arc1.appendChild(arcPosition);
+
+        createPosattr(pnmlDocument,0.0,0.0);
 
 
         Element fillProperty = createFillProperty(pnmlDocument);
