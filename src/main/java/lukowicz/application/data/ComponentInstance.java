@@ -76,4 +76,12 @@ public class ComponentInstance {
     public String getPeriod() {
         return period;
     }
+
+    public void setPos_X(Double pos_X) {
+        this.pos_X = pos_X;
+    }
+
+    public void setPos_Y(Double pos_Y) {
+        this.pos_Y = pos_Y;
+    }
 }

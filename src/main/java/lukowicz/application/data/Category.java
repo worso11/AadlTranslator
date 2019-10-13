@@ -2,7 +2,8 @@ package lukowicz.application.data;
 
 public enum Category {
     DEVICE("device"), PROCESS("process"), THREAD("thread"), BUS("bus"),
-    PROCESSOR("processor"), MEMORY("memory"), FEATURE("feature"), GENERATED_TRANS("generatedTransiton");;
+    PROCESSOR("processor"), MEMORY("memory"), FEATURE("feature"), GENERATED_TRANS("generatedTransiton"),
+    SYSTEM("system");
     String value;
 
     private Category(String value) {

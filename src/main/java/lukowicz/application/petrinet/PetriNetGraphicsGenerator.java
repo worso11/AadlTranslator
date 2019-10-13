@@ -194,7 +194,6 @@ public class PetriNetGraphicsGenerator {
 
         createPosattr(pnmlDocument,0.0,0.0);
 
-
         Element fillProperty = createFillProperty(pnmlDocument);
         arc1.appendChild(fillProperty);
 
@@ -477,42 +476,25 @@ public class PetriNetGraphicsGenerator {
         return fillProperty;
     }
 
+    public Element generateGeneralTransition(Document pnmlDocument, ComponentInstance componentInstance){
+        Element transition = generateGraphicsAttributeTransition(pnmlDocument, componentInstance);
+        Element subtElement = pnmlDocument.createElement("subst");
+        Attr subpageAttr = pnmlDocument.createAttribute("subpage");
+        String subpageId = petriNetPager.getPageByContext("").getPageId();
+        subpageAttr.setValue(subpageId);
+        subtElement.setAttributeNode(subpageAttr);
+        Attr portSock = pnmlDocument.createAttribute("portsock");
+        portSock.setValue("");
+        subtElement.setAttributeNode(portSock);
+        transition.appendChild(subtElement);
+
+        return transition;
+
+    }
+
 
     public Element generateGraphicsAttributeTransition(Document pnmlDocument, ComponentInstance componentInstance) {
-        Element transition = pnmlDocument.createElement("trans");
-
-        Attr transitionId = pnmlDocument.createAttribute("id");
-        transitionId.setValue(componentInstance.getId());
-        transition.setAttributeNode(transitionId);
-
-        Element transitionPosition = pnmlDocument.createElement("posattr");
-        Attr positionX = pnmlDocument.createAttribute("x");
-        positionX.setValue(componentInstance.getPos_X().toString());
-        Attr positionY = pnmlDocument.createAttribute("y");
-        positionY.setValue(componentInstance.getPos_Y().toString());
-        transitionPosition.setAttributeNode(positionX);
-        transitionPosition.setAttributeNode(positionY);
-        transition.appendChild(transitionPosition);
-
-
-        Element fillProperty = createFillProperty(pnmlDocument);
-        transition.appendChild(fillProperty);
-
-
-        Element lineProperty = createLineProperty(pnmlDocument);
-        transition.appendChild(lineProperty);
-
-        Element textProperty = createTextProperty(pnmlDocument);
-        transition.appendChild(textProperty);
-
-        Element transitionText = pnmlDocument.createElement("text");
-        transitionText.appendChild(pnmlDocument.createTextNode(componentInstance.getName()));
-        transition.appendChild(transitionText);
-
-
-        Element boxProperty = pnmlDocument.createElement("box");
-        createBoxProperty(pnmlDocument, boxProperty);
-        transition.appendChild(boxProperty);
+        Element transition = generateAttributesGraphicsForTransition(pnmlDocument, componentInstance);
 
         if (Category.PROCESS.getValue().equals(componentInstance.getCategory()) || (Category.THREAD.getValue().equals(componentInstance.getCategory()) && !"".equals(componentInstance.getPeriod()))) {
             Element substElement = pnmlDocument.createElement("subst");
@@ -583,6 +565,38 @@ public class PetriNetGraphicsGenerator {
             transition.appendChild(substElement);
         }
 
+        return transition;
+    }
+
+    private Element generateAttributesGraphicsForTransition(Document pnmlDocument, ComponentInstance componentInstance) {
+        Element transition = pnmlDocument.createElement("trans");
+
+        Attr transitionId = pnmlDocument.createAttribute("id");
+        transitionId.setValue(componentInstance.getId());
+        transition.setAttributeNode(transitionId);
+
+        Element transitionPosition = createPosattr(pnmlDocument, componentInstance.getPos_X(),componentInstance.getPos_Y());
+        transition.appendChild(transitionPosition);
+
+
+        Element fillProperty = createFillProperty(pnmlDocument);
+        transition.appendChild(fillProperty);
+
+
+        Element lineProperty = createLineProperty(pnmlDocument);
+        transition.appendChild(lineProperty);
+
+        Element textProperty = createTextProperty(pnmlDocument);
+        transition.appendChild(textProperty);
+
+        Element transitionText = pnmlDocument.createElement("text");
+        transitionText.appendChild(pnmlDocument.createTextNode(componentInstance.getName()));
+        transition.appendChild(transitionText);
+
+
+        Element boxProperty = pnmlDocument.createElement("box");
+        createBoxProperty(pnmlDocument, boxProperty);
+        transition.appendChild(boxProperty);
         return transition;
     }
 

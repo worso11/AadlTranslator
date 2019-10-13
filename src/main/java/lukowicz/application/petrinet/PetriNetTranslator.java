@@ -61,6 +61,11 @@ public class PetriNetTranslator {
 
 
 
-    public void insertGeneralTransition(Document petriNetXmlFile, Element generalPage) {
+    public Element insertGeneralTransition(Document petriNetXmlFile) {
+        ComponentInstance systemInstance = new ComponentInstance(cache.getSystemName(),Category.SYSTEM.getValue());
+        systemInstance.setPos_X(0.00);
+        systemInstance.setPos_Y(0.00);
+        return petriNetGraphicsGenerator.generateGeneralTransition(petriNetXmlFile, systemInstance);
+
     }
 }
