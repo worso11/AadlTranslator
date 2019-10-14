@@ -14,6 +14,10 @@ public class Page implements Comparable<Page> {
         this.generated = generated;
     }
 
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
     public String getContext() {
         return context;
     }

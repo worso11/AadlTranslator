@@ -49,9 +49,16 @@ public class PetriNetGenerator {
 
         petriNetGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
 
-        Element generalPage = petriNetPager.generateNewPage(TranslatorTools.generateUUID(), petriNetXmlFile, root, "General");
+        String generalPageId = TranslatorTools.generateUUID();
+
         Element generalTransistion = petriNetTranslator.insertGeneralTransition(petriNetXmlFile);
+        String generalTransId = generalTransistion.getAttribute("id");
+        Element generalPage = petriNetPager.generateNewPage(generalPageId, petriNetXmlFile, root, "General");
         generalPage.appendChild(generalTransistion);
+        Page generalSystemPage = new Page("General_System",Boolean.TRUE,"","General_System");
+        generalSystemPage.setPageId(generalPageId);
+        generalSystemPage.setTransId(generalTransId);
+        petriNetPager.getPages().add(generalSystemPage);
         ElementsPosition.resetPositions();
 
 

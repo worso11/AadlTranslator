@@ -94,19 +94,34 @@ public class PetriNetPager {
 
     public  Element generatePagesInstances(Document pnmlDocument) {
         Element instances = pnmlDocument.createElement("instances");
-        Element firstInstance = pnmlDocument.createElement("instance");
-        Integer numberPage = 0;
-        Attr idAttr = pnmlDocument.createAttribute("id");
-        String idAttrValue = TranslatorTools.generateUUID();
-        idAttr.setValue(idAttrValue);
-        getInstancesBinders().add(idAttrValue);
-        Attr pageAttr = pnmlDocument.createAttribute("page");
-        String firstPageId = getPageIdByIndex(numberPage);
-        pageAttr.setValue(firstPageId);
-        firstInstance.setAttributeNode(idAttr);
-        firstInstance.setAttributeNode(pageAttr);
-        instances.appendChild(firstInstance);
-        generateNestedInstance(pnmlDocument,getPages().get(0).getNestedPage(), firstInstance);
+
+        Element generalInstance = pnmlDocument.createElement("instance");
+        Attr generalInstanceIdAttr = pnmlDocument.createAttribute("id");
+        String generalInstanceIdAttrValue = TranslatorTools.generateUUID();
+        generalInstanceIdAttr.setValue(generalInstanceIdAttrValue);
+        getInstancesBinders().add(generalInstanceIdAttrValue);
+        Attr generalPageAttr = pnmlDocument.createAttribute("page");
+        Page generalSystemPage = getPageByContext("General_System");
+        generalPageAttr.setValue(generalSystemPage.getPageId());
+        generalInstance.setAttributeNode(generalInstanceIdAttr);
+        generalInstance.setAttributeNode(generalPageAttr);
+
+
+        Element generalTransInstance = pnmlDocument.createElement("instance");
+        Attr generalTransInstanceIdAttr = pnmlDocument.createAttribute("id");
+        String generalTransInstanceIdAttrValue = TranslatorTools.generateUUID();
+        generalTransInstanceIdAttr.setValue(generalTransInstanceIdAttrValue);
+        getInstancesBinders().add(generalTransInstanceIdAttrValue);
+        Attr generalTransAttr = pnmlDocument.createAttribute("trans");
+        String generalTransSystemId = getPageByContext("General_System").getTransId();
+        generalTransAttr.setValue(generalTransSystemId);
+        generalTransInstance.setAttributeNode(generalTransInstanceIdAttr);
+        generalTransInstance.setAttributeNode(generalTransAttr);
+        generalInstance.appendChild(generalTransInstance);
+
+        instances.appendChild(generalInstance);
+
+        generateNestedInstance(pnmlDocument,getPages().get(0).getNestedPage(), generalTransInstance);
         return instances;
     }
 

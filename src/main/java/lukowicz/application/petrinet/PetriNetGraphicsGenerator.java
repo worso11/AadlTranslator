@@ -477,7 +477,7 @@ public class PetriNetGraphicsGenerator {
     }
 
     public Element generateGeneralTransition(Document pnmlDocument, ComponentInstance componentInstance){
-        Element transition = generateGraphicsAttributeTransition(pnmlDocument, componentInstance);
+        Element transition = generateAttributesGraphicsForTransition(pnmlDocument, componentInstance);
         Element subtElement = pnmlDocument.createElement("subst");
         Attr subpageAttr = pnmlDocument.createAttribute("subpage");
         String subpageId = petriNetPager.getPageByContext("").getPageId();
