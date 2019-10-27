@@ -48,10 +48,11 @@ public class PetriNetPager {
         return getPageByIndex(numberPage).getTransId();
     }
 
-    public void addNewPage(String context, String transId, Boolean isGenerated) {
+    public void addNewPage(String context, String transId, Boolean isGenerated, String headId, String pageName) {
+        Page newPage = null;
         long count = getPages().stream().filter(e -> e.getContext().equals(context)).count();
         if (count == 0) {
-            Page newPage = new Page(context, isGenerated);
+            newPage = new Page(context, isGenerated, headId, pageName);
             if (!"".equals(context)) {
                 newPage.setTransId(transId);
             }
@@ -93,6 +94,7 @@ public class PetriNetPager {
     }
 
     public  Element generatePagesInstances(Document pnmlDocument) {
+        preparePagesList();
         Element instances = pnmlDocument.createElement("instances");
 
         Element generalInstance = pnmlDocument.createElement("instance");

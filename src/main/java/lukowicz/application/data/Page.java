@@ -2,16 +2,24 @@ package lukowicz.application.data;
 
 import lukowicz.application.utils.TranslatorTools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Page implements Comparable<Page> {
     private String context;
     private String pageId;
     private String transId;
     private Boolean generated;
+    private List<Page> nestedPage = new ArrayList<>();
+    private String headId;
+    private String pageName;
 
-    public Page(String context, Boolean generated) {
+    public Page(String context, Boolean generated, String headId, String pageName) {
         this.context = context;
         this.pageId = TranslatorTools.generateUUID();
         this.generated = generated;
+        this.headId = headId;
+        this.pageName = pageName;
     }
 
     public void setPageId(String pageId) {
@@ -42,8 +50,41 @@ public class Page implements Comparable<Page> {
         this.generated = generated;
     }
 
+    public List<Page> getNestedPage() {
+        return nestedPage;
+    }
+
+    public void setNestedPage(List<Page> nestedPage) {
+        this.nestedPage = nestedPage;
+    }
+
+    public String getHeadId() {
+        return headId;
+    }
+
+    public void setHeadId(String headId) {
+        this.headId = headId;
+    }
+
+    public String getPageName() {
+        return pageName;
+    }
+
+    public void setPageName(String pageName) {
+        this.pageName = pageName;
+    }
+
     @Override
     public int compareTo(Page o) {
-        return this.getContext().compareTo(o.getContext());
+        if(this.getContext().length() > o.getContext().length()){
+            return 1;
+        }
+        else if(this.getContext().length() < o.getContext().length())
+        {
+            return -1;
+        }
+        else{
+            return 0;
+        }
     }
 }

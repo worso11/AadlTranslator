@@ -116,7 +116,7 @@ public class ElementSearcher {
 
                         String additionalConnContext = TranslatorTools.generateUUID();
 
-                        petriNetPager.addNewPage(additionalConnContext, componentInstanceNested.getId(), Boolean.TRUE);
+                        petriNetPager.addNewPage(additionalConnContext, componentInstanceNested.getId(), Boolean.TRUE, componentInstance.getId(), componentInstanceNested.getName());
 
 
                         for (DataPort dataPort :
@@ -204,8 +204,7 @@ public class ElementSearcher {
                 additionalConnConnection.setGenerate(Boolean.TRUE);
                 additionalConnConnection.setSocketType("in");
                 ConnectionNode connectionNode = getConnectionNode(destinationPath, null, null);
-                petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(destinationPath.get(0)).getId(), Boolean.FALSE);
-
+                petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(destinationPath.get(0)).getId(), Boolean.FALSE, null, connectionNode.getTransName());
                 cache.addConnection(additionalConnConnection);
             }
             //dodanie połaczenia jesli to jest socket Out
@@ -220,7 +219,7 @@ public class ElementSearcher {
                 additionalConnConnection.setGenerate(Boolean.TRUE);
                 additionalConnConnection.setSocketType("out");
                 ConnectionNode connectionNode = getConnectionNode(sourcePath, null, null);
-                petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(sourcePath.get(0)).getId(), Boolean.FALSE);
+                petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(sourcePath.get(0)).getId(), Boolean.FALSE, null, cache.getComponentInstanceByIndex(sourcePath.get(0)).getName());
                 cache.addConnection(additionalConnConnection);
             }
 
