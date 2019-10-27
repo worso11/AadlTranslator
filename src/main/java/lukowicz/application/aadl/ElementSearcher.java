@@ -66,17 +66,20 @@ public class ElementSearcher {
                 }
                 for (int j = 0; j < featureInstances.getLength(); j++) {
                     Node featureInstance = featureInstances.item(j);
+
                     Element featureElement = (Element) featureInstance;
-                    System.out.println("Name of feature : " + featureElement.getAttribute("name"));
-                    if (componentInstanceNested != null) {
-                        componentInstance.getReverseFeatureInstances().remove(new DataPort(featureElement.getAttribute("name"),
-                                featureElement.getAttribute("direction")));
-                        componentInstance.getReverseFeatureInstances();//wroc do starego porzadku
-                        componentInstanceNested.getDataPort().add(new DataPort(featureElement.getAttribute("name"),
-                                featureElement.getAttribute("direction")));
-                    } else {
-                        componentInstance.getDataPort().add(new DataPort(featureElement.getAttribute("name"),
-                                featureElement.getAttribute("direction")));
+                    if(!"busAccess".equals(featureElement.getAttribute("category"))) {
+                        System.out.println("Name of feature : " + featureElement.getAttribute("name"));
+                        if (componentInstanceNested != null) {
+                            componentInstance.getReverseFeatureInstances().remove(new DataPort(featureElement.getAttribute("name"),
+                                    featureElement.getAttribute("direction")));
+                            componentInstance.getReverseFeatureInstances();//wroc do starego porzadku
+                            componentInstanceNested.getDataPort().add(new DataPort(featureElement.getAttribute("name"),
+                                    featureElement.getAttribute("direction")));
+                        } else {
+                            componentInstance.getDataPort().add(new DataPort(featureElement.getAttribute("name"),
+                                    featureElement.getAttribute("direction")));
+                        }
                     }
                 }
                 if (componentInstanceNested != null) {
@@ -171,6 +174,7 @@ public class ElementSearcher {
             Node connection = connections.item(i);
             System.out.println("\nCurrent Element :" + connection.getNodeName());
             Element actualConnection = (Element) connection;
+            if(!"accessConnection".equals(actualConnection.getAttribute("kind"))){
             System.out.println("Name of  connection : " + actualConnection.getAttribute("name"));
             NodeList connectionReferences = actualConnection.getElementsByTagName("connectionReference");
             String contextRaw = connectionReferences.item(0).getAttributes().getNamedItem("context").getNodeValue();
@@ -222,7 +226,7 @@ public class ElementSearcher {
 
             cache.addConnection(newConnection);
 
-        }
+        }}
         cache.sortConnections();
 
     }

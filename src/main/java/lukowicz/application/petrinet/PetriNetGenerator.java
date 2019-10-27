@@ -35,7 +35,7 @@ public class PetriNetGenerator {
 
     }
 
-    private File petriNetXmlFilePath = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\tempomatPetriNet-OutputTeeest2.xml");
+    private File petriNetXmlFilePath = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\file.xml");
 
     public void generatePetriNet() throws ParserConfigurationException, TransformerException {
         Document petriNetXmlFile = TranslatorTools.createDocumentFile();
@@ -199,10 +199,6 @@ public class PetriNetGenerator {
                         setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), sourceNode.getPlaceId(), "PtoT");
                     }
                     cache.getUsedFeature().add(sourceNode.getPlaceId());
-                } else if (sourceNode.getCategory().equals(Category.BUS.getValue())) {
-                    setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), dstNode.getPlaceId(), "TtoP");
-                    cache.getUsedFeature().add(dstNode.getPlaceId());
-
                 } else {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "TtoP");
                     setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), sourceNode.getPlaceId(), "PtoT");

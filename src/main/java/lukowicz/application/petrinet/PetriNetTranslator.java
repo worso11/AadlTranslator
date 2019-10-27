@@ -27,10 +27,6 @@ public class PetriNetTranslator {
                 Element transition = generateTransition(pnmlDocument, componentInstance);
                 page.appendChild(transition);
             }
-            if (componentInstanceCategory.equals(Category.BUS.getValue())) {
-                Element transition = generateTransition(pnmlDocument, componentInstance);
-                page.appendChild(transition);
-            }
             List<DataPort> dataPorts = componentInstance.getDataPort();
             for (DataPort feature : dataPorts) {
                 Element place = generatePlace(pnmlDocument, feature);
