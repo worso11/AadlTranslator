@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="ASCII"?>
+<instance:SystemInstance xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aadl2="http://aadl.info/AADL/2.0" xmlns:instance="http://aadl.info/AADL/2.0/instance" name="ACC_System_with_devices_Instance" category="system">
+  <componentInstance name="this_bus" category="bus">
+    <subcomponent xsi:type="aadl2:BusSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedBusSubcomponent.0"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:BusImplementation" href="../syst.aadl#syst.HWConnection.impl"/>
+  </componentInstance>
+  <componentInstance name="this_control_panel" category="device">
+    <featureInstance name="desired_speed_value" direction="out">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.21/@ownedDataPort.0"/>
+    </featureInstance>
+    <featureInstance name="desired_distance_value" direction="out">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.21/@ownedDataPort.1"/>
+    </featureInstance>
+    <featureInstance name="on_off" category="eventPort" direction="out">
+      <feature xsi:type="aadl2:EventPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.21/@ownedEventPort.0"/>
+    </featureInstance>
+    <featureInstance name="bus_access" category="busAccess" direction="in out">
+      <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.21/@ownedBusAccess.0"/>
+    </featureInstance>
+    <subcomponent xsi:type="aadl2:DeviceSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedDeviceSubcomponent.0"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:DeviceType" href="../syst.aadl#syst.ControlPanel"/>
+  </componentInstance>
+  <componentInstance name="this_distance_sensor" category="device">
+    <featureInstance name="distance_value" direction="out">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.23/@ownedDataPort.0"/>
+    </featureInstance>
+    <featureInstance name="bus_access" category="busAccess" direction="in out">
+      <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.23/@ownedBusAccess.0"/>
+    </featureInstance>
+    <subcomponent xsi:type="aadl2:DeviceSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedDeviceSubcomponent.1"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:DeviceType" href="../syst.aadl#syst.DistanceSensor"/>
+  </componentInstance>
+  <componentInstance name="this_speedometer" category="device">
+    <featureInstance name="speed_value" direction="out">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.25/@ownedDataPort.0"/>
+    </featureInstance>
+    <featureInstance name="bus_access" category="busAccess" direction="in out">
+      <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.25/@ownedBusAccess.0"/>
+    </featureInstance>
+    <subcomponent xsi:type="aadl2:DeviceSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedDeviceSubcomponent.2"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:DeviceType" href="../syst.aadl#syst.Speedometer"/>
+  </componentInstance>
+  <componentInstance name="this_throttle" category="device">
+    <featureInstance name="cmd">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.27/@ownedDataPort.0"/>
+    </featureInstance>
+    <featureInstance name="bus_access" category="busAccess" direction="in out">
+      <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.27/@ownedBusAccess.0"/>
+    </featureInstance>
+    <subcomponent xsi:type="aadl2:DeviceSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedDeviceSubcomponent.3"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:DeviceType" href="../syst.aadl#syst.Throttle"/>
+  </componentInstance>
+  <componentInstance name="this_brakes" category="device">
+    <featureInstance name="brake">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.29/@ownedDataPort.0"/>
+    </featureInstance>
+    <featureInstance name="bus_access" category="busAccess" direction="in out">
+      <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.29/@ownedBusAccess.0"/>
+    </featureInstance>
+    <subcomponent xsi:type="aadl2:DeviceSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedDeviceSubcomponent.4"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:DeviceType" href="../syst.aadl#syst.Brakes"/>
+  </componentInstance>
+  <componentInstance name="this_speed_controller" category="process">
+    <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+      <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Language"/>
+      <ownedValue>
+        <ownedValue xsi:type="aadl2:ListValue">
+          <ownedListElement xsi:type="aadl2:NamedValue">
+            <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.8/@ownedLiteral.2"/>
+          </ownedListElement>
+        </ownedValue>
+      </ownedValue>
+      <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.0"/>
+    </ownedPropertyAssociation>
+    <featureInstance name="desired_speed_value_in">
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../ACC_PROPERTIES.aadl#ACC_PROPERTIES.speed"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:RealLiteral" value="52.0">
+            <unit href="../CUSTOM_UNITS.aadl#/0/@ownedPropertyType.1/@ownedLiteral.1"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.3/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedDataPort.0"/>
+    </featureInstance>
+    <featureInstance name="desired_distance_value_in">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedDataPort.1"/>
+    </featureInstance>
+    <featureInstance name="distance_value_in">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedDataPort.2"/>
+    </featureInstance>
+    <featureInstance name="speed_value_in">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedDataPort.3"/>
+    </featureInstance>
+    <featureInstance name="cmd_out" direction="out">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedDataPort.4"/>
+    </featureInstance>
+    <featureInstance name="brake_out" direction="out">
+      <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedDataPort.5"/>
+    </featureInstance>
+    <featureInstance name="on_off_ACC" category="eventPort">
+      <feature xsi:type="aadl2:EventPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedEventPort.0"/>
+    </featureInstance>
+    <componentInstance name="this_thread_panel_params" category="thread">
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Language"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:NamedValue">
+              <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.8/@ownedLiteral.2"/>
+            </ownedListElement>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Thread_Properties.aadl#Thread_Properties.Dispatch_Protocol"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:NamedValue">
+            <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.3/@ownedLiteral.0"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Timing_Properties.aadl#Timing_Properties.Period"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:IntegerLiteral" value="2000">
+            <unit href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.16/@ownedLiteral.3"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedPropertyAssociation.1"/>
+      </ownedPropertyAssociation>
+      <featureInstance name="desired_speed_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedDataPort.0"/>
+      </featureInstance>
+      <featureInstance name="desired_distance_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedDataPort.1"/>
+      </featureInstance>
+      <featureInstance name="desired_speed_value_out" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedDataPort.2"/>
+      </featureInstance>
+      <featureInstance name="desired_distance_value_out" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedDataPort.3"/>
+      </featureInstance>
+      <featureInstance name="on_off_ACC_in" category="eventPort">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:EventPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedEventPort.0"/>
+      </featureInstance>
+      <featureInstance name="on_off_ACC_out" category="eventPort" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadControlPanelParameters.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.1"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:EventPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.7/@ownedEventPort.1"/>
+      </featureInstance>
+      <subcomponent xsi:type="aadl2:ThreadSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedThreadSubcomponent.0"/>
+      <index>0</index>
+      <classifier xsi:type="aadl2:ThreadImplementation" href="../syst.aadl#syst.ReadControlPanelParameters.impl"/>
+    </componentInstance>
+    <componentInstance name="this_thread_speed" category="thread">
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Language"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:NamedValue">
+              <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.8/@ownedLiteral.2"/>
+            </ownedListElement>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadSpeed.c"/>
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadSpeed.obj"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.2"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Thread_Properties.aadl#Thread_Properties.Dispatch_Protocol"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:NamedValue">
+            <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.3/@ownedLiteral.0"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.9/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Timing_Properties.aadl#Timing_Properties.Period"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:IntegerLiteral" value="1000">
+            <unit href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.16/@ownedLiteral.3"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.9/@ownedPropertyAssociation.1"/>
+      </ownedPropertyAssociation>
+      <featureInstance name="speed_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.2"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.9/@ownedDataPort.0"/>
+      </featureInstance>
+      <featureInstance name="speed_value_out" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.2"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.9/@ownedDataPort.1"/>
+      </featureInstance>
+      <subcomponent xsi:type="aadl2:ThreadSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedThreadSubcomponent.1"/>
+      <index>0</index>
+      <classifier xsi:type="aadl2:ThreadImplementation" href="../syst.aadl#syst.ReadSpeed.impl"/>
+    </componentInstance>
+    <componentInstance name="this_thread_distance" category="thread">
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Language"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:NamedValue">
+              <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.8/@ownedLiteral.2"/>
+            </ownedListElement>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadDistance.c"/>
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadDistance.obj"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.3"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Thread_Properties.aadl#Thread_Properties.Dispatch_Protocol"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:NamedValue">
+            <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.3/@ownedLiteral.0"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.11/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Timing_Properties.aadl#Timing_Properties.Period"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:IntegerLiteral" value="1500">
+            <unit href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.16/@ownedLiteral.3"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.11/@ownedPropertyAssociation.1"/>
+      </ownedPropertyAssociation>
+      <featureInstance name="distance_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadDistance.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadDistance.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.3"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.11/@ownedDataPort.0"/>
+      </featureInstance>
+      <featureInstance name="distance_value_out" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadDistance.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ReadDistance.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.3"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.11/@ownedDataPort.1"/>
+      </featureInstance>
+      <subcomponent xsi:type="aadl2:ThreadSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedThreadSubcomponent.2"/>
+      <index>0</index>
+      <classifier xsi:type="aadl2:ThreadImplementation" href="../syst.aadl#syst.ReadDistance.impl"/>
+    </componentInstance>
+    <componentInstance name="this_thread_control" category="thread">
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Language"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:NamedValue">
+              <namedValue xsi:type="aadl2:EnumerationLiteral" href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/AADL_Project.aadl#/0/@ownedPropertyType.8/@ownedLiteral.2"/>
+            </ownedListElement>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.0"/>
+      </ownedPropertyAssociation>
+      <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+        <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+        <ownedValue>
+          <ownedValue xsi:type="aadl2:ListValue">
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+            <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+          </ownedValue>
+        </ownedValue>
+        <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+      </ownedPropertyAssociation>
+      <featureInstance name="desired_speed_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedDataPort.0"/>
+      </featureInstance>
+      <featureInstance name="desired_distance_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedDataPort.1"/>
+      </featureInstance>
+      <featureInstance name="speed_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedDataPort.2"/>
+      </featureInstance>
+      <featureInstance name="distance_value_in">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedDataPort.3"/>
+      </featureInstance>
+      <featureInstance name="cmd_out" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedDataPort.4"/>
+      </featureInstance>
+      <featureInstance name="brake_out" direction="out">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:DataPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedDataPort.5"/>
+      </featureInstance>
+      <featureInstance name="on_off_ACC_in" category="eventPort">
+        <ownedPropertyAssociation xsi:type="instance:PropertyAssociationInstance">
+          <property href="../../../plugin/org.osate.workspace/resources/properties/Predeclared_Property_Sets/Programming_Properties.aadl#Programming_Properties.Source_Text"/>
+          <ownedValue>
+            <ownedValue xsi:type="aadl2:ListValue">
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.c"/>
+              <ownedListElement xsi:type="aadl2:StringLiteral" value="ControlSpeed.obj"/>
+            </ownedValue>
+          </ownedValue>
+          <propertyAssociation href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPropertyAssociation.4"/>
+        </ownedPropertyAssociation>
+        <feature xsi:type="aadl2:EventPort" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.13/@ownedEventPort.0"/>
+      </featureInstance>
+      <subcomponent xsi:type="aadl2:ThreadSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedThreadSubcomponent.3"/>
+      <index>0</index>
+      <classifier xsi:type="aadl2:ThreadImplementation" href="../syst.aadl#syst.ControlSpeed.impl"/>
+    </componentInstance>
+    <flowSpecification name="on_off_ACC_flow" source="//@componentInstance.6/@featureInstance.6">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.0"/>
+    </flowSpecification>
+    <flowSpecification name="desired_speed_flow" source="//@componentInstance.6/@featureInstance.0">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.1"/>
+    </flowSpecification>
+    <flowSpecification name="desired_distance_flow" source="//@componentInstance.6/@featureInstance.1">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.2"/>
+    </flowSpecification>
+    <flowSpecification name="speed_signal_path1" source="//@componentInstance.6/@featureInstance.3" destination="//@componentInstance.6/@featureInstance.4">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.3"/>
+    </flowSpecification>
+    <flowSpecification name="speed_signal_path2" source="//@componentInstance.6/@featureInstance.3" destination="//@componentInstance.6/@featureInstance.5">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.4"/>
+    </flowSpecification>
+    <flowSpecification name="distance_signal_path1" source="//@componentInstance.6/@featureInstance.2" destination="//@componentInstance.6/@featureInstance.4">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.5"/>
+    </flowSpecification>
+    <flowSpecification name="distance_signal_path2" source="//@componentInstance.6/@featureInstance.2" destination="//@componentInstance.6/@featureInstance.5">
+      <flowSpecification href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.5/@ownedFlowSpecification.6"/>
+    </flowSpecification>
+    <connectionInstance name="this_thread_panel_params.desired_speed_value_out -> this_thread_control.desired_speed_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.0" source="//@componentInstance.6/@componentInstance.0/@featureInstance.2">
+      <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.0/@featureInstance.2" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.0">
+        <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.6"/>
+      </connectionReference>
+    </connectionInstance>
+    <connectionInstance name="this_thread_panel_params.desired_distance_value_out -> this_thread_control.desired_distance_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.1" source="//@componentInstance.6/@componentInstance.0/@featureInstance.3">
+      <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.0/@featureInstance.3" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.1">
+        <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.7"/>
+      </connectionReference>
+    </connectionInstance>
+    <connectionInstance name="this_thread_panel_params.on_off_ACC_out -> this_thread_control.on_off_ACC_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.6" source="//@componentInstance.6/@componentInstance.0/@featureInstance.5">
+      <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.0/@featureInstance.5" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.6">
+        <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.5"/>
+      </connectionReference>
+    </connectionInstance>
+    <connectionInstance name="this_thread_speed.speed_value_out -> this_thread_control.speed_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.2" source="//@componentInstance.6/@componentInstance.1/@featureInstance.1">
+      <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.1/@featureInstance.1" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.2">
+        <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.8"/>
+      </connectionReference>
+    </connectionInstance>
+    <connectionInstance name="this_thread_distance.distance_value_out -> this_thread_control.distance_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.3" source="//@componentInstance.6/@componentInstance.2/@featureInstance.1">
+      <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.2/@featureInstance.1" destination="//@componentInstance.6/@componentInstance.3/@featureInstance.3">
+        <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.9"/>
+      </connectionReference>
+    </connectionInstance>
+    <subcomponent xsi:type="aadl2:ProcessSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedProcessSubcomponent.0"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:ProcessImplementation" href="../syst.aadl#syst.SpeedController.with_threads"/>
+  </componentInstance>
+  <componentInstance name="this_processor" category="processor">
+    <featureInstance name="bus_access" category="busAccess" direction="in out">
+      <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.15/@ownedBusAccess.0"/>
+    </featureInstance>
+    <componentInstance name="this_ram" category="memory">
+      <featureInstance name="bus_access" category="busAccess" direction="in out">
+        <feature xsi:type="aadl2:BusAccess" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.17/@ownedBusAccess.0"/>
+      </featureInstance>
+      <subcomponent xsi:type="aadl2:MemorySubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.16/@ownedMemorySubcomponent.0"/>
+      <index>0</index>
+      <classifier xsi:type="aadl2:MemoryType" href="../syst.aadl#syst.Ram"/>
+    </componentInstance>
+    <subcomponent xsi:type="aadl2:ProcessorSubcomponent" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedProcessorSubcomponent.0"/>
+    <index>0</index>
+    <classifier xsi:type="aadl2:ProcessorImplementation" href="../syst.aadl#syst.MainProcessor.impl"/>
+  </componentInstance>
+  <connectionInstance name="this_bus -> this_control_panel.bus_access" complete="true" kind="accessConnection" destination="//@componentInstance.1/@featureInstance.3" source="//@componentInstance.0">
+    <connectionReference context="/" source="//@componentInstance.0" destination="//@componentInstance.1/@featureInstance.3">
+      <connection xsi:type="aadl2:AccessConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedAccessConnection.0"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_bus -> this_distance_sensor.bus_access" complete="true" kind="accessConnection" destination="//@componentInstance.2/@featureInstance.1" source="//@componentInstance.0">
+    <connectionReference context="/" source="//@componentInstance.0" destination="//@componentInstance.2/@featureInstance.1">
+      <connection xsi:type="aadl2:AccessConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedAccessConnection.1"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_bus -> this_speedometer.bus_access" complete="true" kind="accessConnection" destination="//@componentInstance.3/@featureInstance.1" source="//@componentInstance.0">
+    <connectionReference context="/" source="//@componentInstance.0" destination="//@componentInstance.3/@featureInstance.1">
+      <connection xsi:type="aadl2:AccessConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedAccessConnection.2"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_bus -> this_throttle.bus_access" complete="true" kind="accessConnection" destination="//@componentInstance.4/@featureInstance.1" source="//@componentInstance.0">
+    <connectionReference context="/" source="//@componentInstance.0" destination="//@componentInstance.4/@featureInstance.1">
+      <connection xsi:type="aadl2:AccessConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedAccessConnection.3"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_bus -> this_brakes.bus_access" complete="true" kind="accessConnection" destination="//@componentInstance.5/@featureInstance.1" source="//@componentInstance.0">
+    <connectionReference context="/" source="//@componentInstance.0" destination="//@componentInstance.5/@featureInstance.1">
+      <connection xsi:type="aadl2:AccessConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedAccessConnection.4"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_bus -> this_processor.bus_access" complete="true" kind="accessConnection" destination="//@componentInstance.7/@featureInstance.0" source="//@componentInstance.0">
+    <connectionReference context="/" source="//@componentInstance.0" destination="//@componentInstance.7/@featureInstance.0">
+      <connection xsi:type="aadl2:AccessConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedAccessConnection.5"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_control_panel.desired_speed_value -> this_speed_controller.this_thread_panel_params.desired_speed_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.0/@featureInstance.0" source="//@componentInstance.1/@featureInstance.0">
+    <connectionReference context="/" source="//@componentInstance.1/@featureInstance.0" destination="//@componentInstance.6/@featureInstance.0">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.1"/>
+    </connectionReference>
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@featureInstance.0" destination="//@componentInstance.6/@componentInstance.0/@featureInstance.0">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.1"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_control_panel.desired_distance_value -> this_speed_controller.this_thread_panel_params.desired_distance_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.0/@featureInstance.1" source="//@componentInstance.1/@featureInstance.1">
+    <connectionReference context="/" source="//@componentInstance.1/@featureInstance.1" destination="//@componentInstance.6/@featureInstance.1">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.2"/>
+    </connectionReference>
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@featureInstance.1" destination="//@componentInstance.6/@componentInstance.0/@featureInstance.1">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.2"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_control_panel.on_off -> this_speed_controller.this_thread_panel_params.on_off_ACC_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.0/@featureInstance.4" source="//@componentInstance.1/@featureInstance.2">
+    <connectionReference context="/" source="//@componentInstance.1/@featureInstance.2" destination="//@componentInstance.6/@featureInstance.6">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.0"/>
+    </connectionReference>
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@featureInstance.6" destination="//@componentInstance.6/@componentInstance.0/@featureInstance.4">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.0"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_distance_sensor.distance_value -> this_speed_controller.this_thread_distance.distance_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.2/@featureInstance.0" source="//@componentInstance.2/@featureInstance.0">
+    <connectionReference context="/" source="//@componentInstance.2/@featureInstance.0" destination="//@componentInstance.6/@featureInstance.2">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.3"/>
+    </connectionReference>
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@featureInstance.2" destination="//@componentInstance.6/@componentInstance.2/@featureInstance.0">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.4"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_speedometer.speed_value -> this_speed_controller.this_thread_speed.speed_value_in" complete="true" kind="portConnection" destination="//@componentInstance.6/@componentInstance.1/@featureInstance.0" source="//@componentInstance.3/@featureInstance.0">
+    <connectionReference context="/" source="//@componentInstance.3/@featureInstance.0" destination="//@componentInstance.6/@featureInstance.3">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.4"/>
+    </connectionReference>
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@featureInstance.3" destination="//@componentInstance.6/@componentInstance.1/@featureInstance.0">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.3"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_speed_controller.this_thread_control.cmd_out -> this_throttle.cmd" complete="true" kind="portConnection" destination="//@componentInstance.4/@featureInstance.0" source="//@componentInstance.6/@componentInstance.3/@featureInstance.4">
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.3/@featureInstance.4" destination="//@componentInstance.6/@featureInstance.4">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.10"/>
+    </connectionReference>
+    <connectionReference context="/" source="//@componentInstance.6/@featureInstance.4" destination="//@componentInstance.4/@featureInstance.0">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.5"/>
+    </connectionReference>
+  </connectionInstance>
+  <connectionInstance name="this_speed_controller.this_thread_control.brake_out -> this_brakes.brake" complete="true" kind="portConnection" destination="//@componentInstance.5/@featureInstance.0" source="//@componentInstance.6/@componentInstance.3/@featureInstance.5">
+    <connectionReference context="//@componentInstance.6" source="//@componentInstance.6/@componentInstance.3/@featureInstance.5" destination="//@componentInstance.6/@featureInstance.5">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.6/@ownedPortConnection.11"/>
+    </connectionReference>
+    <connectionReference context="/" source="//@componentInstance.6/@featureInstance.5" destination="//@componentInstance.5/@featureInstance.0">
+      <connection xsi:type="aadl2:PortConnection" href="../syst.aadl#/0/@ownedPublicSection/@ownedClassifier.4/@ownedPortConnection.6"/>
+    </connectionReference>
+  </connectionInstance>
+  <systemOperationMode name="No Modes"/>
+  <componentImplementation xsi:type="aadl2:SystemImplementation" href="../syst.aadl#syst.ACC_System.with_devices"/>
+</instance:SystemInstance>
