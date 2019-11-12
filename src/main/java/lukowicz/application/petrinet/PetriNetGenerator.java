@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,25 +36,23 @@ public class PetriNetGenerator {
 
     }
 
-    private File petriNetXmlFilePath = new File("D:\\Studia\\magisterka\\Modelowanie i analiza oprogramowania z zastosowaniem języka AADL i sieci Petriego\\Pliki\\file.xml");
+    public void generatePetriNet(String outputFilePath) throws ParserConfigurationException, TransformerException, IOException {
+        Document petriNetDocument = TranslatorTools.createDocumentFile();
 
-    public void generatePetriNet() throws ParserConfigurationException, TransformerException {
-        Document petriNetXmlFile = TranslatorTools.createDocumentFile();
+        Element workspaceElements = petriNetDocument.createElement("workspaceElements");
+        petriNetGraphicsGenerator.addGeneratorInfo(petriNetDocument, workspaceElements);
 
-        Element workspaceElements = petriNetXmlFile.createElement("workspaceElements");
-        petriNetGraphicsGenerator.addGeneratorInfo(petriNetXmlFile, workspaceElements);
-
-        Element root = petriNetXmlFile.createElement("cpnet");
+        Element root = petriNetDocument.createElement("cpnet");
         workspaceElements.appendChild(root);
-        petriNetXmlFile.appendChild(workspaceElements);
+        petriNetDocument.appendChild(workspaceElements);
 
-        petriNetGraphicsGenerator.generateGlobBox(petriNetXmlFile, root);
+        petriNetGraphicsGenerator.generateGlobBox(petriNetDocument, root);
 
         String generalPageId = TranslatorTools.generateUUID();
 
-        Element generalTransistion = petriNetTranslator.insertGeneralTransition(petriNetXmlFile);
+        Element generalTransistion = petriNetTranslator.insertGeneralTransition(petriNetDocument);
         String generalTransId = generalTransistion.getAttribute("id");
-        Element generalPage = petriNetPager.generateNewPage(generalPageId, petriNetXmlFile, root, "General");
+        Element generalPage = petriNetPager.generateNewPage(generalPageId, petriNetDocument, root, "General");
         generalPage.appendChild(generalTransistion);
         Page generalSystemPage = new Page("General_System",Boolean.TRUE,"","General_System");
         generalSystemPage.setPageId(generalPageId);
@@ -64,9 +63,9 @@ public class PetriNetGenerator {
 
         Page actualPage = petriNetPager.getPageByContext("");
         //page startowy   moze te Generate New Page do Pager cos takiego??
-        Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root, "System");
-        List<Node> arcs = generateConnections(actualPage.getContext(), petriNetXmlFile, page);
-        petriNetTranslator.translateElements(petriNetXmlFile, page, cache.getComponentInstances());
+        Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetDocument, root, "System");
+        List<Node> arcs = generateConnections(actualPage.getContext(), petriNetDocument, page);
+        petriNetTranslator.translateElements(petriNetDocument, page, cache.getComponentInstances());
         insertArcToPNet(page, arcs);
         ElementsPosition.resetPositions();
 
@@ -75,29 +74,32 @@ public class PetriNetGenerator {
         //pageForProcess   zrobic odniesienia do stron!!
         for (ComponentInstance pageProcess : cache.getHIERARCHY_TRANSITIONS()) {
             actualPage = petriNetPager.getPageForTransId(pageProcess.getId());
-            Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetXmlFile, root, actualPage.getPageName());
+            Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetDocument, root, actualPage.getPageName());
             List<Node> arcs2;
             if(!actualPage.getGenerated())
             {
-                arcs2 = generateConnections(actualPage.getContext(), petriNetXmlFile, pageForProcess);
+                arcs2 = generateConnections(actualPage.getContext(), petriNetDocument, pageForProcess);
             }
             else {
-                arcs2 = generateConnectionsForGeneratedPage(actualPage.getContext(),petriNetXmlFile,pageForProcess);
+                arcs2 = generateConnectionsForGeneratedPage(actualPage.getContext(),petriNetDocument,pageForProcess);
             }
-            petriNetTranslator.translateElements(petriNetXmlFile, pageForProcess, pageProcess.getComponentInstancesNested());
+            petriNetTranslator.translateElements(petriNetDocument, pageForProcess, pageProcess.getComponentInstancesNested());
             insertArcToPNet(pageForProcess, arcs2);
             ElementsPosition.resetPositions();
         }
 
-        Element instances = petriNetPager.generatePagesInstances(petriNetXmlFile);
-        Element binders = petriNetGraphicsGenerator.generateBinders(petriNetXmlFile);
+        Element instances = petriNetPager.generatePagesInstances(petriNetDocument);
+        Element binders = petriNetGraphicsGenerator.generateBinders(petriNetDocument);
 
         root.appendChild(instances);
         root.appendChild(binders);
 
         workspaceElements.appendChild(root);
 
-        TranslatorTools.saveFile(petriNetXmlFile, petriNetXmlFilePath);
+        outputFilePath = outputFilePath + "\\generatedPetriNetFile.xml";
+
+        File petriNetFile = new File(outputFilePath);
+        TranslatorTools.saveFile(petriNetDocument, petriNetFile);
     }
 
     private List<Node> generateConnectionsForGeneratedPage(String context, Document pnmlDocument, Element pageForProcess) {

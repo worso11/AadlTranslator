@@ -28,10 +28,10 @@ public class Parser {
         this.petriNetGenerator = petriNetGenerator;
     }
 
-    public void parseFile(String filePath) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+    public void parseFile(File file) throws ParserConfigurationException, IOException, SAXException, TransformerException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        File aadlXmlFile = new File(filePath);
+        File aadlXmlFile = file;
 
         Document loadedDocument = builder.parse(aadlXmlFile);
 
@@ -44,7 +44,7 @@ public class Parser {
 
         NodeList connections = loadedDocument.getElementsByTagName("connectionInstance");
         elementSearcher.searchConnections(connections);
-        petriNetGenerator.generatePetriNet();
+        petriNetGenerator.generatePetriNet(file.getParentFile().getPath());
     }
 }
 
