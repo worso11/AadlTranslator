@@ -22,32 +22,21 @@ public class Connection {
         this.id = TranslatorTools.generateUUID();
         this.pos_X = ElementsPosition.getArcXPosition();
         this.pos_Y = ElementsPosition.getArcYPosition();
-        System.out.println("Connection " + " id "+id);
     }
 
     public String getContext() {
         return context;
     }
 
-    public void setContext(String context) {
-        this.context = context;
-    }
-
     public String getSource() {
         return source;
     }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
 
     public String getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
 
     public String getId() {
         return id;
@@ -57,21 +46,6 @@ public class Connection {
         this.id = id;
     }
 
-    public String getPos_X() {
-        return pos_X;
-    }
-
-    public void setPos_X(String pos_X) {
-        this.pos_X = pos_X;
-    }
-
-    public String getPos_Y() {
-        return pos_Y;
-    }
-
-    public void setPos_Y(String pos_Y) {
-        this.pos_Y = pos_Y;
-    }
 
     public void setGenerate(Boolean generate) {
         isGenerate = generate;
@@ -89,9 +63,6 @@ public class Connection {
         this.socketType = socketType;
     }
 
-    public Boolean getTimed() {
-        return isTimed;
-    }
 
     public void setTimed(Boolean timed) {
         isTimed = timed;

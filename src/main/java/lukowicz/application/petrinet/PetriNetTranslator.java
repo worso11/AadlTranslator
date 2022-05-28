@@ -37,7 +37,6 @@ public class PetriNetTranslator {
             }
 
         }
-
         cache.clearUsedFeature();
         cache.clearGeneratedPlaces();
     }

@@ -26,7 +26,4 @@ public class Socket {
         return socketId;
     }
 
-    public String getDirection() {
-        return direction;
-    }
 }

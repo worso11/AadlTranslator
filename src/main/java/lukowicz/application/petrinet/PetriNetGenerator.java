@@ -54,7 +54,7 @@ public class PetriNetGenerator {
         String generalTransId = generalTransistion.getAttribute("id");
         Element generalPage = petriNetPager.generateNewPage(generalPageId, petriNetDocument, root, "General");
         generalPage.appendChild(generalTransistion);
-        Page generalSystemPage = new Page("General_System",Boolean.TRUE,"","General_System");
+        Page generalSystemPage = new Page("General_System", Boolean.TRUE, "", "General_System");
         generalSystemPage.setPageId(generalPageId);
         generalSystemPage.setTransId(generalTransId);
         petriNetPager.getPages().add(generalSystemPage);
@@ -62,7 +62,6 @@ public class PetriNetGenerator {
 
 
         Page actualPage = petriNetPager.getPageByContext("");
-        //page startowy   moze te Generate New Page do Pager cos takiego??
         Element page = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetDocument, root, "System");
         List<Node> arcs = generateConnections(actualPage.getContext(), petriNetDocument, page);
         petriNetTranslator.translateElements(petriNetDocument, page, cache.getComponentInstances());
@@ -71,17 +70,14 @@ public class PetriNetGenerator {
 
         cache.moveProcesses();
 
-        //pageForProcess   zrobic odniesienia do stron!!
         for (ComponentInstance pageProcess : cache.getHIERARCHY_TRANSITIONS()) {
             actualPage = petriNetPager.getPageForTransId(pageProcess.getId());
             Element pageForProcess = petriNetPager.generateNewPage(actualPage.getPageId(), petriNetDocument, root, actualPage.getPageName());
             List<Node> arcs2;
-            if(!actualPage.getGenerated())
-            {
+            if (!actualPage.getGenerated()) {
                 arcs2 = generateConnections(actualPage.getContext(), petriNetDocument, pageForProcess);
-            }
-            else {
-                arcs2 = generateConnectionsForGeneratedPage(actualPage.getContext(),petriNetDocument,pageForProcess);
+            } else {
+                arcs2 = generateConnectionsForGeneratedPage(actualPage.getContext(), petriNetDocument, pageForProcess);
             }
             petriNetTranslator.translateElements(petriNetDocument, pageForProcess, pageProcess.getComponentInstancesNested());
             insertArcToPNet(pageForProcess, arcs2);
@@ -118,7 +114,7 @@ public class PetriNetGenerator {
                 arcId.setValue(connection.getId());
                 arc1.setAttributeNode(arcId);
                 String directionArc = "in".equalsIgnoreCase(connection.getSocketType()) ? "PtoT" : "TtoP";
-                setArcNodes(transendIdRef,placeendIdRef,arcOrientation,connection.getDestination(),connection.getSource(),directionArc);
+                setArcNodes(transendIdRef, placeendIdRef, arcOrientation, connection.getDestination(), connection.getSource(), directionArc);
                 transend.setAttributeNode(transendIdRef);
                 placeend.setAttributeNode(placeendIdRef);
                 arc1.setAttributeNode(arcOrientation);
@@ -182,7 +178,6 @@ public class PetriNetGenerator {
                     cache.getUsedFeature().add(sourceNode.getPlaceId());
                 }
 
-                //dla wygenerowanego
                 else if (Category.PROCESS.getValue().equals(sourceNode.getHeadCategory()) && !dstNode.getCategory().equals(sourceNode.getCategory()) &&
                         "out".equals(connection.getSocketType())) {
                     cache.getSOCKETS().add(new Socket(sourceNode.getHeadId(), sourceNode.getPlaceId(), dstNode.getPlaceId(), "out"));
@@ -196,7 +191,6 @@ public class PetriNetGenerator {
                 } else if (Boolean.FALSE.equals(connection.getGenerate()) && connection.getSocketType() == null &&
                         !sourceNode.getCategory().equals(Category.BUS.getValue())) {
                     setArcNodes(transendIdRef, placeendIdRef, arcOrientation, sourceNode.getTransId(), sourceNode.getPlaceId(), "TtoP");
-                    //czy tak może byc?? Device jako odpowiednik komponentu z wyzszej warstwy
                     if (!isFirstLayer(dstNode.getCategory())) {
                         setArcNodes(transendIdRef2, placeendIdRef2, arcOrientation2, dstNode.getTransId(), sourceNode.getPlaceId(), "PtoT");
                     }
@@ -222,9 +216,8 @@ public class PetriNetGenerator {
                     arc2.appendChild(placeend2);
                     arcs.add(arc2);
                 }
-            }
-            else if(connection.getContext().length()>=4 && "NI:".equals(connection.getContext().substring(0,3))){
-                if(cache.getContextByTransId(connection.getContext().substring(3)).equals(actualContext)){
+            } else if (connection.getContext().length() >= 4 && "NI:".equals(connection.getContext().substring(0, 3))) {
+                if (cache.getContextByTransId(connection.getContext().substring(3)).equals(actualContext)) {
                     Element arc1 = pnmlDocument.createElement("arc");
                     Attr arcId = pnmlDocument.createAttribute("id");
                     arcId.setValue(connection.getId());
@@ -242,7 +235,7 @@ public class PetriNetGenerator {
 
                     String directionArc = "in".equals(connection.getSocketType()) ? "PtoT" : "TtoP";
 
-                    setArcNodes(transendIdRef,placeendIdRef,arcOrientation,connection.getDestination(),connection.getSource(),directionArc);
+                    setArcNodes(transendIdRef, placeendIdRef, arcOrientation, connection.getDestination(), connection.getSource(), directionArc);
 
                     transend.setAttributeNode(transendIdRef);
                     placeend.setAttributeNode(placeendIdRef);

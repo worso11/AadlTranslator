@@ -6,6 +6,7 @@ import lukowicz.application.utils.TranslatorTools;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ComponentInstance {
     private String name;
@@ -23,7 +24,6 @@ public class ComponentInstance {
         this.id = TranslatorTools.generateUUID();
         this.pos_X = ElementsPosition.getTRANSITION_X_POSITION();
         this.pos_Y = ElementsPosition.getTRANSITION_Y_POSITION();
-        System.out.println("name feature " + name + " id " + id + "category " + category);
     }
 
     public String getName() {

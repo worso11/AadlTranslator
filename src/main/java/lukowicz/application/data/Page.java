@@ -46,44 +46,29 @@ public class Page implements Comparable<Page> {
         return generated;
     }
 
-    public void setGenerated(Boolean generated) {
-        this.generated = generated;
-    }
 
     public List<Page> getNestedPage() {
         return nestedPage;
     }
 
-    public void setNestedPage(List<Page> nestedPage) {
-        this.nestedPage = nestedPage;
-    }
 
     public String getHeadId() {
         return headId;
     }
 
-    public void setHeadId(String headId) {
-        this.headId = headId;
-    }
 
     public String getPageName() {
         return pageName;
     }
 
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
-    }
 
     @Override
     public int compareTo(Page o) {
-        if(this.getContext().length() > o.getContext().length()){
+        if (this.getContext().length() > o.getContext().length()) {
             return 1;
-        }
-        else if(this.getContext().length() < o.getContext().length())
-        {
+        } else if (this.getContext().length() < o.getContext().length()) {
             return -1;
-        }
-        else{
+        } else {
             return 0;
         }
     }

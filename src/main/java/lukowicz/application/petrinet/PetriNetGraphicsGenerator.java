@@ -139,7 +139,6 @@ public class PetriNetGraphicsGenerator {
         idElement.setTextContent("Standard priorities");
         block.appendChild(idElement);
 
-
         generateSimpleType(pnmlDocument, block, "UNIT", "colset UNIT = unit", Boolean.FALSE);
         generateSimpleType(pnmlDocument, block, "BOOL", null, Boolean.FALSE);
         generateSimpleType(pnmlDocument, block, "INTINF", "colset INTINF = intinf;", Boolean.FALSE);
@@ -147,7 +146,6 @@ public class PetriNetGraphicsGenerator {
         generateSimpleType(pnmlDocument, block, "REAL", "colset REAL = real;", Boolean.FALSE);
         generateSimpleType(pnmlDocument, block, "TINT", "colset TINT = int timed;", Boolean.TRUE);
         generateSimpleType(pnmlDocument, block, "String", null, Boolean.FALSE);
-
 
         globbox.appendChild(block);
     }
@@ -190,7 +188,6 @@ public class PetriNetGraphicsGenerator {
     }
 
     public void setArcGraphicsProperties(Document pnmlDocument, Element arc1, String periodArcText) {
-        Element arcPosition = pnmlDocument.createElement("posattr");
 
         createPosattr(pnmlDocument,0.0,0.0);
 
@@ -316,69 +313,6 @@ public class PetriNetGraphicsGenerator {
 
         place.appendChild(initMarkProperty);
 
-
-        Socket socket = cache.isConnectingPort(dataPort);
-
-//        if (socket != null) {
-//
-//            Element port = pnmlDocument.createElement("port");
-//            Attr attrId = pnmlDocument.createAttribute("id");
-//            attrId.setValue(TranslatorTools.generateUUID());
-//            port.setAttributeNode(attrId);
-//            Attr attrType = pnmlDocument.createAttribute("type");
-//            attrType.setValue(socket.getDirection());
-//            port.setAttributeNode(attrType);
-//
-//            Element portPosition = pnmlDocument.createElement("posattr");
-//            Attr portPositionX = pnmlDocument.createAttribute("x");
-//            Double portPositionXValue = placeXPosition - 24.0000;
-//            portPositionX.setValue(portPositionXValue.toString());
-//            Attr portPositionY = pnmlDocument.createAttribute("y");
-//            Double portPositionYValue = placeYPosition - 16.0000;
-//            portPositionY.setValue(portPositionYValue.toString());
-//            portPosition.setAttributeNode(portPositionX);
-//            portPosition.setAttributeNode(portPositionY);
-//
-//            port.appendChild(portPosition);
-//
-//
-//            Element portFillProperty = pnmlDocument.createElement("fillattr");
-//            Attr portColorFill = pnmlDocument.createAttribute("colour");
-//            portColorFill.setValue("White");
-//            portFillProperty.setAttributeNode(portColorFill);
-//            Attr portPattern = pnmlDocument.createAttribute("pattern");
-//            portPattern.setValue("Solid");
-//            portFillProperty.setAttributeNode(portPattern);
-//            Attr portFilled = pnmlDocument.createAttribute("filled");
-//            portPattern.setValue("false");
-//            portFillProperty.setAttributeNode(portFilled);
-//            port.appendChild(portFillProperty);
-//
-//
-//            Element portLineProperty = pnmlDocument.createElement("lineattr");
-//            Attr portColorLine = pnmlDocument.createAttribute("colour");
-//            portColorLine.setValue("Black");
-//            portLineProperty.setAttributeNode(portColorLine);
-//            Attr portThick = pnmlDocument.createAttribute("thick");
-//            portThick.setValue("0");
-//            portLineProperty.setAttributeNode(portThick);
-//            Attr portType = pnmlDocument.createAttribute("type");
-//            portType.setValue("Solid");
-//            portLineProperty.setAttributeNode(portType);
-//            port.appendChild(portLineProperty);
-//
-//
-//            Element portTextProperty = pnmlDocument.createElement("textattr");
-//            Attr portColorText = pnmlDocument.createAttribute("colour");
-//            portColorText.setValue("Black");
-//            portTextProperty.setAttributeNode(portColorText);
-//            Attr portIsBold = pnmlDocument.createAttribute("bold");
-//            portIsBold.setValue("false");
-//            portTextProperty.setAttributeNode(portIsBold);
-//            port.appendChild(portTextProperty);
-//
-//            place.appendChild(port);
-//        }
 
         return place;
 

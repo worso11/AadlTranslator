@@ -28,9 +28,6 @@ public class PetriNetPager {
         return getPages().get(numberPage);
     }
 
-    public  String getPageIdByIndex(int numberPage) {
-        return getPageByIndex(numberPage).getPageId();
-    }
 
     public  String getPageIdForTransId(String transId) {
         return getPages().stream().filter(e -> transId.equals(e.getTransId())).findFirst().get().getPageId();
@@ -44,12 +41,9 @@ public class PetriNetPager {
         return getPages().stream().filter(e -> transId.equals(e.getTransId())).findFirst().orElse(null);
     }
 
-    public  String getTransIdByIndex(int numberPage) {
-        return getPageByIndex(numberPage).getTransId();
-    }
 
     public void addNewPage(String context, String transId, Boolean isGenerated, String headId, String pageName) {
-        Page newPage = null;
+        Page newPage;
         long count = getPages().stream().filter(e -> e.getContext().equals(context)).count();
         if (count == 0) {
             newPage = new Page(context, isGenerated, headId, pageName);
@@ -58,7 +52,6 @@ public class PetriNetPager {
             }
             getPages().add(newPage);
         }
-       // cache.sortPages();
     }
 
     public void preparePagesList(){
@@ -138,7 +131,6 @@ public class PetriNetPager {
             newTransAttr.setValue(pageList.get(i).getTransId());
             instance.setAttributeNode(newPageIdAttr);
             instance.setAttributeNode(newTransAttr);
-            //wtedy na tym samym poziomie procesy
             firstInstance.appendChild(instance);
             if(!pageList.get(i).getNestedPage().isEmpty()){
                 generateNestedInstance(pnmlDocument,getPages().get(0).getNestedPage().get(i).getNestedPage(),instance);

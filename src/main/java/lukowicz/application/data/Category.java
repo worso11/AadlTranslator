@@ -6,7 +6,7 @@ public enum Category {
     SYSTEM("system");
     String value;
 
-    private Category(String value) {
+    Category(String value) {
         this.value = value;
     }
 

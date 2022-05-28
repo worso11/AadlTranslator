@@ -45,20 +45,8 @@ public class ConnectionNode {
         return headCategory;
     }
 
-    public String getPeriod() {
-        return period;
-    }
-
-    public Double getPositionX() {
-        return positionX;
-    }
-
     public String getTransName() {
         return transName;
-    }
-
-    public Double getPositionY() {
-        return positionY;
     }
 
 

@@ -5,27 +5,23 @@ import lukowicz.application.utils.TranslatorTools;
 import java.util.Objects;
 
 public class DataPort {
-     private String name;
-     private String id;
-     private Double pos_X;
-     private Double pos_Y;
-     private String direction;
-     private Boolean isTimed = Boolean.FALSE;
+    private String name;
+    private String id;
+    private Double pos_X;
+    private Double pos_Y;
+    private String direction;
+    private Boolean isTimed = Boolean.FALSE;
 
     public DataPort(String name, String direction) {
         this.name = name;
         this.id = TranslatorTools.generateUUID();
         this.direction = direction.equals("") ? "in" : direction;
-        System.out.println("name feature "+ name + " id "+id);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getId() {
         return id;
@@ -35,29 +31,11 @@ public class DataPort {
         this.id = id;
     }
 
-    public Double getPos_X() {
-        return pos_X;
-    }
-
-    public Double getPos_Y() {
-        return pos_Y;
-    }
-
-    public void setPos_X(Double pos_X) {
-        this.pos_X = pos_X;
-    }
-
-    public void setPos_Y(Double pos_Y) {
-        this.pos_Y = pos_Y;
-    }
 
     public String getDirection() {
         return direction;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
 
     public Boolean getTimed() {
         return isTimed;

@@ -1,0 +1,17 @@
+lukowicz\application\data\Page.class
+lukowicz\application\aadl\ElementSearcher.class
+lukowicz\application\data\Category.class
+lukowicz\application\petrinet\PetriNetGraphicsGenerator.class
+lukowicz\application\memory\ElementsPosition.class
+lukowicz\application\petrinet\PetriNetPager.class
+lukowicz\application\data\DataPort.class
+lukowicz\application\data\Connection.class
+lukowicz\application\Parser.class
+lukowicz\application\data\Socket.class
+lukowicz\application\petrinet\PetriNetGenerator.class
+lukowicz\application\petrinet\PetriNetTranslator.class
+lukowicz\application\memory\Cache.class
+lukowicz\application\utils\TranslatorTools.class
+lukowicz\application\ApplicationRunner.class
+lukowicz\application\data\ConnectionNode.class
+lukowicz\application\data\ComponentInstance.class

@@ -15,9 +15,6 @@ import java.io.File;
 import java.io.IOException;
 
 
-//mapowanie processor, memmory???
-
-//wg dokumentu bus to arc
 public class Parser {
 
     private ElementSearcher elementSearcher;

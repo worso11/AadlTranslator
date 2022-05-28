@@ -1,5 +1,8 @@
 package lukowicz.application.utils;
 
+import lukowicz.application.aadl.ElementSearcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,7 +21,9 @@ import java.util.UUID;
 
 public class TranslatorTools {
 
-    public static String generateUUID(){
+    private static Logger LOG = LoggerFactory.getLogger(TranslatorTools.class);
+
+    public static String generateUUID() {
         return String.format("%040d", new BigInteger(UUID.randomUUID().toString().replace("-", ""), 16));
     }
 
@@ -46,9 +51,8 @@ public class TranslatorTools {
         DOMSource domSource = new DOMSource(pnmlDocument);
         StreamResult streamResult = new StreamResult(new File(String.valueOf(petriNetXmlFile)));
 
-
         transformer.transform(domSource, streamResult);
 
-        System.out.println("Done creating XML File");
+        LOG.debug("Done creating XML File");
     }
 }
