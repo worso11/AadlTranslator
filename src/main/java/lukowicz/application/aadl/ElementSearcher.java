@@ -78,11 +78,13 @@ public class ElementSearcher {
                             componentInstance.getReverseFeatureInstances().remove(new DataPort(featureElement.getAttribute("name"),
                                     featureElement.getAttribute("direction")));
                             componentInstance.getReverseFeatureInstances();//wroc do starego porzadku
-                            componentInstanceNested.getDataPort().add(new DataPort(featureElement.getAttribute("name"),
-                                    featureElement.getAttribute("direction")));
+                            DataPort dp = new DataPort(featureElement.getAttribute("name"),
+                                    featureElement.getAttribute("direction"));
+                            componentInstanceNested.getDataPort().add(dp);
                         } else {
-                            componentInstance.getDataPort().add(new DataPort(featureElement.getAttribute("name"),
-                                    featureElement.getAttribute("direction")));
+                            DataPort dp = new DataPort(featureElement.getAttribute("name"),
+                                    featureElement.getAttribute("direction"));
+                            componentInstance.getDataPort().add(dp);
                         }
                     }
                 }
@@ -182,15 +184,19 @@ public class ElementSearcher {
                 LOG.debug("Name of  connection : {} ", actualConnection.getAttribute("name"));
                 NodeList connectionReferences = actualConnection.getElementsByTagName("connectionReference");
                 String contextRaw = connectionReferences.item(0).getAttributes().getNamedItem("context").getNodeValue();
-                LOG.debug("Context of  connection : {} ", contextRaw);
+                /*LOG.debug("Context of  connection : {} ", contextRaw);
 
                 LOG.debug("source of  connection : {} ", actualConnection.getAttribute("source"));
                 LOG.debug("destination of  connection : {} ", actualConnection.getAttribute("destination"));
-                LOG.debug("destination of  connection : {} ",actualConnection.getAttribute("destination"));
+                LOG.debug("destination of  connection : {} ",actualConnection.getAttribute("destination"));*/
 
                 String context = contextRaw.replaceAll("\\D+", " ").trim();
                 String source = actualConnection.getAttribute("source").replaceAll("\\D+", " ").trim();
                 String destination = actualConnection.getAttribute("destination").replaceAll("\\D+", " ").trim();
+
+                LOG.debug("context of  connection : {} ", context);
+                LOG.debug("source of  connection : {} ", source);
+                LOG.debug("destination of  connection : {} ", destination);
 
                 Connection newConnection = new Connection(context, source, destination);
 
@@ -221,6 +227,27 @@ public class ElementSearcher {
                     additionalConnConnection.setSocketType("out");
                     petriNetPager.addNewPage(context, cache.getComponentInstanceByIndex(sourcePath.get(0)).getId(), Boolean.FALSE, null, cache.getComponentInstanceByIndex(sourcePath.get(0)).getName());
                     cache.addConnection(additionalConnConnection);
+                }
+
+                ConnectionNode destinationNode = getConnectionNode(destinationPath, null, null);
+                ConnectionNode sourceNode = getConnectionNode(sourcePath, null, null);
+                String socketId = new String();
+                String portId = new String();
+
+                for (Socket socket : cache.getSOCKETS()) {
+                    if (destinationNode.getPlaceId().equals(socket.getSocketId())) {
+                        portId = socket.getPortId();
+                    } else if (sourceNode.getPlaceId().equals(socket.getSocketId())) {
+                        socketId = socket.getSocketId();
+                    }
+                }
+
+                if (!portId.isEmpty() && !socketId.isEmpty()) {
+                    for (Socket socket : cache.getSOCKETS()) {
+                        if (portId.equals(socket.getPortId())) {
+                            socket.setSocketId(socketId);
+                        }
+                    }
                 }
 
                 cache.addConnection(newConnection);

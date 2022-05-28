@@ -4,7 +4,7 @@ public class Socket {
 
     private final String componentId;
     private final String portId;
-    private final String socketId;
+    private String socketId;
     private final String direction;
 
     public Socket(String componentId, String portId, String socketId, String direction) {
@@ -26,4 +26,5 @@ public class Socket {
         return socketId;
     }
 
+    public void setSocketId(String socketId) {this.socketId = socketId; }
 }
